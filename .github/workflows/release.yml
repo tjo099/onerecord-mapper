@@ -25,6 +25,9 @@ jobs:
           printf '%s\n' "$GPG_PUBLIC_KEY" | gpg --import --batch
       - name: Verify signed tag
         run: |
+          # actions/checkout fetch-tags:true brings the tag refs but not always
+          # the annotated tag objects. Explicit fetch is bulletproof.
+          git fetch --tags --force origin
           git tag -v ${{ github.ref_name }} 2>&1 | tee /tmp/tag-verify.txt
           grep -qE 'good signature|Good signature' /tmp/tag-verify.txt
       - uses: oven-sh/setup-bun@v2

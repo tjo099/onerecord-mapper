@@ -1,0 +1,6 @@
+[install]
+ignore-scripts = true
+exact = true
+
+[install.lockfile]
+save = true

@@ -1,12 +1,7 @@
+import type { AccountNumber } from '../../src/classes/account-number/schema.js'
 import { envelope } from './common.js'
 
-export interface AccountNumberFactoryShape {
-  '@context': string
-  '@type': 'AccountNumber'
-  '@id': string
-  accountNumber: string
-  accountType?: 'IATA_CASS' | 'INTERNAL' | 'OTHER'
-}
+export type AccountNumberFactoryShape = AccountNumber
 
 export function createAccountNumber(
   overrides: Partial<AccountNumberFactoryShape> = {},

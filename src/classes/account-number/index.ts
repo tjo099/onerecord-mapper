@@ -1,0 +1,5 @@
+export { AccountNumberCodec } from './codec.js'
+export { deserializeAccountNumber } from './deserialize.js'
+export { AccountNumberSchema } from './schema.js'
+export type { AccountNumber, JsonLdAccountNumber } from './schema.js'
+export { serializeAccountNumber, serializeAccountNumberStrict } from './serialize.js'

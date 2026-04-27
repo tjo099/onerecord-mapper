@@ -9,4 +9,5 @@ export {
   BookingStatus,
   BookingOptionStatus,
 } from './enums.js'
-// fsuCodeToEventTypeCode + FsuCode + FSU_EVENT_CODES added in Task 38
+export { FSU_EVENT_CODES, fsuCodeToEventTypeCode } from './fsu-event-codes.js'
+export type { FsuCode, FsuEventMapping } from './fsu-event-codes.js'

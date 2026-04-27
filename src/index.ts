@@ -50,6 +50,13 @@ export {
   TopicType,
 } from './codes/index.js'
 
+// FSU event codes (Phase 7 / Task 38)
+export {
+  FSU_EVENT_CODES,
+  fsuCodeToEventTypeCode,
+} from './codes/fsu-event-codes.js'
+export type { FsuCode, FsuEventMapping } from './codes/fsu-event-codes.js'
+
 // Shared base
 export type { JsonLd } from './classes/shared/jsonld-brand.js'
 export { LogisticsObjectSchema } from './classes/shared/logistics-object.js'

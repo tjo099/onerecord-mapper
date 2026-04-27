@@ -45,7 +45,7 @@ jobs:
           echo "dist invariant verified: built dist matches committed dist on tag"
       - name: SBOM (syft)
         uses: anchore/sbom-action@v0
-        with: { artifact-name: sbom-${{ github.ref_name }}.spdx.json, format: spdx-json }
+        with: { artifact-name: 'sbom-${{ github.ref_name }}.spdx.json', format: spdx-json }
       - name: SLSA provenance
         uses: actions/attest-build-provenance@v1
         with: { subject-path: 'dist/**' }

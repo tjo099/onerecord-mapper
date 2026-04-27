@@ -5,13 +5,30 @@
   "type": "module",
   "license": "Apache-2.0",
   "sideEffects": false,
-  "repository": { "type": "git", "url": "git+https://github.com/tjo099/onerecord-mapper.git" },
-  "engines": { "node": ">=20.0.0", "bun": "1.3.x" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tjo099/onerecord-mapper.git"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "bun": "1.3.x"
+  },
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
-    "./types": { "types": "./dist/types/index.d.ts", "import": "./dist/types/index.js" },
-    "./codecs": { "types": "./dist/codecs.d.ts", "import": "./dist/codecs.js" },
-    "./package.json": { "default": "./package.json" }
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js"
+    },
+    "./codecs": {
+      "types": "./dist/codecs.d.ts",
+      "import": "./dist/codecs.js"
+    },
+    "./package.json": {
+      "default": "./package.json"
+    }
   },
   "files": ["dist/", "LICENSE", "NOTICE", "README.md", "CHANGELOG.md", "MIGRATING.md", "SECURITY.md"],
   "scripts": {
@@ -31,7 +48,9 @@
     "secrets:scan": "npx --yes gitleaks@latest detect --source . --no-banner",
     "api:check": "npx --yes @arethetypeswrong/cli@latest --pack ."
   },
-  "dependencies": { "zod": "^4.0.0" },
+  "dependencies": {
+    "zod": "^4.0.0"
+  },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.16.0",
     "@biomejs/biome": "^1.9.0",
@@ -42,5 +61,7 @@
     "vitest": "^2.1.0",
     "xlsx": "^0.18.5"
   },
-  "publishConfig": { "access": "restricted" }
+  "publishConfig": {
+    "access": "restricted"
+  }
 }

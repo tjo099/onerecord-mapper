@@ -51,7 +51,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with: { bun-version: '1.3.11' }
       - uses: actions/setup-node@v4
-        with: { node-version: ${{ matrix.node }} }
+        with: { node-version: '${{ matrix.node }}' }
       - run: bun install --frozen-lockfile
       - run: bun run build
       - name: Resolve built dist under Node native ESM

@@ -85,3 +85,56 @@ export {
   serializePieceStrict,
 } from './classes/piece/index.js'
 export type { JsonLdPiece, Piece } from './classes/piece/index.js'
+
+// Ring 2 — Address
+export {
+  AddressCodec,
+  AddressSchema,
+  deserializeAddress,
+  serializeAddress,
+  serializeAddressStrict,
+} from './classes/address/index.js'
+export type { Address, JsonLdAddress } from './classes/address/index.js'
+
+// Ring 2 — Person
+export {
+  PersonCodec,
+  PersonSchema,
+  deserializePerson,
+  serializePerson,
+  serializePersonStrict,
+} from './classes/person/index.js'
+export type { JsonLdPerson, Person } from './classes/person/index.js'
+
+// Ring 2 — Organization
+export {
+  OrganizationCodec,
+  OrganizationSchema,
+  deserializeOrganization,
+  serializeOrganization,
+  serializeOrganizationStrict,
+} from './classes/organization/index.js'
+export type { JsonLdOrganization, Organization } from './classes/organization/index.js'
+
+// Ring 2 — Party
+export {
+  PartyCodec,
+  PartySchema,
+  deserializeParty,
+  serializeParty,
+  serializePartyStrict,
+} from './classes/party/index.js'
+export type { JsonLdParty, Party } from './classes/party/index.js'
+
+// Ring 5 — AccountNumber (referenced by Party.accountNumbers, wired alongside Ring 2)
+export {
+  AccountNumberCodec,
+  AccountNumberSchema,
+  deserializeAccountNumber,
+  serializeAccountNumber,
+  serializeAccountNumberStrict,
+} from './classes/account-number/index.js'
+export type {
+  AccountNumber,
+  JsonLdAccountNumber,
+} from './classes/account-number/index.js'

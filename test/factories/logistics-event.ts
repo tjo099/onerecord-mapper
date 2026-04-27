@@ -1,12 +1,7 @@
+import type { LogisticsEvent } from '../../src/classes/logistics-event/schema.js'
 import { envelope } from './common.js'
 
-export interface LogisticsEventFactoryShape {
-  '@context': string
-  '@type': 'LogisticsEvent'
-  '@id': string
-  eventTypeCode: string
-  eventTimestamp: string
-}
+export type LogisticsEventFactoryShape = LogisticsEvent
 
 export function createLogisticsEvent(
   overrides: Partial<LogisticsEventFactoryShape> = {},
@@ -14,8 +9,8 @@ export function createLogisticsEvent(
   return {
     ...envelope('LogisticsEvent'),
     '@type': 'LogisticsEvent',
-    eventTypeCode: 'DEP',
-    eventTimestamp: '2026-01-01T00:00:00.000Z',
+    eventTypeCode: 'RCS',
+    eventTimestamp: '2026-01-01T12:00:00.000Z',
     ...overrides,
   } as LogisticsEventFactoryShape
 }

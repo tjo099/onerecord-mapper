@@ -1,0 +1,5 @@
+export { LogisticsEventCodec } from './codec.js'
+export { deserializeLogisticsEvent } from './deserialize.js'
+export { LogisticsEventSchema } from './schema.js'
+export type { JsonLdLogisticsEvent, LogisticsEvent } from './schema.js'
+export { serializeLogisticsEvent, serializeLogisticsEventStrict } from './serialize.js'

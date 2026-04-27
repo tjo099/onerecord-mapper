@@ -1,0 +1,7 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "LogisticsEvent",
+  "@id": "https://snapshot.example/wf/logisticsevent/fixed-id",
+  "eventTypeCode": "RCS",
+  "eventTimestamp": "2026-01-01T00:00:00.000Z"
+}

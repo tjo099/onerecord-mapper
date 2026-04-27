@@ -146,6 +146,69 @@ export type {
   JsonLdAccountNumber,
 } from './classes/account-number/index.js'
 
+// Ring 4 — Subscription
+export {
+  SubscriptionCodec,
+  SubscriptionSchema,
+  deserializeSubscription,
+  serializeSubscription,
+  serializeSubscriptionStrict,
+} from './classes/subscription/index.js'
+export type { JsonLdSubscription, Subscription } from './classes/subscription/index.js'
+
+// Ring 4 — SubscriptionRequest
+export {
+  SubscriptionRequestCodec,
+  SubscriptionRequestSchema,
+  deserializeSubscriptionRequest,
+  serializeSubscriptionRequest,
+  serializeSubscriptionRequestStrict,
+} from './classes/subscription-request/index.js'
+export type {
+  JsonLdSubscriptionRequest,
+  SubscriptionRequest,
+} from './classes/subscription-request/index.js'
+
+// Ring 4 — Notification
+export {
+  NotificationCodec,
+  NotificationSchema,
+  deserializeNotification,
+  serializeNotification,
+  serializeNotificationStrict,
+} from './classes/notification/index.js'
+export type { JsonLdNotification, Notification } from './classes/notification/index.js'
+
+// Ring 4 — ChangeRequest
+export {
+  ChangeRequestCodec,
+  ChangeRequestSchema,
+  deserializeChangeRequest,
+  serializeChangeRequest,
+  serializeChangeRequestStrict,
+} from './classes/change-request/index.js'
+export type { ChangeRequest, JsonLdChangeRequest } from './classes/change-request/index.js'
+
+// Ring 4 — Change
+export {
+  ChangeCodec,
+  ChangeSchema,
+  deserializeChange,
+  serializeChange,
+  serializeChangeStrict,
+} from './classes/change/index.js'
+export type { Change, JsonLdChange } from './classes/change/index.js'
+
+// Ring 4 — Operation
+export {
+  OperationCodec,
+  OperationSchema,
+  deserializeOperation,
+  serializeOperation,
+  serializeOperationStrict,
+} from './classes/operation/index.js'
+export type { JsonLdOperation, Operation } from './classes/operation/index.js'
+
 // Ring 4 — AccessDelegation
 export {
   AccessDelegationCodec,

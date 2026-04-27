@@ -1,0 +1,5 @@
+export { OperationCodec } from './codec.js'
+export { deserializeOperation } from './deserialize.js'
+export { OperationSchema } from './schema.js'
+export type { JsonLdOperation, Operation } from './schema.js'
+export { serializeOperation, serializeOperationStrict } from './serialize.js'

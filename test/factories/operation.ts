@@ -1,12 +1,7 @@
+import type { Operation } from '../../src/classes/operation/schema.js'
 import { envelope } from './common.js'
 
-export interface OperationFactoryShape {
-  '@context': string
-  '@type': 'Operation'
-  '@id': string
-  operationType: 'add' | 'remove' | 'replace' | 'move' | 'copy' | 'test'
-  o: string
-}
+export type OperationFactoryShape = Operation
 
 export function createOperation(
   overrides: Partial<OperationFactoryShape> = {},
@@ -14,8 +9,9 @@ export function createOperation(
   return {
     ...envelope('Operation'),
     '@type': 'Operation',
-    operationType: 'replace',
-    o: 'https://example/logistics-object/waybill/1',
+    op: 'ADD',
+    path: '/waybillType',
+    value: 'HOUSE',
     ...overrides,
   } as OperationFactoryShape
 }

@@ -1,0 +1,8 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "Operation",
+  "@id": "https://snapshot.example/wf/operation/fixed-id",
+  "op": "ADD",
+  "path": "/waybillType",
+  "value": "HOUSE"
+}

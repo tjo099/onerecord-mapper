@@ -14,22 +14,53 @@ IRI validation) run before Zod so that invalid JSON-LD graphs never reach schema
 evaluation. All 22 parse-error variants are typed as a discriminated union (`ParseError`)
 so callers handle every failure mode exhaustively.
 
+## Why use this library?
+
+Air cargo is migrating to OneRecord — IATA's JSON-LD-based replacement for
+EDIFACT / Cargo-IMP messaging. As of January 2026, roughly 8% of the
+industry has adopted; the standard is endorsed but the TypeScript tooling
+ecosystem is sparse. `@flaks/onerecord` fills that gap.
+
+Use this library if you're building cargo software that needs to:
+
+- **Accept** OneRecord JSON-LD from external endpoints with strict
+  validation (Zod schemas + cardinality + IRI + a pre-Zod safety pass).
+- **Emit** spec-compliant JSON-LD with stable round-trip semantics
+  (`serialize(deserialize(x)) == x` per spec §7.1).
+- **Refuse** malformed graphs early — depth bombs, prototype-pollution
+  attempts, empty arrays on the wire, circular references — before they
+  reach Zod or your downstream code.
+- **Type-check** every parse-failure path: `ParseError` is a 22-variant
+  discriminated union, so the compiler tells you when you've forgotten a
+  failure mode.
+
+Skip it if you want a generic JSON-LD or RDF toolkit; this is purpose-built
+for the IATA cargo ontology and the ONE Record API spec 2.2.0.
+
 ## Status
 
-**Internal use only.** The library is Apache-2.0 licensed but is **not published to
-the public npm registry at v0.1.0**. Open-sourcing prep (commit signing, public repo
-flip, GPG release-tag verification) is deferred to v0.2. v0.1.0 is for internal
-consumption by Tracks B+C SaaS products only.
+`v0.1.0` covers the 32 canonical cargo data model classes (Ring 1–5 plus
+the booking-flow classes) with full round-trip codecs, Zod schemas,
+snapshot tests, property-based round-trip tests, and pre-Zod safety
+primitives. The library is Apache-2.0 and ready for use within the v0.x
+stability policy described in [`MIGRATING.md`](MIGRATING.md).
+
+Spec compliance: cargo data model **3.2 (2025-07 endorsed standard)**, API
+spec **2.2.0**. A small number of deliberate divergences from canonical
+spec behavior are documented in
+[`docs/spec-deviations.md`](docs/spec-deviations.md); read that before
+adopting if your integration must match the spec verbatim.
 
 ## Install
-
-For internal consumers (Tracks B+C) — requires GitHub repo access:
 
 ```bash
 bun add git+https://github.com/tjo099/onerecord-mapper#v0.1.0
 ```
 
-Set `GITHUB_TOKEN` in CI environments for private-repo access.
+Pin to a specific tag for production use. Per `MIGRATING.md`, minor
+versions may introduce breaking changes documented in `CHANGELOG.md`;
+patch versions will not. A future v0.2.0 release will additionally
+publish to npm as the public scoped package `@flaks/onerecord`.
 
 ## Usage
 

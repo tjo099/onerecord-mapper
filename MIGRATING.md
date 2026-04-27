@@ -6,14 +6,15 @@ This file documents one entry per minor release.
 
 v0.1.0 is the first minor release. There is no prior version to migrate from.
 
-### For internal consumers (Tracks B+C)
+### Install
 
 ```bash
 bun add git+https://github.com/tjo099/onerecord-mapper#v0.1.0
 ```
 
-GitHub token auth required (private repo). Set `GITHUB_TOKEN` in your CI
-environment if installing from CI.
+Pin to a specific tag in production. A future v0.2.0 release will
+additionally publish to npm as the public scoped package
+`@flaks/onerecord`; installing via git URL works today.
 
 ### Recommended import patterns
 

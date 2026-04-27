@@ -1,0 +1,8 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "Waybill",
+  "@id": "https://snapshot.example/wf/waybill/fixed-id",
+  "waybillType": "MASTER",
+  "waybillPrefix": "701",
+  "waybillNumber": "12345675"
+}

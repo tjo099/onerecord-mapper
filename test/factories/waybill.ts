@@ -1,14 +1,10 @@
+import type { Waybill } from '../../src/classes/waybill/schema.js'
 import { envelope } from './common.js'
 
-export interface WaybillFactoryShape {
-  '@context': string
-  '@type': 'Waybill'
-  '@id': string
-  waybillType: 'MASTER' | 'HOUSE'
-  waybillPrefix: string
-  waybillNumber: string
-  // Additional fields land in Task 25 once WaybillSchema is real.
-}
+// v3 (Task 25): WaybillFactoryShape aligned with the real Waybill schema type.
+// @context broadened to string | string[] to match LogisticsObjectSchema.
+// Optional schema fields added so the harness can inject test overrides.
+export type WaybillFactoryShape = Waybill
 
 export function createWaybill(overrides: Partial<WaybillFactoryShape> = {}): WaybillFactoryShape {
   return {

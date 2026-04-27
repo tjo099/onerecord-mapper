@@ -12,6 +12,15 @@ All notable changes are documented here. Format follows
 - `dependabot.yml` adds `ignore: [{ dependency-name: "*", update-types: ["version-update:semver-major"] }]` for both `github-actions` and `npm` ecosystems. Reason: locked plan pins specific majors (Biome 1.x, Vitest 2.x, fast-check 3.x, attw 0.16, types/node 20.x); without this rule Dependabot opens unwanted major-bump PRs every week. The first 5 such PRs (#1–#5) were closed manually.
 - GHA workflow YAML: quoted `${{ }}` template expressions inside flow-style `with: { ... }` mappings in `ci.yml` (line 54: `node-version`) and `release.yml` (line 48: `artifact-name`). Reason: YAML's flow-mapping tokenizer collides with the `${` + `{` of the template delimiter, causing both workflows to fail GHA validation in 0s. The locked plan's verbatim YAML was invalid.
 
+### Plan deviations
+- **v3 plan correction (Phase 5 Task 25 onwards)**: per-class `deserialize.ts`
+  runs `findFirstEmptyArray` BEFORE Zod (was post-Zod in the v3 template).
+  Reason: harness `emptyArrayField` invocation expects `cardinality_violation`
+  for `[]` injected into a single-IRI field whose schema is `safeIri().optional()`.
+  Post-Zod placement is unreachable because Zod emits `zod_validation` first.
+  Pre-Zod placement matches the spec's "reject empty arrays on the wire" intent
+  and works regardless of the field's declared schema type.
+
 ### Known gaps to resolve before v0.1.0 release tag
 - Commit signing (`git commit -S`) currently suspended (Tasks 1–8 commits are unsigned). Re-enable: configure SSH or GPG signing key + `git config commit.gpgsign true` + `tag.gpgsign true`. `release.yml` signed-tag verify is the release gate.
 - `release.yml` step `Verify signed tag` (`git tag -v`) requires the maintainer GPG public key in the runner keyring. No `gpg --import` step is wired in yet — first release run will fail at tag verification on a cold runner. Add a `gpg --import` step that pulls the public key from a GitHub secret (`secrets.MAINTAINER_GPG_PUBLIC_KEY`) before `git tag -v`. Pair with the signing-key setup above.

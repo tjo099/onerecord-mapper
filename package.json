@@ -53,7 +53,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.16.0",
-    "@biomejs/biome": "^1.9.0",
+    "@biomejs/biome": "^2.4.13",
     "@types/node": "^20.14.0",
     "@vitest/coverage-v8": "^2.1.0",
     "fast-check": "^3.22.0",

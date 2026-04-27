@@ -1,0 +1,7 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "Organization",
+  "@id": "https://snapshot.example/wf/organization/fixed-id",
+  "organizationName": "Acme Corp",
+  "branch": "HQ"
+}

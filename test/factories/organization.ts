@@ -1,12 +1,7 @@
+import type { Organization } from '../../src/classes/organization/schema.js'
 import { envelope } from './common.js'
 
-export interface OrganizationFactoryShape {
-  '@context': string
-  '@type': 'Organization'
-  '@id': string
-  organizationName: string
-  branch?: string
-}
+export type OrganizationFactoryShape = Organization
 
 export function createOrganization(
   overrides: Partial<OrganizationFactoryShape> = {},
@@ -14,7 +9,7 @@ export function createOrganization(
   return {
     ...envelope('Organization'),
     '@type': 'Organization',
-    organizationName: 'Acme Freight Ltd',
+    organizationName: 'Acme Corp',
     branch: 'HQ',
     ...overrides,
   } as OrganizationFactoryShape

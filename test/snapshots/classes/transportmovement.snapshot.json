@@ -1,0 +1,9 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "TransportMovement",
+  "@id": "https://snapshot.example/wf/transportmovement/fixed-id",
+  "transportIdentifier": "WF170",
+  "modeCode": "AIR",
+  "departureLocation": "https://example.org/location/dep",
+  "arrivalLocation": "https://example.org/location/arr"
+}

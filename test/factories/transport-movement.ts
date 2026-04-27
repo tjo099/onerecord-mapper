@@ -1,14 +1,7 @@
+import type { TransportMovement } from '../../src/classes/transport-movement/schema.js'
 import { envelope } from './common.js'
 
-export interface TransportMovementFactoryShape {
-  '@context': string
-  '@type': 'TransportMovement'
-  '@id': string
-  transportIdentifier: string
-  modeCode: 'AIR' | 'TRUCK' | 'RAIL' | 'SEA'
-  departureLocation: string
-  arrivalLocation: string
-}
+export type TransportMovementFactoryShape = TransportMovement
 
 export function createTransportMovement(
   overrides: Partial<TransportMovementFactoryShape> = {},
@@ -18,8 +11,8 @@ export function createTransportMovement(
     '@type': 'TransportMovement',
     transportIdentifier: 'WF170',
     modeCode: 'AIR',
-    departureLocation: 'https://example/location/dep',
-    arrivalLocation: 'https://example/location/arr',
+    departureLocation: 'https://example.org/location/dep',
+    arrivalLocation: 'https://example.org/location/arr',
     ...overrides,
   } as TransportMovementFactoryShape
 }

@@ -1,0 +1,5 @@
+export { TransportMovementCodec } from './codec.js'
+export { deserializeTransportMovement } from './deserialize.js'
+export { TransportMovementSchema } from './schema.js'
+export type { JsonLdTransportMovement, TransportMovement } from './schema.js'
+export { serializeTransportMovement, serializeTransportMovementStrict } from './serialize.js'

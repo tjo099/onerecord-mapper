@@ -1,0 +1,5 @@
+export { ChangeRequestCodec } from './codec.js'
+export { deserializeChangeRequest } from './deserialize.js'
+export { ChangeRequestSchema } from './schema.js'
+export type { ChangeRequest, JsonLdChangeRequest } from './schema.js'
+export { serializeChangeRequest, serializeChangeRequestStrict } from './serialize.js'

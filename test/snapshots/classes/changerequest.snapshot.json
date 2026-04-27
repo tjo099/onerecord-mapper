@@ -1,0 +1,8 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "ChangeRequest",
+  "@id": "https://snapshot.example/wf/changerequest/fixed-id",
+  "forLogisticsObject": "https://example.org/waybill/123",
+  "hasChange": "https://example.org/change/456",
+  "requestStatus": "REQUEST_PENDING"
+}

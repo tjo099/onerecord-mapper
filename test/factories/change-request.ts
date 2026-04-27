@@ -1,13 +1,7 @@
+import type { ChangeRequest } from '../../src/classes/change-request/schema.js'
 import { envelope } from './common.js'
 
-export interface ChangeRequestFactoryShape {
-  '@context': string
-  '@type': 'ChangeRequest'
-  '@id': string
-  forLogisticsObject: string
-  hasChange: string
-  requestStatus: 'REQUEST_PENDING' | 'REQUEST_ACCEPTED' | 'REQUEST_REJECTED' | 'REQUEST_REVOKED'
-}
+export type ChangeRequestFactoryShape = ChangeRequest
 
 export function createChangeRequest(
   overrides: Partial<ChangeRequestFactoryShape> = {},
@@ -15,8 +9,8 @@ export function createChangeRequest(
   return {
     ...envelope('ChangeRequest'),
     '@type': 'ChangeRequest',
-    forLogisticsObject: 'https://example/logistics-object/waybill/1',
-    hasChange: 'https://example/change/1',
+    forLogisticsObject: 'https://example.org/waybill/123',
+    hasChange: 'https://example.org/change/456',
     requestStatus: 'REQUEST_PENDING',
     ...overrides,
   } as ChangeRequestFactoryShape

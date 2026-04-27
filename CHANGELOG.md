@@ -4,6 +4,61 @@ All notable changes are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/), versioning follows
 [SemVer](https://semver.org/) per the policy in `MIGRATING.md`.
 
+## [0.2.0] - planned (open-sourcing pass + ecosystem hardening)
+
+Internal consumption from Tracks B+C plus selective external publication. Goal:
+make the mapper safe to flip the repo public and accept community contributions
+without retroactive scrubbing.
+
+### Open-sourcing prep
+
+- Re-enable commit signing (GPG or SSH) — `git config commit.gpgsign true` +
+  `tag.gpgsign true`. All v0.1.x commits remain unsigned; v0.2 commits will be
+  signed.
+- Wire `gpg --import` step into `release.yml` before the `git tag -v`
+  verification gate. Public key sourced from `secrets.MAINTAINER_GPG_PUBLIC_KEY`.
+- Replace `security@flaks.io` placeholder in `SECURITY.md` with either a
+  maintained address or the GitHub Private Vulnerability Reporting URL.
+- Flip GitHub repo from private to public.
+- npm publish workflow (`@flaks/onerecord` scoped public) — alternative to
+  git-URL distribution.
+
+### Phase 14 — NE:ONE Docker contract test (deferred from v0.1)
+
+- Tasks 68-71: docker-compose for NE:ONE Server reference impl, contract test
+  against a running server (`bun run test:contract`), nightly CI job, release
+  gate exercises the contract test before tagging.
+
+### Ecosystem hardening
+
+- Property-based round-trip tests extended beyond Waybill (Shipment, Piece,
+  Address, Party, ...) — same pattern as `test/property/waybill-roundtrip.property.test.ts`.
+- SBOM via `syft` + SLSA provenance docs (T70).
+- Bundle-size assertion in `release.yml` — keeps tree-shake claims honest
+  (T82 step 4b).
+
+### API additions under consideration
+
+- Graph-walk validation: emit `duplicate_id_in_graph`, `missing_id`,
+  `wrong_type_for_endpoint`, `missing_type` from a higher-level dispatch
+  layer (currently these kinds exist in the union but no per-class deserializer
+  emits them).
+- Reconcile `acceptBookingOption` divergence — either implement the
+  spec §5.4 BookingOptionRequest intermediate, or formalize the v0.1
+  shortcut with a spec amendment PR to IATA.
+- Zod 4 migration if upstream stabilizes.
+
+### Plan deviations from v3 spec to revisit
+
+- Replace hand-pinned T37a fixture (`pinnedSha: manually-pinned-v0.1.0`) with
+  a real upstream xlsx SHA via `scripts/convert-iata-xlsx.ts --only fsu`.
+- Re-enable T48a Phase 9+ catalogue assertions: `forbidden-state-transition`,
+  `operation-field-not-allowed`, `prototype-key-injection` (the applyChange
+  variants), `change_partial_failure` in `zod-shape.test.ts`. Currently
+  placeholder-skipped.
+
+---
+
 ## [0.1.0] - 2026-04-27 (internal-only)
 
 First minor release for internal consumption by Tracks B+C SaaS products. Not

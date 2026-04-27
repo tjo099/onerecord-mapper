@@ -1,6 +1,6 @@
 {
   "name": "@flaks/onerecord",
-  "version": "0.0.0-prerelease",
+  "version": "0.1.0",
   "description": "Zero-dependency Zod-first JSON-LD mapper for IATA OneRecord cargo data model 3.2 + API spec 2.2.0",
   "type": "module",
   "license": "Apache-2.0",

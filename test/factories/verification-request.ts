@@ -1,12 +1,7 @@
+import type { VerificationRequest } from '../../src/classes/verification-request/schema.js'
 import { envelope } from './common.js'
 
-export interface VerificationRequestFactoryShape {
-  '@context': string
-  '@type': 'VerificationRequest'
-  '@id': string
-  verificationFor: string
-  requestor: string
-}
+export type VerificationRequestFactoryShape = VerificationRequest
 
 export function createVerificationRequest(
   overrides: Partial<VerificationRequestFactoryShape> = {},
@@ -14,8 +9,8 @@ export function createVerificationRequest(
   return {
     ...envelope('VerificationRequest'),
     '@type': 'VerificationRequest',
-    verificationFor: 'https://example/logistics-object/waybill/1',
-    requestor: 'https://example/organization/requestor',
+    requestStatus: 'REQUEST_PENDING',
+    verification: 'https://example.org/verification/123',
     ...overrides,
   } as VerificationRequestFactoryShape
 }

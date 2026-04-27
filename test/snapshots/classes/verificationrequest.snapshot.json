@@ -1,0 +1,7 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "VerificationRequest",
+  "@id": "https://snapshot.example/wf/verificationrequest/fixed-id",
+  "requestStatus": "REQUEST_PENDING",
+  "verification": "https://example.org/verification/123"
+}

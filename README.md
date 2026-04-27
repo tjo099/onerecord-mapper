@@ -54,13 +54,23 @@ adopting if your integration must match the spec verbatim.
 ## Install
 
 ```bash
-bun add git+https://github.com/tjo099/onerecord-mapper#v0.1.0
+npm install @flaks/onerecord
+# or
+bun add @flaks/onerecord
+# or
+pnpm add @flaks/onerecord
 ```
 
-Pin to a specific tag for production use. Per `MIGRATING.md`, minor
-versions may introduce breaking changes documented in `CHANGELOG.md`;
-patch versions will not. A future v0.2.0 release will additionally
-publish to npm as the public scoped package `@flaks/onerecord`.
+Pin a minor range in production (e.g. `"@flaks/onerecord": "^0.1.0"`).
+Per `MIGRATING.md`, minor versions may introduce breaking changes
+documented in `CHANGELOG.md`; patch versions will not.
+
+Installing from a git tag is also supported for testing forks or
+unreleased branches:
+
+```bash
+bun add git+https://github.com/tjo099/onerecord-mapper#v0.1.2
+```
 
 ## Usage
 

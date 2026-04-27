@@ -6,15 +6,23 @@ This file documents one entry per minor release.
 
 v0.1.0 is the first minor release. There is no prior version to migrate from.
 
-### Install
+### Install (current — v0.1.2 onwards)
 
 ```bash
-bun add git+https://github.com/tjo099/onerecord-mapper#v0.1.0
+npm install @flaks/onerecord
+# or
+bun add @flaks/onerecord
 ```
 
-Pin to a specific tag in production. A future v0.2.0 release will
-additionally publish to npm as the public scoped package
-`@flaks/onerecord`; installing via git URL works today.
+Pin a minor range in production (e.g. `"@flaks/onerecord": "^0.1.0"`).
+
+### Older install paths (historical)
+
+- `v0.1.0` shipped as a git-URL install only. Do not use — `dist/` was
+  not in the tag. See CHANGELOG for details.
+- `v0.1.1` attempted a `prepare`-script fix for git-URL installs.
+  Does not work on Bun's default "trusted dependencies" model. Skipped
+  in favor of v0.1.2 npm publish.
 
 ### Recommended import patterns
 

@@ -4,11 +4,71 @@ All notable changes are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/), versioning follows
 [SemVer](https://semver.org/) per the policy in `MIGRATING.md`.
 
-## [0.1.1] - 2026-04-27 (install fix + open-sourcing pass)
+## [0.1.2] - 2026-04-27 (npm publish — supersedes 0.1.1)
 
-First public release. v0.1.0 was tagged but unconsumable via git URL
-(see "Critical install fix" below); v0.1.1 is the first version Tracks
-B and C should pin to.
+`@flaks/onerecord` is now published to the public npm registry as a
+scoped public package. **This is the first version Tracks B + C
+should adopt.** v0.1.1's `prepare`-script approach to the git-URL
+install issue does not work on Bun (default "trusted dependencies"
+model blocks lifecycle scripts); v0.1.2 ships pre-built `dist/` in
+the registry tarball, making `bun add @flaks/onerecord` work
+zero-config across all package managers.
+
+### Install
+
+```bash
+npm install @flaks/onerecord
+# or
+bun add @flaks/onerecord
+# or
+pnpm add @flaks/onerecord
+```
+
+### Why npm publish moved earlier than the v0.2.0 plan
+
+The original v0.2.0 roadmap listed npm publish as one of several
+ecosystem-hardening items (alongside NE:ONE contract test, SBOM/SLSA,
+bundle-size assertion). After v0.1.0 + v0.1.1 git-URL distribution
+attempts proved unworkable for Bun consumers, npm publish moved into
+v0.1.2 as a hotfix. The remaining v0.2.0 items still apply.
+
+### Release pipeline fix
+
+- Add `fetch-tags: true` to the `actions/checkout` step in
+  `release.yml`. Without this, the runner's git tag object is
+  materialized as a lightweight ref (commit only, no signature
+  metadata), and `git tag -v` fails with `cannot verify a non-tag
+  object of type commit`. This is what caused the v0.1.1 release.yml
+  run to fail.
+
+### Package metadata
+
+- Added `keywords`, `homepage`, `bugs`, `author` fields to
+  `package.json` for npm registry display and search indexing.
+- Changed `publishConfig.access` from `restricted` to `public`.
+
+### Note on v0.1.1
+
+v0.1.1 remains tagged in git but is documented broken — `prepare`
+script alone does not work for Bun consumers. Do not pin to v0.1.1.
+v0.1.2 is the version Tracks B + C should adopt.
+
+## [0.1.1] - 2026-04-27 (install fix attempt — superseded by 0.1.2)
+
+**Tagged but functionally broken on Bun consumers.** This release
+attempted to fix the v0.1.0 git-URL install breakage by adding a
+`prepare` lifecycle script. The fix worked for npm consumers (which
+default-trust `prepare` for git installs) but failed on Bun, which
+default-blocks postinstall scripts via its "trusted dependencies"
+model. See `[0.1.2]` above for the actual fix (npm publish).
+
+The CHANGELOG content originally drafted under this version (open-
+sourcing pass items: GPG signing, governance scaffolding, public docs,
+public flip) shipped to `main` with this tag and is preserved on the
+v0.1.1 commit (`86dd181`). All of those items are also present in
+v0.1.2.
+
+Original v0.1.1 changelog content follows for historical reference:
 
 ### Critical install fix
 

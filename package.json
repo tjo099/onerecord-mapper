@@ -1,9 +1,29 @@
 {
   "name": "@flaks/onerecord",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Zero-dependency Zod-first JSON-LD mapper for IATA OneRecord cargo data model 3.2 + API spec 2.2.0",
   "type": "module",
   "license": "Apache-2.0",
+  "author": "tjo099 <tjo099@gmail.com>",
+  "homepage": "https://github.com/tjo099/onerecord-mapper",
+  "bugs": "https://github.com/tjo099/onerecord-mapper/issues",
+  "keywords": [
+    "onerecord",
+    "iata",
+    "cargo",
+    "air-cargo",
+    "logistics",
+    "json-ld",
+    "zod",
+    "typescript",
+    "mapper",
+    "schema",
+    "validation",
+    "waybill",
+    "shipment",
+    "booking",
+    "ontology"
+  ],
   "sideEffects": false,
   "repository": {
     "type": "git",
@@ -63,6 +83,6 @@
     "xlsx": "^0.18.5"
   },
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   }
 }

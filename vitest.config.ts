@@ -8,7 +8,7 @@ export default defineConfig({
     globals: false,
     environment: 'node',
     include: ['test/**/*.test.ts'],
-    exclude: ['test/contract/**', 'test/bench/**', 'test/property/**', 'test/bundle-size/**', 'node_modules/**', 'dist/**'],
+    exclude: ['test/contract/**', 'test/bench/**', 'test/bundle-size/**', 'node_modules/**', 'dist/**'],
     setupFiles: ['./test/setup.ts'],
     pool: 'threads',
     poolOptions: { threads: { singleThread: false } },

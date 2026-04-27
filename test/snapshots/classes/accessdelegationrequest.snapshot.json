@@ -1,0 +1,7 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "AccessDelegationRequest",
+  "@id": "https://snapshot.example/wf/accessdelegationrequest/fixed-id",
+  "requestStatus": "REQUEST_PENDING",
+  "accessDelegation": "https://example.org/access-delegation/123"
+}

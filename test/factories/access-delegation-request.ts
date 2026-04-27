@@ -1,12 +1,7 @@
+import type { AccessDelegationRequest } from '../../src/classes/access-delegation-request/schema.js'
 import { envelope } from './common.js'
 
-export interface AccessDelegationRequestFactoryShape {
-  '@context': string
-  '@type': 'AccessDelegationRequest'
-  '@id': string
-  delegateTo: string
-  forLogisticsObject: string
-}
+export type AccessDelegationRequestFactoryShape = AccessDelegationRequest
 
 export function createAccessDelegationRequest(
   overrides: Partial<AccessDelegationRequestFactoryShape> = {},
@@ -14,8 +9,8 @@ export function createAccessDelegationRequest(
   return {
     ...envelope('AccessDelegationRequest'),
     '@type': 'AccessDelegationRequest',
-    delegateTo: 'https://example/organization/delegate',
-    forLogisticsObject: 'https://example/logistics-object/waybill/1',
+    requestStatus: 'REQUEST_PENDING',
+    accessDelegation: 'https://example.org/access-delegation/123',
     ...overrides,
   } as AccessDelegationRequestFactoryShape
 }

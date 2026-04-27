@@ -1,0 +1,15 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "Change",
+  "@id": "https://snapshot.example/wf/change/fixed-id",
+  "hasOperation": [
+    {
+      "@context": "https://onerecord.iata.org/ns/cargo",
+      "@type": "Operation",
+      "@id": "https://test.flaks.example/test-tenant/operation/00000000-0000-0000-0000-000000000001",
+      "op": "ADD",
+      "path": "/waybillType",
+      "value": "HOUSE"
+    }
+  ]
+}

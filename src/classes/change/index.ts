@@ -1,0 +1,5 @@
+export { ChangeCodec } from './codec.js'
+export { deserializeChange } from './deserialize.js'
+export { ChangeSchema } from './schema.js'
+export type { Change, JsonLdChange } from './schema.js'
+export { serializeChange, serializeChangeStrict } from './serialize.js'

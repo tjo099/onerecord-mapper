@@ -1,19 +1,22 @@
-import { envelope } from './common.js'
+import type { Change } from '../../src/classes/change/schema.js'
+import { envelope, testIri } from './common.js'
 
-export interface ChangeFactoryShape {
-  '@context': string
-  '@type': 'Change'
-  '@id': string
-  revisedLogisticsObject: string
-  hasOperation: string[]
-}
+export type ChangeFactoryShape = Change
 
 export function createChange(overrides: Partial<ChangeFactoryShape> = {}): ChangeFactoryShape {
   return {
     ...envelope('Change'),
     '@type': 'Change',
-    revisedLogisticsObject: 'https://example/logistics-object/waybill/1',
-    hasOperation: ['https://example/operation/1'],
+    hasOperation: [
+      {
+        '@context': 'https://onerecord.iata.org/ns/cargo',
+        '@type': 'Operation',
+        '@id': testIri('Operation', '00000000-0000-0000-0000-000000000001'),
+        op: 'ADD',
+        path: '/waybillType',
+        value: 'HOUSE',
+      },
+    ],
     ...overrides,
   } as ChangeFactoryShape
 }

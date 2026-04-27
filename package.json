@@ -52,7 +52,7 @@
     "zod": "^4.0.0"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.16.0",
+    "@arethetypeswrong/cli": "^0.18.2",
     "@biomejs/biome": "^1.9.0",
     "@types/node": "^20.14.0",
     "@vitest/coverage-v8": "^2.1.0",

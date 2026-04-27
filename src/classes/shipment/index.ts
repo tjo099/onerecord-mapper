@@ -1,0 +1,5 @@
+export { ShipmentCodec } from './codec.js'
+export { deserializeShipment } from './deserialize.js'
+export { ShipmentSchema } from './schema.js'
+export type { JsonLdShipment, Shipment } from './schema.js'
+export { serializeShipment, serializeShipmentStrict } from './serialize.js'

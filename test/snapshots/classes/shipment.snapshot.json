@@ -1,0 +1,10 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "Shipment",
+  "@id": "https://snapshot.example/wf/shipment/fixed-id",
+  "totalGrossWeight": {
+    "unit": "KGM",
+    "value": 100
+  },
+  "pieceCount": 1
+}

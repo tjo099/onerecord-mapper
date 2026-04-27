@@ -1,12 +1,7 @@
+import type { Shipment } from '../../src/classes/shipment/schema.js'
 import { envelope } from './common.js'
 
-export interface ShipmentFactoryShape {
-  '@context': string
-  '@type': 'Shipment'
-  '@id': string
-  totalGrossWeight?: { unit: 'KGM'; value: number }
-  pieceCount?: number
-}
+export type ShipmentFactoryShape = Shipment
 
 export function createShipment(
   overrides: Partial<ShipmentFactoryShape> = {},

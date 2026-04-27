@@ -1,19 +1,14 @@
+import type { Person } from '../../src/classes/person/schema.js'
 import { envelope } from './common.js'
 
-export interface PersonFactoryShape {
-  '@context': string
-  '@type': 'Person'
-  '@id': string
-  firstName: string
-  lastName: string
-}
+export type PersonFactoryShape = Person
 
 export function createPerson(overrides: Partial<PersonFactoryShape> = {}): PersonFactoryShape {
   return {
     ...envelope('Person'),
     '@type': 'Person',
-    firstName: 'Jane',
-    lastName: 'Doe',
+    firstName: 'Alice',
+    lastName: 'Example',
     ...overrides,
   } as PersonFactoryShape
 }

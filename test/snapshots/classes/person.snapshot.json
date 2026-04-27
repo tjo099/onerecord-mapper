@@ -1,0 +1,7 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "Person",
+  "@id": "https://snapshot.example/wf/person/fixed-id",
+  "firstName": "Alice",
+  "lastName": "Example"
+}

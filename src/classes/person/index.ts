@@ -1,0 +1,5 @@
+export { PersonCodec } from './codec.js'
+export { deserializePerson } from './deserialize.js'
+export { PersonSchema } from './schema.js'
+export type { JsonLdPerson, Person } from './schema.js'
+export { serializePerson, serializePersonStrict } from './serialize.js'

@@ -1,0 +1,14 @@
+@flaks/onerecord
+Copyright 2026 tjo099 and @flaks/onerecord contributors
+
+This product implements the IATA OneRecord cargo data model v3.2 and
+ONE Record API specification v2.2.0. The OneRecord standards are
+published by IATA at https://github.com/IATA-Cargo/ONE-Record under
+their respective licenses. See https://iata-cargo.github.io/ONE-Record/
+for canonical documentation.
+
+Class names, IRI shapes, and ontology terms reproduced in source code
+are interface elements and not copyrighted material.
+
+Test fixtures derived from IATA-published xlsx mappings retain their
+upstream attribution; see test/fixtures/iata/README.md.

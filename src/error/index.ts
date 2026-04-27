@@ -1,3 +1,4 @@
 // src/error/index.ts
 export { assertNever } from './assert-never.js'
-// formatError + redactError added in Task 72
+export { formatError } from './format.js'
+export { redactError } from './redact.js'

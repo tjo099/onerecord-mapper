@@ -418,3 +418,13 @@ export type {
   HandlingService,
   JsonLdHandlingService,
 } from './classes/handling-service/index.js'
+
+// Phase 15 — error helpers (T72)
+export { formatError, redactError } from './error/index.js'
+
+// Phase 15 — facade (T73)
+export { onerecord } from './facade.js'
+
+// Phase 15 — createMapper (T76)
+export { createMapper } from './factory.js'
+export type { CreateMapperOpts, Mapper } from './factory.js'

@@ -1,0 +1,10 @@
+{
+  "codes": [
+    "ARR", "AWD", "AWR", "BKD", "CCD", "CLR", "CRC", "DDL", "DEP", "DIS",
+    "DLV", "FOH", "FOO", "FWB", "MAN", "NFD", "OFD", "PRE", "RCF", "RCM",
+    "RCS", "RCT", "RCV", "TFD", "TGC", "TRM"
+  ],
+  "pinnedSha": "manually-pinned-v0.1.0",
+  "source": "https://github.com/IATA-Cargo/ONE-Record/raw/master/working_draft/Data-Orchestration/CXML-Mapping/XFSU-Status-Codes.xlsx",
+  "note": "Hand-pinned for v0.1.0. T77 (xlsx-fetch script) replaces 'manually-pinned-v0.1.0' with the upstream xlsx SHA."
+}

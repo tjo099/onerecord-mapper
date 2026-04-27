@@ -274,3 +274,147 @@ export type {
   JsonLdServerInformation,
   ServerInformation,
 } from './classes/server-information/index.js'
+
+// Phase 9 — Operations (applyChange + JSON-pointer + validateOperation)
+export {
+  applyChange,
+  asJsonPointer,
+  splitPointer,
+  validateOperation,
+} from './operations/index.js'
+export type {
+  ApplyChangeOpts,
+  ChangeLike,
+  JsonPointer,
+  OperationLike,
+} from './operations/index.js'
+
+// Phase 10 — Booking ecosystem (STATE_DIAGRAM + transitions)
+export {
+  STATE_DIAGRAM,
+  acceptBookingOption,
+  acceptBookingRequest,
+  canTransition,
+  rejectBookingOption,
+  revokeBookingOption,
+} from './booking-flow/index.js'
+export type {
+  BookingAction,
+  BookingType,
+  StateDiagram,
+  Transition,
+} from './booking-flow/index.js'
+
+// Phase 10 — Booking
+export {
+  BookingCodec,
+  BookingSchema,
+  deserializeBooking,
+  serializeBooking,
+  serializeBookingStrict,
+} from './classes/booking/index.js'
+export type { Booking, JsonLdBooking } from './classes/booking/index.js'
+
+// Phase 10 — BookingOption
+export {
+  BookingOptionCodec,
+  BookingOptionSchema,
+  deserializeBookingOption,
+  serializeBookingOption,
+  serializeBookingOptionStrict,
+} from './classes/booking-option/index.js'
+export type {
+  BookingOption,
+  JsonLdBookingOption,
+} from './classes/booking-option/index.js'
+
+// Phase 10 — BookingOptionRequest
+export {
+  BookingOptionRequestCodec,
+  BookingOptionRequestSchema,
+  deserializeBookingOptionRequest,
+  serializeBookingOptionRequest,
+  serializeBookingOptionRequestStrict,
+} from './classes/booking-option-request/index.js'
+export type {
+  BookingOptionRequest,
+  JsonLdBookingOptionRequest,
+} from './classes/booking-option-request/index.js'
+
+// Phase 10 — BookingRequest
+export {
+  BookingRequestCodec,
+  BookingRequestSchema,
+  deserializeBookingRequest,
+  serializeBookingRequest,
+  serializeBookingRequestStrict,
+} from './classes/booking-request/index.js'
+export type {
+  BookingRequest,
+  JsonLdBookingRequest,
+} from './classes/booking-request/index.js'
+
+// Phase 10 — BookingPreferences
+export {
+  BookingPreferencesCodec,
+  BookingPreferencesSchema,
+  deserializeBookingPreferences,
+  serializeBookingPreferences,
+  serializeBookingPreferencesStrict,
+} from './classes/booking-preferences/index.js'
+export type {
+  BookingPreferences,
+  JsonLdBookingPreferences,
+} from './classes/booking-preferences/index.js'
+
+// Phase 10 — BookingShipment
+export {
+  BookingShipmentCodec,
+  BookingShipmentSchema,
+  deserializeBookingShipment,
+  serializeBookingShipment,
+  serializeBookingShipmentStrict,
+} from './classes/booking-shipment/index.js'
+export type {
+  BookingShipment,
+  JsonLdBookingShipment,
+} from './classes/booking-shipment/index.js'
+
+// Phase 10 — BookingTimes
+export {
+  BookingTimesCodec,
+  BookingTimesSchema,
+  deserializeBookingTimes,
+  serializeBookingTimes,
+  serializeBookingTimesStrict,
+} from './classes/booking-times/index.js'
+export type {
+  BookingTimes,
+  JsonLdBookingTimes,
+} from './classes/booking-times/index.js'
+
+// Phase 10 — BookingSegment
+export {
+  BookingSegmentCodec,
+  BookingSegmentSchema,
+  deserializeBookingSegment,
+  serializeBookingSegment,
+  serializeBookingSegmentStrict,
+} from './classes/booking-segment/index.js'
+export type {
+  BookingSegment,
+  JsonLdBookingSegment,
+} from './classes/booking-segment/index.js'
+
+// Phase 11 — HandlingService
+export {
+  HandlingServiceCodec,
+  HandlingServiceSchema,
+  deserializeHandlingService,
+  serializeHandlingService,
+  serializeHandlingServiceStrict,
+} from './classes/handling-service/index.js'
+export type {
+  HandlingService,
+  JsonLdHandlingService,
+} from './classes/handling-service/index.js'

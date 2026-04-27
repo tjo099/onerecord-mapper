@@ -59,6 +59,31 @@ All notable changes are documented here. Format follows
   both accepted kinds (`circular_reference` or `depth_limit_exceeded`) for the
   self-referential case, and separately verifies that `detectCycle` correctly
   accepts diamond (shared reference) patterns without false positive.
+- **Phase 9-12 dispatched in 4 parallel worktrees**: To maximise throughput,
+  Phase 9 (Tasks 49-53), Phase 10 (Tasks 54-63), Phase 11 (Task 64), and
+  Phase 12 (Tasks 65-66) were implemented by 4 isolated subagents with
+  `isolation: "worktree"`. Each agent committed to its own branch; Phase 9
+  and Phase 11 were based on current main (clean fast-forward merges).
+  Phase 10 and Phase 12 were based on the pre-Phase-4 main (stale worktree
+  init), so their branches were cherry-picked file-by-file rather than
+  merged: only the new `src/booking-flow/`, 8 booking class directories,
+  their tests/factories, plus the `synthetic-fwb-1.expected.json` fixture
+  and `synthetic-fwb.test.ts` integration test are taken. Phase 12's
+  worktree-local Waybill re-creation was discarded (main already has the
+  canonical Waybill from c8a7af0).
+- **`toPreValidateOpts` + `toContextOpts` helpers (Phase 10)**: Phase 10's
+  worktree introduced two helper functions in `src/classes/shared/parse-utils.ts`
+  that encapsulate the conditional-spread pattern for
+  `exactOptionalPropertyTypes`. Existing per-class deserialize.ts files
+  (Phases 5-8) inline the conditional-spread; new booking deserialize.ts
+  files (Phase 10) use the helpers. Both styles work — the helpers are
+  the recommended pattern for new code.
+- **`acceptBookingOption` deliberate divergence**: The typed transition
+  wrapper (`src/booking-flow/transitions.ts`) skips the
+  `BookingOptionRequest` intermediate state and returns a `Booking`
+  directly. This contradicts spec §5.4 STATE_DIAGRAM (which routes
+  `BookingOption.accept -> BookingOptionRequest`) but matches spec §5.2
+  signature. v0.1.0 ships this divergence; v0.2 will reconcile.
 
 ### Known gaps to resolve before v0.1.0 release tag
 - Commit signing (`git commit -S`) currently suspended (Tasks 1–8 commits are unsigned). Re-enable: configure SSH or GPG signing key + `git config commit.gpgsign true` + `tag.gpgsign true`. `release.yml` signed-tag verify is the release gate.

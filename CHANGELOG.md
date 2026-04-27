@@ -4,6 +4,46 @@ All notable changes are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/), versioning follows
 [SemVer](https://semver.org/) per the policy in `MIGRATING.md`.
 
+## [Unreleased]
+
+### Open-sourcing prep — completed in this session
+
+- Maintainer GPG signing key generated: `ed25519/55BABA8EED158AD1`
+  (fingerprint `8033 2600 17B9 BAE5 BAD9 CA15 55BA BA8E ED15 8AD1`),
+  UID `tjo099 <tjo099@gmail.com>`, expires 2028-04-26.
+- Local git config: `commit.gpgsign=true`, `tag.gpgsign=true`,
+  `user.signingkey` set globally. Signing verified end-to-end via
+  `gpg --clearsign`.
+- `MAINTAINER_GPG_PUBLIC_KEY` repository secret set on
+  `tjo099/onerecord-mapper` with the ASCII-armored public key.
+- `SECURITY.md` GPG fingerprint placeholder filled with the real
+  fingerprint and updated to point at `https://github.com/tjo099.gpg`
+  as the canonical public-key source.
+- `release.yml` imports the maintainer GPG public key from
+  `secrets.MAINTAINER_GPG_PUBLIC_KEY` before the `git tag -v`
+  verification gate. Removes the cold-runner failure mode flagged in
+  v0.1.0 "Known gaps" item #2.
+- `SECURITY.md` placeholder `security@flaks.io` (no MX record) replaced
+  with GitHub Private Vulnerability Reporting URL
+  (`https://github.com/tjo099/onerecord-mapper/security/advisories/new`).
+  Removes the placeholder flagged in v0.1.0 "Known gaps" item #5.
+- Public-OSS hygiene scaffolding added: `CONTRIBUTING.md`,
+  `CODE_OF_CONDUCT.md` (adopts Contributor Covenant 2.1 by reference),
+  `.github/ISSUE_TEMPLATE/{bug_report,feature_request,config}`,
+  `.github/PULL_REQUEST_TEMPLATE.md`, `.github/CODEOWNERS`.
+
+### Open-sourcing prep — still pending (user-action)
+
+- Refresh `gh` OAuth scopes (`gh auth refresh -s admin:gpg_key`) and
+  add the public key to the maintainer's GitHub profile so the
+  `tjo099.gpg` URL serves it.
+- Flip repository visibility PRIVATE → PUBLIC.
+- Back up the auto-generated revocation certificate at
+  `~/.gnupg/openpgp-revocs.d/8033260017B9BAE5BAD9CA1555BABA8EED158AD1.rev`
+  to offline storage (needed only for key compromise / revocation).
+- (Optional) Add npm publish workflow for `@flaks/onerecord` as a public
+  scoped package.
+
 ## [0.2.0] - planned (open-sourcing pass + ecosystem hardening)
 
 Internal consumption from Tracks B+C plus selective external publication. Goal:

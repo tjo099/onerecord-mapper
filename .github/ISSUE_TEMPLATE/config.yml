@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/tjo099/onerecord-mapper/security/advisories/new
+    about: Report security issues privately via GitHub Security Advisories. Do NOT open a public issue.
+  - name: OneRecord specification discussion
+    url: https://github.com/IATA-Cargo/ONE-Record/discussions
+    about: For questions or discussion about the upstream IATA OneRecord specification itself (data model 3.2, API 2.2.0).

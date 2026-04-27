@@ -9,12 +9,14 @@
 
 ## Reporting a vulnerability
 
-Email security disclosures to **security@flaks.io** with subject
-prefix `[onerecord-mapper]`. Encrypt with the maintainer GPG key
-fingerprint published below.
+Please report security issues privately via [GitHub Private Vulnerability
+Reporting](https://github.com/tjo099/onerecord-mapper/security/advisories/new).
+Prefix the title with `[onerecord-mapper]`. Do not open a public issue for
+security-impacting bugs.
 
-We aim to acknowledge within 72 hours and ship a fix or mitigation
-within 30 days for critical findings.
+We aim to acknowledge within 72 hours and ship a fix or mitigation within
+30 days for critical findings. Embargoed disclosure timelines will be
+coordinated with reporters as part of the advisory thread.
 
 ## Maintainer signing key
 
@@ -25,7 +27,22 @@ gh release view v0.1.0 --json tagName,assets
 git verify-tag v0.1.0
 ```
 
-GPG fingerprint: `<TO BE FILLED IN BY MAINTAINER BEFORE FIRST RELEASE>`
+GPG fingerprint: `8033 2600 17B9 BAE5 BAD9  CA15 55BA BA8E ED15 8AD1`
+
+Key ID: `ed25519/55BABA8EED158AD1` (long), `ED158AD1` (short).
+Created 2026-04-27, expires 2028-04-26 (rotated before expiry).
+UID: `tjo099 <tjo099@gmail.com>`.
+
+Fetch and verify the maintainer public key (canonical source is the
+maintainer's GitHub profile):
+
+```bash
+curl -fsSL https://github.com/tjo099.gpg | gpg --import
+gpg --fingerprint 8033260017B9BAE5BAD9CA1555BABA8EED158AD1
+# expect: 8033 2600 17B9 BAE5 BAD9  CA15 55BA BA8E ED15 8AD1
+```
+
+Then verify a release tag with `git tag -v vX.Y.Z`.
 
 ## Supply chain
 

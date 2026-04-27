@@ -13,6 +13,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
+      - name: Import maintainer GPG public key
+        env:
+          GPG_PUBLIC_KEY: ${{ secrets.MAINTAINER_GPG_PUBLIC_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GPG_PUBLIC_KEY:-}" ]; then
+            echo "::error::MAINTAINER_GPG_PUBLIC_KEY secret is not configured. Add the maintainer's ASCII-armored GPG public key as a repository secret before tagging a release."
+            exit 1
+          fi
+          printf '%s\n' "$GPG_PUBLIC_KEY" | gpg --import --batch
       - name: Verify signed tag
         run: |
           git tag -v ${{ github.ref_name }} 2>&1 | tee /tmp/tag-verify.txt

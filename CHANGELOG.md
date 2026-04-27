@@ -12,6 +12,7 @@ All notable changes are documented here. Format follows
 
 ### Known gaps to resolve before v0.1.0 release tag
 - Commit signing (`git commit -S`) currently suspended (Tasks 1–8 commits are unsigned). Re-enable: configure SSH or GPG signing key + `git config commit.gpgsign true` + `tag.gpgsign true`. `release.yml` signed-tag verify is the release gate.
+- `release.yml` step `Verify signed tag` (`git tag -v`) requires the maintainer GPG public key in the runner keyring. No `gpg --import` step is wired in yet — first release run will fail at tag verification on a cold runner. Add a `gpg --import` step that pulls the public key from a GitHub secret (`secrets.MAINTAINER_GPG_PUBLIC_KEY`) before `git tag -v`. Pair with the signing-key setup above.
 - Repository visibility: PRIVATE. Flip to PUBLIC before v0.1.0 tag for Bun git-URL install by consumers (Tracks B + C). Apache 2.0 + git-URL distribution model.
 - `SECURITY.md` "Supply chain" section currently flags signing as suspended; revert to unconditional once signing resumes. Same applies to the qualifier in the "Maintainer signing key" section.
 - `SECURITY.md` `security@flaks.io` disclosure address is a placeholder — the `flaks.io` domain has no verified MX record at scaffold time. Before flipping the repo public, replace with either a maintained address or a GitHub Private Vulnerability Reporting URL (`https://github.com/tjo099/onerecord-mapper/security/advisories/new`).

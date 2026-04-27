@@ -1,0 +1,12 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "Address",
+  "@id": "https://snapshot.example/wf/address/fixed-id",
+  "streetAddressLines": [
+    "123 Main St"
+  ],
+  "cityName": "Springfield",
+  "country": {
+    "countryCode": "US"
+  }
+}

@@ -1,0 +1,5 @@
+export { AddressCodec } from './codec.js'
+export { deserializeAddress } from './deserialize.js'
+export { AddressSchema } from './schema.js'
+export type { Address, JsonLdAddress } from './schema.js'
+export { serializeAddress, serializeAddressStrict } from './serialize.js'

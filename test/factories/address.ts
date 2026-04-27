@@ -1,21 +1,15 @@
+import type { Address } from '../../src/classes/address/schema.js'
 import { envelope } from './common.js'
 
-export interface AddressFactoryShape {
-  '@context': string
-  '@type': 'Address'
-  '@id': string
-  streetAddressLines: string[]
-  cityName: string
-  country: { countryCode: string }
-}
+export type AddressFactoryShape = Address
 
 export function createAddress(overrides: Partial<AddressFactoryShape> = {}): AddressFactoryShape {
   return {
     ...envelope('Address'),
     '@type': 'Address',
-    streetAddressLines: ['123 Cargo Way'],
-    cityName: 'Amsterdam',
-    country: { countryCode: 'NL' },
+    streetAddressLines: ['123 Main St'],
+    cityName: 'Springfield',
+    country: { countryCode: 'US' },
     ...overrides,
   } as AddressFactoryShape
 }

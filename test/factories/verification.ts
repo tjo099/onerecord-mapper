@@ -1,12 +1,7 @@
+import type { Verification } from '../../src/classes/verification/schema.js'
 import { envelope } from './common.js'
 
-export interface VerificationFactoryShape {
-  '@context': string
-  '@type': 'Verification'
-  '@id': string
-  verificationStatus?: string
-  verificationFor: string
-}
+export type VerificationFactoryShape = Verification
 
 export function createVerification(
   overrides: Partial<VerificationFactoryShape> = {},
@@ -14,8 +9,8 @@ export function createVerification(
   return {
     ...envelope('Verification'),
     '@type': 'Verification',
-    verificationStatus: 'VERIFIED',
-    verificationFor: 'https://example/logistics-object/waybill/1',
+    result: 'OK',
+    verifiedObject: 'https://example.org/waybill/123',
     ...overrides,
   } as VerificationFactoryShape
 }

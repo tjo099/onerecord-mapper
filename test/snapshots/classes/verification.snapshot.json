@@ -1,0 +1,7 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "Verification",
+  "@id": "https://snapshot.example/wf/verification/fixed-id",
+  "result": "OK",
+  "verifiedObject": "https://example.org/waybill/123"
+}

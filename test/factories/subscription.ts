@@ -1,12 +1,7 @@
+import type { Subscription } from '../../src/classes/subscription/schema.js'
 import { envelope } from './common.js'
 
-export interface SubscriptionFactoryShape {
-  '@context': string
-  '@type': 'Subscription'
-  '@id': string
-  topicType: 'LOGISTICS_OBJECT_CREATED' | 'LOGISTICS_OBJECT_UPDATED' | 'LOGISTICS_OBJECT_LIFECYCLE'
-  subscribedTo: string
-}
+export type SubscriptionFactoryShape = Subscription
 
 export function createSubscription(
   overrides: Partial<SubscriptionFactoryShape> = {},
@@ -14,8 +9,11 @@ export function createSubscription(
   return {
     ...envelope('Subscription'),
     '@type': 'Subscription',
-    topicType: 'LOGISTICS_OBJECT_UPDATED',
-    subscribedTo: 'https://example/logistics-object/waybill/1',
+    topicType: 'LOGISTICS_OBJECT_TYPE',
+    topic: 'https://example.org/topic/waybill',
+    subscriber: 'https://example.org/party/123',
+    subscribedTo: ['OBJECT_CREATED'],
+    notificationEndpoint: 'https://example.org/notify',
     ...overrides,
   } as SubscriptionFactoryShape
 }

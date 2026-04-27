@@ -1,0 +1,12 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "Subscription",
+  "@id": "https://snapshot.example/wf/subscription/fixed-id",
+  "topicType": "LOGISTICS_OBJECT_TYPE",
+  "topic": "https://example.org/topic/waybill",
+  "subscriber": "https://example.org/party/123",
+  "subscribedTo": [
+    "OBJECT_CREATED"
+  ],
+  "notificationEndpoint": "https://example.org/notify"
+}

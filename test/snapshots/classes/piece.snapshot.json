@@ -1,0 +1,10 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "Piece",
+  "@id": "https://snapshot.example/wf/piece/fixed-id",
+  "grossWeight": {
+    "unit": "KGM",
+    "value": 10
+  },
+  "goodsDescription": "General cargo"
+}

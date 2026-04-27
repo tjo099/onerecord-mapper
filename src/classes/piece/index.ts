@@ -1,0 +1,5 @@
+export { PieceCodec } from './codec.js'
+export { deserializePiece } from './deserialize.js'
+export { PieceSchema } from './schema.js'
+export type { JsonLdPiece, Piece } from './schema.js'
+export { serializePiece, serializePieceStrict } from './serialize.js'

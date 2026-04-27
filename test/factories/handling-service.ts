@@ -1,12 +1,7 @@
+import type { HandlingService } from '../../src/classes/handling-service/schema.js'
 import { envelope } from './common.js'
 
-export interface HandlingServiceFactoryShape {
-  '@context': string
-  '@type': 'HandlingService'
-  '@id': string
-  serviceType: string
-  provider?: string
-}
+export type HandlingServiceFactoryShape = HandlingService
 
 export function createHandlingService(
   overrides: Partial<HandlingServiceFactoryShape> = {},
@@ -14,8 +9,8 @@ export function createHandlingService(
   return {
     ...envelope('HandlingService'),
     '@type': 'HandlingService',
-    serviceType: 'GROUND_HANDLING',
-    provider: 'https://example/organization/gha',
+    serviceType: 'CARGO_HANDLING',
+    description: 'General cargo handling service',
     ...overrides,
   } as HandlingServiceFactoryShape
 }

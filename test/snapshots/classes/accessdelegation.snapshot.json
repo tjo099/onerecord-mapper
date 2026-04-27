@@ -1,0 +1,10 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "AccessDelegation",
+  "@id": "https://snapshot.example/wf/accessdelegation/fixed-id",
+  "delegatedTo": "https://example.org/party/delegate",
+  "delegatedFrom": "https://example.org/party/owner",
+  "permissions": [
+    "READ"
+  ]
+}

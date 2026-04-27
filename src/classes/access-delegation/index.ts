@@ -1,0 +1,5 @@
+export { AccessDelegationCodec } from './codec.js'
+export { deserializeAccessDelegation } from './deserialize.js'
+export { AccessDelegationSchema } from './schema.js'
+export type { AccessDelegation, JsonLdAccessDelegation } from './schema.js'
+export { serializeAccessDelegation, serializeAccessDelegationStrict } from './serialize.js'

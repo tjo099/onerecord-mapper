@@ -1,0 +1,46 @@
+name: Nightly
+
+on:
+  schedule: [{ cron: '0 2 * * *' }]
+  workflow_dispatch:
+
+permissions: { contents: read, issues: write }
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version: '1.3.11' }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: bun install --frozen-lockfile
+      - name: Verify NE:ONE digest is pinned (no placeholder)
+        run: |
+          if grep -q 'REPLACE_WITH_PINNED_DIGEST' test/contract/docker-compose.neone.yml; then
+            echo "::error::NE:ONE digest is still REPLACE_WITH_PINNED_DIGEST"; exit 1
+          fi
+      - name: Start NE:ONE Open
+        run: docker compose -f test/contract/docker-compose.neone.yml up -d --wait
+      - name: Contract + property + drift
+        env: { PROPERTY_RUNS: '1000' }
+        run: |
+          bun run test:contract
+          bun run test:property
+          bun run scripts/convert-iata-xlsx.ts --check
+      - if: always()
+        name: Stop NE:ONE
+        run: docker compose -f test/contract/docker-compose.neone.yml down -v
+      - if: failure()
+        name: Notify on failure
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title: `Nightly failed ${new Date().toISOString().slice(0,10)}`,
+              labels: ['nightly-status'],
+              body: `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            })

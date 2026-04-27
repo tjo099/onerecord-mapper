@@ -1,0 +1,8 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "MovementTime",
+  "@id": "https://snapshot.example/wf/movementtime/fixed-id",
+  "movementTimeType": "SCHEDULED",
+  "direction": "OUTBOUND",
+  "movementTimestamp": "2026-01-01T00:00:00.000Z"
+}

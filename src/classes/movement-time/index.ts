@@ -1,0 +1,5 @@
+export { MovementTimeCodec } from './codec.js'
+export { deserializeMovementTime } from './deserialize.js'
+export { MovementTimeSchema } from './schema.js'
+export type { JsonLdMovementTime, MovementTime } from './schema.js'
+export { serializeMovementTime, serializeMovementTimeStrict } from './serialize.js'

@@ -1,13 +1,7 @@
+import type { MovementTime } from '../../src/classes/movement-time/schema.js'
 import { envelope } from './common.js'
 
-export interface MovementTimeFactoryShape {
-  '@context': string
-  '@type': 'MovementTime'
-  '@id': string
-  movementTimeType: 'SCHEDULED' | 'ESTIMATED' | 'ACTUAL'
-  direction: 'INBOUND' | 'OUTBOUND'
-  movementTimestamp: string
-}
+export type MovementTimeFactoryShape = MovementTime
 
 export function createMovementTime(
   overrides: Partial<MovementTimeFactoryShape> = {},
@@ -17,7 +11,7 @@ export function createMovementTime(
     '@type': 'MovementTime',
     movementTimeType: 'SCHEDULED',
     direction: 'OUTBOUND',
-    movementTimestamp: '2026-01-01T00:00:00.000Z',
+    movementTimestamp: '2026-01-01T12:00:00.000Z',
     ...overrides,
   } as MovementTimeFactoryShape
 }

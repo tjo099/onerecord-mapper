@@ -9,6 +9,8 @@ All notable changes are documented here. Format follows
 ### Build / dev environment changes (vs locked plan)
 - Bun pin: `engines.bun` set to `1.3.x` (plan was `1.1.x`); CI `bun-version: '1.3.11'`. Reason: local toolchain is 1.3.11.
 - `xlsx` devDep pinned to `^0.18.5` (plan was `^0.20.0`). Reason: 0.20.x is SheetJS Pro CDN-only, not public npm.
+- `dependabot.yml` adds `ignore: [{ dependency-name: "*", update-types: ["version-update:semver-major"] }]` for both `github-actions` and `npm` ecosystems. Reason: locked plan pins specific majors (Biome 1.x, Vitest 2.x, fast-check 3.x, attw 0.16, types/node 20.x); without this rule Dependabot opens unwanted major-bump PRs every week. The first 5 such PRs (#1–#5) were closed manually.
+- GHA workflow YAML: quoted `${{ }}` template expressions inside flow-style `with: { ... }` mappings in `ci.yml` (line 54: `node-version`) and `release.yml` (line 48: `artifact-name`). Reason: YAML's flow-mapping tokenizer collides with the `${` + `{` of the template delimiter, causing both workflows to fail GHA validation in 0s. The locked plan's verbatim YAML was invalid.
 
 ### Known gaps to resolve before v0.1.0 release tag
 - Commit signing (`git commit -S`) currently suspended (Tasks 1–8 commits are unsigned). Re-enable: configure SSH or GPG signing key + `git config commit.gpgsign true` + `tag.gpgsign true`. `release.yml` signed-tag verify is the release gate.

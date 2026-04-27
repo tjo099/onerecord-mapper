@@ -1,0 +1,5 @@
+export { HandlingServiceCodec } from './codec.js'
+export { deserializeHandlingService } from './deserialize.js'
+export { HandlingServiceSchema } from './schema.js'
+export type { HandlingService, JsonLdHandlingService } from './schema.js'
+export { serializeHandlingService, serializeHandlingServiceStrict } from './serialize.js'

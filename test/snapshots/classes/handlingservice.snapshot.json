@@ -1,0 +1,7 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "HandlingService",
+  "@id": "https://snapshot.example/wf/handlingservice/fixed-id",
+  "serviceType": "CARGO_HANDLING",
+  "description": "General cargo handling service"
+}

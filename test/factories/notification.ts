@@ -1,12 +1,7 @@
+import type { Notification } from '../../src/classes/notification/schema.js'
 import { envelope } from './common.js'
 
-export interface NotificationFactoryShape {
-  '@context': string
-  '@type': 'Notification'
-  '@id': string
-  eventType: 'LOGISTICS_OBJECT_CREATED' | 'LOGISTICS_OBJECT_UPDATED' | 'LOGISTICS_OBJECT_LIFECYCLE'
-  notificationFor: string
-}
+export type NotificationFactoryShape = Notification
 
 export function createNotification(
   overrides: Partial<NotificationFactoryShape> = {},
@@ -14,8 +9,9 @@ export function createNotification(
   return {
     ...envelope('Notification'),
     '@type': 'Notification',
-    eventType: 'LOGISTICS_OBJECT_UPDATED',
-    notificationFor: 'https://example/logistics-object/waybill/1',
+    eventType: 'OBJECT_CREATED',
+    eventTimestamp: '2026-01-01T12:00:00.000Z',
+    relatedLogisticsObject: 'https://example.org/waybill/123',
     ...overrides,
   } as NotificationFactoryShape
 }

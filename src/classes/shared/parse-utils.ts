@@ -1,4 +1,7 @@
+import type { AssertContextOpts } from '../../context.js'
 import type { ParseError } from '../../result.js'
+import type { DeserializeOpts } from '../../safety/limits.js'
+import type { PreValidateOpts } from '../../safety/pre-validate.js'
 
 /**
  * Attach `meta` to a `ParseError`, preserving the discriminant kind.
@@ -7,6 +10,23 @@ import type { ParseError } from '../../result.js'
  */
 export function withMeta<E extends ParseError>(e: E, meta?: Record<string, unknown>): E {
   return meta ? ({ ...e, meta } as E) : e
+}
+
+/** Build PreValidateOpts from DeserializeOpts without undefined properties (exactOptionalPropertyTypes). */
+export function toPreValidateOpts(opts: DeserializeOpts): PreValidateOpts {
+  const o: PreValidateOpts = {}
+  if (opts.limits !== undefined) o.limits = opts.limits
+  if (opts.payloadByteLength !== undefined) o.payloadByteLength = opts.payloadByteLength
+  if (opts.meta !== undefined) o.meta = opts.meta
+  return o
+}
+
+/** Build AssertContextOpts from DeserializeOpts without undefined properties (exactOptionalPropertyTypes). */
+export function toContextOpts(opts: DeserializeOpts): AssertContextOpts {
+  const o: AssertContextOpts = {}
+  if (opts.allowedContexts !== undefined) o.allowedContexts = opts.allowedContexts
+  if (opts.meta !== undefined) o.meta = opts.meta
+  return o
 }
 
 /**

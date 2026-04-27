@@ -1,21 +1,14 @@
-import { envelope } from './common.js'
+// test/factories/booking-segment.ts
+import type { BookingSegment } from '../../src/classes/booking-segment/schema.js'
+import { envelope, testIri } from './common.js'
 
-export interface BookingSegmentFactoryShape {
-  '@context': string
-  '@type': 'BookingSegment'
-  '@id': string
-  transportMovement: string
-  sequenceNumber: number
-}
+const FIXED_MOVEMENT_UUID = '00000000-0000-0000-0000-000000000005'
 
-export function createBookingSegment(
-  overrides: Partial<BookingSegmentFactoryShape> = {},
-): BookingSegmentFactoryShape {
+export function createBookingSegment(overrides?: Partial<BookingSegment>): BookingSegment {
   return {
     ...envelope('BookingSegment'),
-    '@type': 'BookingSegment',
-    transportMovement: 'https://example/transport-movement/1',
+    transportMovement: testIri('TransportMovement', FIXED_MOVEMENT_UUID),
     sequenceNumber: 1,
     ...overrides,
-  } as BookingSegmentFactoryShape
+  } as BookingSegment
 }

@@ -1,0 +1,7 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "BookingOption",
+  "@id": "https://snapshot.example/wf/bookingoption/fixed-id",
+  "forBookingRequest": "https://test.flaks.example/test-tenant/bookingrequest/00000000-0000-0000-0000-000000000001",
+  "optionStatus": "OPTION_PROPOSED"
+}

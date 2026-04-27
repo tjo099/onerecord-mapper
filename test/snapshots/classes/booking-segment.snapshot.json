@@ -1,0 +1,7 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "BookingSegment",
+  "@id": "https://snapshot.example/wf/bookingsegment/fixed-id",
+  "transportMovement": "https://test.flaks.example/test-tenant/transportmovement/00000000-0000-0000-0000-000000000005",
+  "sequenceNumber": 1
+}

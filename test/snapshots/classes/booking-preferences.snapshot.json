@@ -1,0 +1,6 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "BookingPreferences",
+  "@id": "https://snapshot.example/wf/bookingpreferences/fixed-id",
+  "preferredCarrier": "LH"
+}

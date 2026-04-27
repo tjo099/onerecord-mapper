@@ -1,21 +1,14 @@
-import { envelope } from './common.js'
+// test/factories/booking-request.ts
+import type { BookingRequest } from '../../src/classes/booking-request/schema.js'
+import { envelope, testIri } from './common.js'
 
-export interface BookingRequestFactoryShape {
-  '@context': string
-  '@type': 'BookingRequest'
-  '@id': string
-  requestor: string
-  requestedBy?: string
-}
+const FIXED_ORG_UUID = '00000000-0000-0000-0000-000000000003'
 
-export function createBookingRequest(
-  overrides: Partial<BookingRequestFactoryShape> = {},
-): BookingRequestFactoryShape {
+export function createBookingRequest(overrides?: Partial<BookingRequest>): BookingRequest {
   return {
     ...envelope('BookingRequest'),
-    '@type': 'BookingRequest',
-    requestor: 'https://example/organization/forwarder',
-    requestedBy: 'https://example/person/agent',
+    requestStatus: 'REQUEST_PENDING',
+    requestor: testIri('Organization', FIXED_ORG_UUID),
     ...overrides,
-  } as BookingRequestFactoryShape
+  } as BookingRequest
 }

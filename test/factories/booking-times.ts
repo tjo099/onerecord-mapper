@@ -1,21 +1,11 @@
+// test/factories/booking-times.ts
+import type { BookingTimes } from '../../src/classes/booking-times/schema.js'
 import { envelope } from './common.js'
 
-export interface BookingTimesFactoryShape {
-  '@context': string
-  '@type': 'BookingTimes'
-  '@id': string
-  requestedDeparture?: string
-  requestedArrival?: string
-}
-
-export function createBookingTimes(
-  overrides: Partial<BookingTimesFactoryShape> = {},
-): BookingTimesFactoryShape {
+export function createBookingTimes(overrides?: Partial<BookingTimes>): BookingTimes {
   return {
     ...envelope('BookingTimes'),
-    '@type': 'BookingTimes',
-    requestedDeparture: '2026-01-01T10:00:00.000Z',
-    requestedArrival: '2026-01-01T18:00:00.000Z',
+    requestedDeparture: '2026-03-01T08:00:00Z',
     ...overrides,
-  } as BookingTimesFactoryShape
+  } as BookingTimes
 }

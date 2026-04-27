@@ -1,0 +1,7 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "BookingShipment",
+  "@id": "https://snapshot.example/wf/bookingshipment/fixed-id",
+  "forShipment": "https://test.flaks.example/test-tenant/shipment/00000000-0000-0000-0000-000000000004",
+  "pieceCount": 2
+}

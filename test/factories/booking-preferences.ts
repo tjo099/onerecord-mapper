@@ -1,21 +1,13 @@
+// test/factories/booking-preferences.ts
+import type { BookingPreferences } from '../../src/classes/booking-preferences/schema.js'
 import { envelope } from './common.js'
 
-export interface BookingPreferencesFactoryShape {
-  '@context': string
-  '@type': 'BookingPreferences'
-  '@id': string
-  preferredCarrier?: string
-  preferredRoute?: string
-}
-
 export function createBookingPreferences(
-  overrides: Partial<BookingPreferencesFactoryShape> = {},
-): BookingPreferencesFactoryShape {
+  overrides?: Partial<BookingPreferences>,
+): BookingPreferences {
   return {
     ...envelope('BookingPreferences'),
-    '@type': 'BookingPreferences',
-    preferredCarrier: 'WF',
-    preferredRoute: 'AMS-JFK',
+    preferredCarrier: 'LH',
     ...overrides,
-  } as BookingPreferencesFactoryShape
+  } as BookingPreferences
 }

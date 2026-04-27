@@ -18,7 +18,7 @@ within 30 days for critical findings.
 
 ## Maintainer signing key
 
-All release tags are GPG-signed. Verify with:
+All release tags from v0.1.0 onward will be GPG-signed (see "Supply chain" below for current 0.0.x scaffold status). Verify a signed release with:
 
 ```bash
 gh release view v0.1.0 --json tagName,assets

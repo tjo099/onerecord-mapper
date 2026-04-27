@@ -1,12 +1,7 @@
+import type { SubscriptionRequest } from '../../src/classes/subscription-request/schema.js'
 import { envelope } from './common.js'
 
-export interface SubscriptionRequestFactoryShape {
-  '@context': string
-  '@type': 'SubscriptionRequest'
-  '@id': string
-  subscriber: string
-  topic: string
-}
+export type SubscriptionRequestFactoryShape = SubscriptionRequest
 
 export function createSubscriptionRequest(
   overrides: Partial<SubscriptionRequestFactoryShape> = {},
@@ -14,8 +9,8 @@ export function createSubscriptionRequest(
   return {
     ...envelope('SubscriptionRequest'),
     '@type': 'SubscriptionRequest',
-    subscriber: 'https://example/organization/subscriber',
-    topic: 'https://example/logistics-object/waybill/1',
+    requestStatus: 'REQUEST_PENDING',
+    subscription: 'https://example.org/subscription/123',
     ...overrides,
   } as SubscriptionRequestFactoryShape
 }

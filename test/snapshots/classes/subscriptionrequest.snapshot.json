@@ -1,0 +1,7 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "SubscriptionRequest",
+  "@id": "https://snapshot.example/wf/subscriptionrequest/fixed-id",
+  "requestStatus": "REQUEST_PENDING",
+  "subscription": "https://example.org/subscription/123"
+}

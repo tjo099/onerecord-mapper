@@ -35,24 +35,14 @@ jobs:
       - run: bun run typecheck
       - run: bun run lint
       - run: bun run test:coverage
-      - name: NE:ONE contract gate
-        run: |
-          docker compose -f test/contract/docker-compose.neone.yml up -d --wait
-          bun run test:contract
-          docker compose -f test/contract/docker-compose.neone.yml down -v
+      # NE:ONE contract gate — deferred to v0.2 (Phase 14, Tasks 68-71)
+      # docker-compose at test/contract/docker-compose.neone.yml ships then.
       - name: Build
         run: bun run build
-      - name: Verify built dist matches committed dist (release branch invariant)
-        run: |
-          set -euo pipefail
-          if [ ! -d dist ]; then echo "::error::dist/ not built"; exit 1; fi
-          mv dist dist-built
-          git checkout HEAD -- dist
-          if ! diff -r dist-built dist; then
-            echo "::error::dist drift: built artefacts differ from committed dist/ on tag commit"
-            exit 1
-          fi
-          echo "dist invariant verified: built dist matches committed dist on tag"
+      # The "verify committed dist" invariant was removed in v0.1.1 because
+      # dist/ is gitignored and consumers run `prepare` (tsc) on install.
+      # When v0.2 adds npm publish, registry tarball integrity replaces this
+      # gate.
       - name: SBOM (syft)
         uses: anchore/sbom-action@v0
         with: { artifact-name: 'sbom-${{ github.ref_name }}.spdx.json', format: spdx-json }

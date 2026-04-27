@@ -4,45 +4,84 @@ All notable changes are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/), versioning follows
 [SemVer](https://semver.org/) per the policy in `MIGRATING.md`.
 
-## [Unreleased]
+## [0.1.1] - 2026-04-27 (install fix + open-sourcing pass)
 
-### Open-sourcing prep — completed in this session
+First public release. v0.1.0 was tagged but unconsumable via git URL
+(see "Critical install fix" below); v0.1.1 is the first version Tracks
+B and C should pin to.
+
+### Critical install fix
+
+- Add `prepare` lifecycle script to `package.json` so
+  `bun add git+https://github.com/tjo099/onerecord-mapper#v0.1.1`
+  builds `dist/` on install. v0.1.0 published `exports` pointing at
+  `./dist/...` but had no `prepare` script and `dist/` is gitignored,
+  so consumers got an unimportable package: "Cannot find module
+  '@flaks/onerecord'". The `prepare` script runs
+  `tsc -p tsconfig.build.json` at install time (Bun and npm both run
+  `prepare` for git-URL packages by default).
+
+  **Note for consumers with `ignore-scripts=true`** (security-hardened
+  npm/bun config): `prepare` will not run automatically. Either
+  temporarily allow scripts when installing this package, run
+  `bun run build` manually inside `node_modules/@flaks/onerecord/`
+  post-install, or wait for v0.2.0, which publishes `@flaks/onerecord`
+  to npm with prebuilt `dist/` in the registry tarball (no `prepare`
+  needed).
+
+### Release pipeline corrections
+
+- Remove the "Verify built dist matches committed dist" step from
+  `release.yml`. It was incompatible with `.gitignore` excluding
+  `dist/`; the gate would always fail on a real release run. Build
+  artefact integrity is now provided by the `prepare` script on
+  consumer machines and (in v0.2.0) by the npm registry tarball.
+- Disable (comment) the NE:ONE contract gate step in `release.yml`.
+  The `test/contract/docker-compose.neone.yml` file referenced by the
+  step does not exist; the contract test was deferred to v0.2 Phase 14
+  (Tasks 68-71). The step is restored when Phase 14 lands.
+
+### Open-sourcing pass — completed
 
 - Maintainer GPG signing key generated: `ed25519/55BABA8EED158AD1`
   (fingerprint `8033 2600 17B9 BAE5 BAD9 CA15 55BA BA8E ED15 8AD1`),
-  UID `tjo099 <tjo099@gmail.com>`, expires 2028-04-26.
+  UID `tjo099 <tjo099@gmail.com>`, expires 2028-04-26. Public key
+  served at `https://github.com/tjo099.gpg`.
 - Local git config: `commit.gpgsign=true`, `tag.gpgsign=true`,
   `user.signingkey` set globally. Signing verified end-to-end via
-  `gpg --clearsign`.
+  `gpg --clearsign` and via signed commits landing on `main`.
 - `MAINTAINER_GPG_PUBLIC_KEY` repository secret set on
   `tjo099/onerecord-mapper` with the ASCII-armored public key.
-- `SECURITY.md` GPG fingerprint placeholder filled with the real
-  fingerprint and updated to point at `https://github.com/tjo099.gpg`
-  as the canonical public-key source.
 - `release.yml` imports the maintainer GPG public key from
   `secrets.MAINTAINER_GPG_PUBLIC_KEY` before the `git tag -v`
-  verification gate. Removes the cold-runner failure mode flagged in
+  verification gate. Closes the cold-runner failure mode flagged in
   v0.1.0 "Known gaps" item #2.
-- `SECURITY.md` placeholder `security@flaks.io` (no MX record) replaced
-  with GitHub Private Vulnerability Reporting URL
-  (`https://github.com/tjo099/onerecord-mapper/security/advisories/new`).
-  Removes the placeholder flagged in v0.1.0 "Known gaps" item #5.
+- `SECURITY.md`: GPG fingerprint placeholder filled with the real
+  fingerprint and updated to point at `https://github.com/tjo099.gpg`
+  as the canonical public-key source. Placeholder `security@flaks.io`
+  (no MX record) replaced with GitHub Private Vulnerability Reporting
+  URL. Closes v0.1.0 "Known gaps" item #5.
 - Public-OSS hygiene scaffolding added: `CONTRIBUTING.md`,
   `CODE_OF_CONDUCT.md` (adopts Contributor Covenant 2.1 by reference),
   `.github/ISSUE_TEMPLATE/{bug_report,feature_request,config}`,
   `.github/PULL_REQUEST_TEMPLATE.md`, `.github/CODEOWNERS`.
+- README + MIGRATING rewritten for public consumers (drop "internal
+  use only" framing, drop `GITHUB_TOKEN` requirement). Added "Why use
+  this library?" section.
+- New `docs/spec-deviations.md`: consumer-focused documentation of
+  five deliberate divergences from canonical IATA OneRecord behavior
+  in v0.1.x. Source of truth for deviations.
+- Repository visibility flipped PRIVATE → PUBLIC. First signed commits
+  landed on `main` and verified by GitHub.
 
-### Open-sourcing prep — still pending (user-action)
+### Carry-forward to v0.2.0
 
-- Refresh `gh` OAuth scopes (`gh auth refresh -s admin:gpg_key`) and
-  add the public key to the maintainer's GitHub profile so the
-  `tjo099.gpg` URL serves it.
-- Flip repository visibility PRIVATE → PUBLIC.
-- Back up the auto-generated revocation certificate at
+- npm publish workflow for `@flaks/onerecord` as a public scoped
+  package — removes the `prepare`-script dependency on consumer
+  toolchain and closes the `ignore-scripts=true` fragility.
+- Maintainer must back up the auto-generated revocation certificate at
   `~/.gnupg/openpgp-revocs.d/8033260017B9BAE5BAD9CA1555BABA8EED158AD1.rev`
-  to offline storage (needed only for key compromise / revocation).
-- (Optional) Add npm publish workflow for `@flaks/onerecord` as a public
-  scoped package.
+  to offline storage (user-action; not code-shippable).
 
 ## [0.2.0] - planned (open-sourcing pass + ecosystem hardening)
 

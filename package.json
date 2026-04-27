@@ -1,6 +1,6 @@
 {
   "name": "@flaks/onerecord",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Zero-dependency Zod-first JSON-LD mapper for IATA OneRecord cargo data model 3.2 + API spec 2.2.0",
   "type": "module",
   "license": "Apache-2.0",
@@ -33,6 +33,7 @@
   "files": ["dist/", "LICENSE", "NOTICE", "README.md", "CHANGELOG.md", "MIGRATING.md", "SECURITY.md"],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "prepare": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "lint": "biome check src/ test/",
     "lint:fix": "biome check --write src/ test/",

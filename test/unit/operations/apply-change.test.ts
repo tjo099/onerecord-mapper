@@ -50,3 +50,37 @@ describe('applyChange (v3)', () => {
     }
   })
 })
+
+describe('applyChange atomicity', () => {
+  it('does not mutate the input object on success', () => {
+    const wb = WaybillSchema.parse(createWaybill())
+    const before = JSON.stringify(wb)
+    applyChange(WaybillCodec, wb, {
+      hasOperation: [{ op: 'ADD', path: '/totalGrossWeight', value: { unit: 'KGM', value: 100 } }],
+    })
+    expect(JSON.stringify(wb)).toBe(before)
+  })
+
+  it('does not mutate the input object on failure', () => {
+    const wb = WaybillSchema.parse(createWaybill())
+    const before = JSON.stringify(wb)
+    applyChange(WaybillCodec, wb, {
+      hasOperation: [
+        { op: 'ADD', path: '/totalGrossWeight', value: { unit: 'KGM', value: 100 } },
+        { op: 'ADD', path: '/', value: 1 },
+      ],
+    })
+    expect(JSON.stringify(wb)).toBe(before)
+  })
+
+  it('produces null-prototype output (no Object.prototype on result graph)', () => {
+    const wb = WaybillSchema.parse(createWaybill())
+    const r = applyChange(WaybillCodec, wb, {
+      hasOperation: [{ op: 'ADD', path: '/totalGrossWeight', value: { unit: 'KGM', value: 100 } }],
+    })
+    expect(r.ok).toBe(true)
+    if (r.ok) {
+      expect(Object.getPrototypeOf(r.value)).toBe(null)
+    }
+  })
+})

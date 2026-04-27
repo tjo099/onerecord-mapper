@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { snapshotFixtureFor } from '../../factories/common.js'
+import * as factories from '../../factories/index.js'
 import { createWaybill } from '../../factories/waybill.js'
 
 describe('createWaybill factory', () => {
@@ -30,5 +31,10 @@ describe('createWaybill factory', () => {
     const b = snapshotFixtureFor('Waybill', createWaybill)
     expect(a['@id']).toBe('https://snapshot.example/wf/waybill/fixed-id')
     expect(a['@id']).toBe(b['@id'])
+  })
+
+  it('exposes 32 factories total (one per v0.1.0 class)', () => {
+    const names = Object.keys(factories).filter((k) => k.startsWith('create'))
+    expect(names).toHaveLength(32)
   })
 })

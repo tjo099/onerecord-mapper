@@ -1,12 +1,7 @@
+import type { Location } from '../../src/classes/location/schema.js'
 import { envelope } from './common.js'
 
-export interface LocationFactoryShape {
-  '@context': string
-  '@type': 'Location'
-  '@id': string
-  locationCodeType: 'IATA' | 'UNLOCODE' | 'ICAO'
-  locationCode: string
-}
+export type LocationFactoryShape = Location
 
 export function createLocation(
   overrides: Partial<LocationFactoryShape> = {},
@@ -15,7 +10,8 @@ export function createLocation(
     ...envelope('Location'),
     '@type': 'Location',
     locationCodeType: 'IATA',
-    locationCode: 'AMS',
+    locationCode: 'JFK',
+    locationName: 'John F Kennedy International',
     ...overrides,
   } as LocationFactoryShape
 }

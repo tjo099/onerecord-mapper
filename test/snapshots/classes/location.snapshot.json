@@ -1,0 +1,8 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "Location",
+  "@id": "https://snapshot.example/wf/location/fixed-id",
+  "locationCodeType": "IATA",
+  "locationCode": "JFK",
+  "locationName": "John F Kennedy International"
+}

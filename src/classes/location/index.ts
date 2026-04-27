@@ -1,0 +1,5 @@
+export { LocationCodec } from './codec.js'
+export { deserializeLocation } from './deserialize.js'
+export { LocationSchema } from './schema.js'
+export type { JsonLdLocation, Location } from './schema.js'
+export { serializeLocation, serializeLocationStrict } from './serialize.js'

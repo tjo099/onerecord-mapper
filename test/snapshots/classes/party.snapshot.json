@@ -1,0 +1,7 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "Party",
+  "@id": "https://snapshot.example/wf/party/fixed-id",
+  "partyRole": "SHP",
+  "partyDetails": "https://example.org/party/details/1"
+}

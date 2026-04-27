@@ -1,0 +1,5 @@
+export { PartyCodec } from './codec.js'
+export { deserializeParty } from './deserialize.js'
+export { PartySchema } from './schema.js'
+export type { JsonLdParty, Party } from './schema.js'
+export { serializeParty, serializePartyStrict } from './serialize.js'

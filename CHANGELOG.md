@@ -4,7 +4,75 @@ All notable changes are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/), versioning follows
 [SemVer](https://semver.org/) per the policy in `MIGRATING.md`.
 
-## [Unreleased] (0.0.x prerelease scaffold)
+## [0.1.0] - 2026-04-27 (internal-only)
+
+First minor release for internal consumption by Tracks B+C SaaS products. Not
+published to public npm; not flagged for external distribution. All open-source
+prep (commit signing, public repo flip, GPG release-tag verification) deferred
+to v0.2.
+
+### Library surface
+
+- 32 OneRecord cargo data model 3.2 classes with full round-trip codec, Zod schema,
+  JsonLd<T> brand, and snapshot test coverage:
+  - Ring 1: Waybill, Shipment, Piece
+  - Ring 2: Address, Person, Organization, Party, AccountNumber
+  - Ring 3: TransportMovement, LogisticsEvent, MovementTime, Location
+  - Ring 4: Subscription, SubscriptionRequest, Notification, ChangeRequest, Change,
+    Operation, AccessDelegation, AccessDelegationRequest, Verification (with
+    UnverifiedVerification brand per spec §3.1), VerificationRequest, ServerInformation
+  - Ring 5: HandlingService
+  - Booking: Booking, BookingRequest, BookingOption, BookingOptionRequest,
+    BookingPreferences, BookingSegment, BookingShipment, BookingTimes
+- `createMapper({ limits, iriStrategy, allowedSchemes })` — bound-methods factory
+  with deep-frozen options at creation time
+- `onerecord.{deserialize,serialize}.<Class>` — namespaced facade with no bound
+  state, suitable for one-off operations
+- `applyChange(codec, obj, change)` JSON-Patch-style mutation per spec §6.5 with
+  invalid_pointer for traversal failures
+- `validateOperation(op, allowedFields: ReadonlyArray<JsonPointer | RegExp>)` with
+  locked type per spec §13
+- Booking state machine: deep-frozen `STATE_DIAGRAM`, `canTransition` predicate,
+  typed transition wrappers (acceptBookingRequest, acceptBookingOption,
+  rejectBookingOption, revokeBookingOption)
+- 22-variant `ParseError` discriminated union including v3 `invalid_pointer` for
+  JSON-pointer traversal failures
+- `SerializationError` class with `code: 'invalid_application_object' |
+  'iri_construction_failed'`
+- `formatError(e)` + `redactError(e)` helpers — exhaustive switch over all 22
+  ParseError kinds
+- 26-code FSU event-code map per spec acceptance #2
+- Safety: pre-Zod sanity pass (depth/nodes/string/array/payload limits, prototype-
+  pollution defense, JS-level circular reference detection)
+- Branded `SafeIri` (https-only by default) + `safeIri()` Zod helper that lifts
+  IRI failures into kind: 'invalid_iri' before the generic zod_validation envelope
+- `Codec` subpath export `@flaks/onerecord/codecs` for tree-shake-optimized
+  consumers
+- Type-only barrel `@flaks/onerecord/types` for zero-runtime imports
+
+### Test coverage
+
+- 518 passing + 10 skipped = 528 total tests across 119 test files
+- Property-based round-trip tests via fast-check (Waybill — extensible to other classes)
+- Per-error-kind negative deserialize catalogue (15 files, manifest-verified via
+  PARSE_ERROR_KIND_TO_FILE rename map)
+- Class-completeness introspection (asserts all 32 classes have schema + tests +
+  snapshots)
+- Public API surface lock via snapshot test
+
+### Internal-only release notes
+
+- v0.1.0 ships as a private GitHub repo. Consumers (Tracks B+C) install via
+  `bun install git+https://github.com/tjo099/onerecord-mapper#v0.1.0` with
+  GitHub token auth.
+- Commit signing remains suspended; release.yml's signed-tag verification gate
+  is bypassed for v0.1.0. Both will be re-enabled before any public release.
+- `security@flaks.io` placeholder in SECURITY.md remains (no MX record); replace
+  before flipping the repo public.
+
+---
+
+## [Unreleased] (0.0.x prerelease scaffold — content promoted to [0.1.0] above)
 
 ### Build / dev environment changes (vs locked plan)
 - Bun pin: `engines.bun` set to `1.3.x` (plan was `1.1.x`); CI `bun-version: '1.3.11'`. Reason: local toolchain is 1.3.11.

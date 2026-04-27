@@ -23,7 +23,7 @@ export {
   assertOntologyVersion,
   checkServerInformation,
 } from './version.js'
-export type { ServerCompatibility, ServerInformationLike } from './version.js'
+export type { ServerCompatibility } from './version.js'
 
 // IRI primitives
 export { defaultIriStrategy } from './iri/default-strategy.js'
@@ -145,3 +145,69 @@ export type {
   AccountNumber,
   JsonLdAccountNumber,
 } from './classes/account-number/index.js'
+
+// Ring 4 — AccessDelegation
+export {
+  AccessDelegationCodec,
+  AccessDelegationSchema,
+  deserializeAccessDelegation,
+  serializeAccessDelegation,
+  serializeAccessDelegationStrict,
+} from './classes/access-delegation/index.js'
+export type {
+  AccessDelegation,
+  JsonLdAccessDelegation,
+} from './classes/access-delegation/index.js'
+
+// Ring 4 — AccessDelegationRequest
+export {
+  AccessDelegationRequestCodec,
+  AccessDelegationRequestSchema,
+  deserializeAccessDelegationRequest,
+  serializeAccessDelegationRequest,
+  serializeAccessDelegationRequestStrict,
+} from './classes/access-delegation-request/index.js'
+export type {
+  AccessDelegationRequest,
+  JsonLdAccessDelegationRequest,
+} from './classes/access-delegation-request/index.js'
+
+// Ring 4 — Verification (branded UnverifiedVerification)
+export {
+  VerificationCodec,
+  VerificationSchema,
+  deserializeVerification,
+  serializeVerification,
+  serializeVerificationStrict,
+} from './classes/verification/index.js'
+export type {
+  JsonLdVerification,
+  UnverifiedVerification,
+  Verification,
+} from './classes/verification/index.js'
+
+// Ring 4 — VerificationRequest
+export {
+  VerificationRequestCodec,
+  VerificationRequestSchema,
+  deserializeVerificationRequest,
+  serializeVerificationRequest,
+  serializeVerificationRequestStrict,
+} from './classes/verification-request/index.js'
+export type {
+  JsonLdVerificationRequest,
+  VerificationRequest,
+} from './classes/verification-request/index.js'
+
+// Ring 4 — ServerInformation
+export {
+  ServerInformationCodec,
+  ServerInformationSchema,
+  deserializeServerInformation,
+  serializeServerInformation,
+  serializeServerInformationStrict,
+} from './classes/server-information/index.js'
+export type {
+  JsonLdServerInformation,
+  ServerInformation,
+} from './classes/server-information/index.js'

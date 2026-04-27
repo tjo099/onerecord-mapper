@@ -11,6 +11,7 @@ export const CARGO_ONTOLOGY_VERSION = '3.2' as const
 export const API_SPEC_VERSION = '2.2.0' as const
 // assertOntologyVersion + checkServerInformation added in Task 16
 
+import type { ServerInformation } from './classes/server-information/index.js'
 import type { ParseError } from './result.js'
 
 /**
@@ -31,15 +32,6 @@ export function assertOntologyVersion(expected: string): void {
   }
 }
 
-/** Minimal shape — full ServerInformationSchema lands in Task 47. */
-export interface ServerInformationLike {
-  '@context': string | string[]
-  '@type': 'ServerInformation'
-  '@id': string
-  cargoOntologyVersion?: string
-  apiSpecVersion?: string
-}
-
 export interface ServerCompatibility {
   compatible: boolean
   mapperOntologyVersion: string
@@ -52,7 +44,7 @@ export interface ServerCompatibility {
  * this mapper's ontology pin. Returns structured result rather than throwing
  * so consumers can warn-and-continue or hard-fail per their policy.
  */
-export function checkServerInformation(si: ServerInformationLike): ServerCompatibility {
+export function checkServerInformation(si: ServerInformation): ServerCompatibility {
   const serverOntologyVersion = si.cargoOntologyVersion ?? null
   if (serverOntologyVersion === null) {
     return {

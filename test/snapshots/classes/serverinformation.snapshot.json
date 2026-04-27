@@ -1,0 +1,8 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "ServerInformation",
+  "@id": "https://snapshot.example/wf/serverinformation/fixed-id",
+  "serverEndpoint": "https://example.org/server",
+  "cargoOntologyVersion": "3.2",
+  "apiSpecVersion": "2.2.0"
+}

@@ -1,0 +1,5 @@
+export { ServerInformationCodec } from './codec.js'
+export { deserializeServerInformation } from './deserialize.js'
+export { ServerInformationSchema } from './schema.js'
+export type { JsonLdServerInformation, ServerInformation } from './schema.js'
+export { serializeServerInformation, serializeServerInformationStrict } from './serialize.js'

@@ -1,12 +1,7 @@
+import type { ServerInformation } from '../../src/classes/server-information/schema.js'
 import { envelope } from './common.js'
 
-export interface ServerInformationFactoryShape {
-  '@context': string
-  '@type': 'ServerInformation'
-  '@id': string
-  cargoOntologyVersion: string
-  apiSpecVersion: string
-}
+export type ServerInformationFactoryShape = ServerInformation
 
 export function createServerInformation(
   overrides: Partial<ServerInformationFactoryShape> = {},
@@ -14,8 +9,9 @@ export function createServerInformation(
   return {
     ...envelope('ServerInformation'),
     '@type': 'ServerInformation',
-    cargoOntologyVersion: '3.0.0',
-    apiSpecVersion: '2.0.0',
+    serverEndpoint: 'https://example.org/server',
+    cargoOntologyVersion: '3.2',
+    apiSpecVersion: '2.2.0',
     ...overrides,
   } as ServerInformationFactoryShape
 }

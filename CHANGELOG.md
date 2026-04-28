@@ -7,8 +7,11 @@ All notable changes are documented here. Format follows
 ## [0.2.0] - 2026-04-28
 
 First publicly verifiable release. Closes 3 of 5 v0.1.x spec
-deviations; documents 6 newly-identified deviations as deferred to
-v0.3 with explicit "what to do today" guidance for integrators.
+deviations PLUS pulls forward 5 of the 6 newly-identified deviations
+(#6 partially, #7, #8, #9, #10) for net 7 of 11 deviations CLOSED
+or PARTIAL in v0.2.0. Adds 4 new opt-in `ParseError.kind` values
+that fire only through the dispatch path; default per-class
+deserializers stay v0.1.x-permissive (no breaking changes).
 
 ### Added
 
@@ -33,22 +36,50 @@ v0.3 with explicit "what to do today" guidance for integrators.
 - **Property-based round-trip tests** for the 7 remaining Ring 1+2
   classes (Shipment, Piece, Address, Person, Organization, Party,
   AccountNumber). Joins the existing Waybill test. Total runtime ~1.6s.
-- **`PARSE_ERROR_KINDS.length === 22` lock test** — fails CI on
-  unexpected union drift.
-- **Contract test harness + 3 PoC tests** at `test/contract/` against
-  the OLF-hosted reference NE:ONE Server. Includes Keycloak auth +
-  defensive RDF-strict-mode wire-format adapter (envelope shape,
-  ObjectProperty `@id` wrapping, xsd-typed literals, `@graph` response
-  unwrap). Excluded from the default `bun run test`; run via
-  `bun run test:contract` after starting the local NE:ONE stack.
+- **`PARSE_ERROR_KINDS.length === 26` lock test** — fails CI on
+  unexpected union drift. Bumped from 22 in v0.1.x with four new
+  kinds: `blank_node_forbidden` (#8), `iri_not_canonical` (#9),
+  `context_order_violation` (#10), `domain_constraint_violation` (#6).
+- **Contract test harness + 6 contract tests** at `test/contract/`
+  against the OLF-hosted reference NE:ONE Server. All 6 plan-specified
+  topics shipped: Waybill, Shipment, Piece, booking-flow, operations
+  (JSON-Patch via applyChange), notification (Subscription LO + endpoint
+  smoke). Includes Keycloak auth + defensive RDF-strict-mode
+  wire-format adapter (envelope shape, ObjectProperty `@id` wrapping,
+  xsd-typed literals, `@graph` response unwrap). Excluded from the
+  default `bun run test`; run via `bun run test:contract` after
+  starting the local NE:ONE stack.
+- **Skeleton bundled docker-compose** at `test/contract/docker-compose.neone.yml`
+  for in-memory-mode local stack. Realm config not bundled (OLF License
+  §4 review pending); fetch instructions in CONTRIBUTING.md.
+  Headless CI integration (release.yml NE:ONE gate, nightly job)
+  deferred to v0.3 — bundling realm + per-run reset is multi-day work.
 - **`MAINTENANCE.md`** — release playbook + signing key info + npm
   credential policy + bus-factor note (R8 mitigation).
-- **Five new spec deviations (#6–#10)** documented as deferred to v0.3:
-  domain-semantic cross-node validation, IRI dereferenceability,
-  blank-node rejection, IRI canonicalization, `@context` array-order.
+- **Six newly-identified spec deviations (#6–#11)** documented:
+  - **#6 — domain-semantic cross-node validation**: PARTIAL closure
+    (root-level cardinality enforced via `domain_constraint_violation`;
+    Waybill.shipmentInformation REQUIRED, Shipment.containedPieces
+    REQUIRED ≥1). AWB consistency, total-pieces sums, and reference
+    resolvability still v0.3 work.
+  - **#7 — IRI dereferenceability**: CLOSED via opt-in helper
+    `dereferenceIri(iri, opts)` async utility. Library doesn't wire
+    into deserializers (would force network I/O); consumers call
+    when they need it.
+  - **#8 — blank-node rejection**: CLOSED. Pre-Zod check at
+    `src/safety/blank-node.ts` emits `blank_node_forbidden` for
+    `_:b0`-style `@id` values per spec §3.2.
+  - **#9 — IRI canonicalization**: CLOSED via opt-in dispatch
+    (`iri_not_canonical` for uppercase scheme/host or default port
+    per RFC 3987 + spec §3.2).
+  - **#10 — `@context` array-order**: CLOSED via opt-in dispatch
+    (`context_order_violation` when array @context's last element
+    is not in the allowlist; per JSON-LD 1.1 §3.7 last item is the
+    effective context).
 - **Spec deviation #11** — STATE_DIAGRAM source-state keys do not
   match `BookingOption.optionStatus` enum; documents intentional
-  hardcode in the four `*BookingOption` transitions.
+  hardcode in the four `*BookingOption` transitions. Resolution
+  requires IATA §5.4 reconciliation; v0.3.
 
 ### Changed
 
@@ -101,12 +132,13 @@ v0.3 with explicit "what to do today" guidance for integrators.
   transition because STATE_DIAGRAM source-state keys don't align with
   the schema's optionStatus enum. The hardcode is intentional pending
   v0.3 reconciliation; deviation #11 documents the underlying issue.
-- **Phase 5 partial scope** — 3 of 6 contract test topics implemented
-  (Waybill, Shipment, BookingRequest); Piece, Operations, Notification
-  use the same harness pattern and are deferred to v0.3. CI integration
-  (release.yml NE:ONE gate, nightly contract job) deferred — bundling
-  the multi-service NE:ONE stack for headless GitHub Actions runners
-  is non-trivial. Run manually before tagging.
+- **Phase 5 fully scoped** — all 6 contract test topics implemented
+  in v0.2.0 (Waybill, Shipment, Piece, booking-flow, operations,
+  notification). CI integration (release.yml NE:ONE gate, nightly
+  contract job) still deferred to v0.3 — bundling realm config +
+  per-run stack reset for headless runners is multi-day work; the
+  skeleton compose file is the v0.3 starting point. Run manually
+  before tagging via `bun run test:contract`.
 - **Phase 1 Task 1.5 location** — sibling repo cloned to
   `F:/dev/onerecord-xlsx-tools/` (matching the maintainer's
   `F:/dev/` convention) instead of the plan's `/tmp/`.

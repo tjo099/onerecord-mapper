@@ -1,5 +1,6 @@
 // src/booking-flow/transitions.ts
 import { randomUUID } from 'node:crypto'
+import type { BookingOptionRequest } from '../classes/booking-option-request/schema.js'
 import type { BookingOption } from '../classes/booking-option/schema.js'
 import type { BookingRequest } from '../classes/booking-request/schema.js'
 import type { Booking } from '../classes/booking/schema.js'
@@ -120,4 +121,38 @@ export function revokeBookingOption(
       },
     }
   return { ok: true, value: { ...opt, optionStatus: 'OPTION_REJECTED' } }
+}
+
+/**
+ * Accept a BookingOption per spec §5.4 STATE_DIAGRAM. Returns the
+ * intermediate `BookingOptionRequest` resource (not directly a Booking).
+ *
+ * The carrier-side decision step (BookingOptionRequest.REQUEST_PENDING ->
+ * REQUEST_ACCEPTED -> Booking) is modelled separately in v0.3.0. v0.2.0
+ * only models the forwarder->carrier request transition.
+ *
+ * Source-state hardcode: see top-of-file comment + deviation #11.
+ */
+export function acceptBookingOptionViaRequest(
+  opt: BookingOption,
+): ParseResult<BookingOptionRequest> {
+  const t = canTransition('BookingOption', 'REQUEST_PENDING', 'accept')
+  if (!t)
+    return {
+      ok: false,
+      error: {
+        kind: 'forbidden_state_transition',
+        from: 'BookingOption.REQUEST_PENDING',
+        to: 'accept',
+        path: '$',
+      },
+    }
+  const req: BookingOptionRequest = {
+    '@context': CARGO_CONTEXT_IRI,
+    '@type': 'BookingOptionRequest',
+    '@id': makeId('BookingOptionRequest'),
+    forBookingOption: opt['@id'] as unknown as SafeIri,
+    requestStatus: 'REQUEST_PENDING',
+  }
+  return { ok: true, value: req }
 }

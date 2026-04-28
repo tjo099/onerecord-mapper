@@ -293,6 +293,7 @@ export type {
 export {
   STATE_DIAGRAM,
   acceptBookingOption,
+  acceptBookingOptionViaRequest,
   acceptBookingRequest,
   canTransition,
   rejectBookingOption,

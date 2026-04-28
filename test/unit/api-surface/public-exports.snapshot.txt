@@ -76,6 +76,7 @@ WaybillCodec
 WaybillSchema
 __VERSION__
 acceptBookingOption
+acceptBookingOptionViaRequest
 acceptBookingRequest
 applyChange
 asJsonPointer

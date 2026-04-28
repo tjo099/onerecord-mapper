@@ -9,6 +9,7 @@ export type {
 } from './state-diagram.js'
 export {
   acceptBookingOption,
+  acceptBookingOptionViaRequest,
   acceptBookingRequest,
   rejectBookingOption,
   revokeBookingOption,

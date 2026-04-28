@@ -14,11 +14,15 @@ export default defineConfig({
     environment: 'node',
     include: ['test/contract/**/*.test.ts'],
     exclude: ['node_modules/**', 'dist/**'],
+    // Contract tests hit a local docker-compose stack. Running multiple
+    // test files in parallel overwhelms the small dev stack and trips
+    // 15s timeouts. Force serial file execution; tests within a file
+    // remain sequential by default.
     pool: 'threads',
-    poolOptions: { threads: { singleThread: false } },
+    poolOptions: { threads: { singleThread: true } },
+    fileParallelism: false,
     snapshotFormat: { printBasicPrototype: false },
-    // Contract tests hit the network; allow more headroom than unit tests.
-    testTimeout: 15_000,
-    hookTimeout: 10_000,
+    testTimeout: 30_000,
+    hookTimeout: 15_000,
   },
 })

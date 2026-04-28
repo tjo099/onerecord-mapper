@@ -1,5 +1,5 @@
 import * as fc from 'fast-check'
-import { describe, expect, it } from 'vitest'
+import { describe, it } from 'vitest'
 import {
   type Waybill,
   WaybillSchema,
@@ -8,6 +8,7 @@ import {
 } from '../../src/classes/waybill/index.js'
 import { CARGO_CONTEXT_IRI } from '../../src/version.js'
 import { fieldEquivalent } from '../util/field-equivalent.js'
+import { roundTripProperty } from './_helpers.js'
 
 /**
  * fast-check arbitrary that produces a valid Waybill App object.
@@ -45,23 +46,12 @@ const waybillArb = fc.record({
 
 describe('Waybill round-trip property (fast-check)', () => {
   it('serialize then deserialize is field-equivalent for any valid Waybill', () => {
-    fc.assert(
-      fc.property(waybillArb, (input) => {
-        // Strip undefined keys so exactOptionalPropertyTypes is happy
-        const cleaned: Record<string, unknown> = {}
-        for (const [k, v] of Object.entries(input)) {
-          if (v !== undefined) cleaned[k] = v
-        }
-        const wb = WaybillSchema.parse(cleaned) as Waybill
-        const wire = serializeWaybill(wb)
-        const r = deserializeWaybill(wire)
-        if (!r.ok) return false
-        return fieldEquivalent(r.value, wb, {
-          numericFields: { 'totalGrossWeight.value': 'weight' },
-        })
-      }),
-      { numRuns: 100 },
-    )
+    roundTripProperty({
+      arbitrary: waybillArb,
+      codec: { serialize: serializeWaybill, deserialize: deserializeWaybill },
+      schema: WaybillSchema,
+      numericFields: { 'totalGrossWeight.value': 'weight' },
+    })
   })
 
   it('serialize is deterministic — same input produces same wire output', () => {

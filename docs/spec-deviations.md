@@ -10,6 +10,16 @@ deviations" section of [`CHANGELOG.md`](../CHANGELOG.md).
 
 ## 1. Booking — `acceptBookingOption` skips an intermediate state
 
+**Status (v0.2.0)**: PARTIALLY CLOSED. `acceptBookingOptionViaRequest`
+returns the spec-correct `BookingOptionRequest` intermediate. The
+carrier-side acceptance flow (BookingOptionRequest → Booking with
+status `REQUEST_ACCEPTED`) is v0.3 work. The deprecated
+`acceptBookingOption(opt) → Booking` shortcut continues to work
+through v0.2.x; removal v0.3 unless IATA §5.4 reconciliation restores
+the §5.2 shortcut. See also deviation #11 — the underlying
+STATE_DIAGRAM ↔ Schema source-state inconsistency that constrains
+how the new function (and the legacy ones) are implemented in v0.2.
+
 **Spec §5.4 STATE_DIAGRAM**: `BookingOption.accept` transitions through
 a `BookingOptionRequest` intermediate state before producing a `Booking`.
 

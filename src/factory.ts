@@ -1,3 +1,4 @@
+import { dispatchGraphWalk } from './dispatch/graph-walk.js'
 import { CLASSES, type ClassName } from './factory-classes.js'
 import { defaultIriStrategy } from './iri/default-strategy.js'
 import type { IriStrategy } from './iri/strategy.js'
@@ -11,6 +12,18 @@ export interface CreateMapperOpts {
   limits?: Partial<SafetyLimits>
   iriStrategy?: IriStrategy
   allowedSchemes?: readonly string[]
+  /**
+   * When `true`, every bound `deserialize<Class>` method runs the
+   * graph-walk pre-pass (cross-node integrity checks: duplicate_id,
+   * missing_id, missing_type, wrong_type_for_endpoint) before
+   * delegating to the per-class Zod validator. Default: `false`
+   * (preserves v0.1.x behavior).
+   *
+   * Same shape as Zod's `safeParse` vs `parse` — strictness is opt-in;
+   * the type-system contract is preserved (consumers exhaustively
+   * handling all 22 ParseError kinds work either way).
+   */
+  graphWalk?: boolean
 }
 
 /**
@@ -74,7 +87,14 @@ export function createMapper(opts: CreateMapperOpts = {}): Mapper {
     if (typeof serializeFn !== 'function') {
       throw new Error(`createMapper: serialize${className} not found on module`)
     }
-    out[`deserialize${className}`] = (input: unknown) => deserializeFn(input, baseDes)
+    const baseDeserialize = (input: unknown) => deserializeFn(input, baseDes)
+    out[`deserialize${className}`] = opts.graphWalk
+      ? (input: unknown) => {
+          const walkR = dispatchGraphWalk(input, className)
+          if (!walkR.ok) return walkR
+          return baseDeserialize(input)
+        }
+      : baseDeserialize
     out[`serialize${className}`] = (input: never) => serializeFn(input, baseSer)
   }
 

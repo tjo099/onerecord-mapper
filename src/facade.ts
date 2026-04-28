@@ -1,4 +1,5 @@
 // src/facade.ts
+import { dispatch } from './dispatch/index.js'
 import { CLASSES, type ClassName } from './factory-classes.js'
 
 /**
@@ -24,4 +25,11 @@ for (const className of Object.keys(CLASSES) as ClassName[]) {
 export const onerecord = Object.freeze({
   deserialize: Object.freeze(deserialize),
   serialize: Object.freeze(serialize),
+  /**
+   * Opt-in graph-walk dispatch namespace. Use:
+   *   onerecord.dispatch.deserialize.Waybill(input)
+   * to run cross-node integrity checks before per-class Zod validation.
+   * The default `onerecord.deserialize.Waybill(...)` is unchanged.
+   */
+  dispatch,
 })

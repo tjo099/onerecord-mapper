@@ -429,3 +429,8 @@ export { onerecord } from './facade.js'
 // Phase 15 — createMapper (T76)
 export { createMapper } from './factory.js'
 export type { CreateMapperOpts, Mapper } from './factory.js'
+
+// v0.2 — graph-walk dispatch namespace (Phase 3, deviation #2 closure)
+export { dispatch } from './dispatch/index.js'
+export { dispatchGraphWalk } from './dispatch/graph-walk.js'
+export { FIELD_TYPES, expectedTypeFor } from './dispatch/field-types.js'

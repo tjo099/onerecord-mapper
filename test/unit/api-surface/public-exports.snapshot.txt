@@ -34,6 +34,7 @@ ChangeRequestCodec
 ChangeRequestSchema
 ChangeSchema
 DEFAULT_SAFETY_LIMITS
+FIELD_TYPES
 FSU_EVENT_CODES
 HandlingServiceCodec
 HandlingServiceSchema
@@ -114,7 +115,10 @@ deserializeSubscriptionRequest
 deserializeVerification
 deserializeVerificationRequest
 deserializeWaybill
+dispatch
+dispatchGraphWalk
 err
+expectedTypeFor
 extractInvalidIriIssue
 findInvalidIriInIssues
 formatError

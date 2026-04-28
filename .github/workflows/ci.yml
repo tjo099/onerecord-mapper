@@ -24,18 +24,49 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with: { bun-version: '1.3.11' }
       - run: bun install --frozen-lockfile
-      - run: bun audit
-      - run: npx --yes osv-scanner@latest --lockfile=bun.lock
-      - run: npx --yes gitleaks@latest detect --source . --no-banner
       - run: bun run typecheck
       - run: bun run lint
-      - name: Tests + coverage
+      - name: Tests
         env:
           VITEST_SHARD: ${{ matrix.shard }}
           VITEST_SHARD_TOTAL: 2
-        run: bun run test:coverage
-      - if: matrix.shard == 1
-        uses: actions/upload-artifact@v4
+        run: bun run test
+
+  audit:
+    name: Audit (deps + secrets)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version: '1.3.11' }
+      - run: bun install --frozen-lockfile
+      - name: bun audit (GHSA)
+        run: bun audit
+      - name: OSV scan (osv.dev)
+        uses: google/osv-scanner-action/osv-scanner-action@v2.3.5
+        with:
+          scan-args: |-
+            --lockfile=./bun.lock
+      - name: Gitleaks (secret scan)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: test-bun
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version: '1.3.11' }
+      - run: bun install --frozen-lockfile
+      - run: bun run test:coverage
+      - uses: actions/upload-artifact@v4
         with: { name: coverage, path: coverage/ }
 
   test-node:

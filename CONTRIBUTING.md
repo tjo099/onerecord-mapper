@@ -22,10 +22,10 @@ Requires Bun `1.3.x` and Node `>=20`.
 
 ```bash
 bun install
-bun run test       # vitest, ~528 tests
+bun run test       # vitest, ~608 tests
 bun run lint       # Biome
 bun run typecheck  # tsc --noEmit
-bun run audit      # bun audit + osv-scanner
+bun run audit      # bun audit (GHSA scan)
 ```
 
 ## Pull request workflow

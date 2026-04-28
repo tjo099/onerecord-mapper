@@ -63,10 +63,7 @@
     "test:bench": "vitest bench",
     "test:contract": "vitest run --config vitest.contract.config.ts",
     "test:property": "vitest run test/property",
-    "audit:bun": "bun audit",
-    "audit:osv": "npx --yes osv-scanner@latest --lockfile=bun.lock",
-    "audit": "bun run audit:bun; bun run audit:osv",
-    "secrets:scan": "npx --yes gitleaks@latest detect --source . --no-banner",
+    "audit": "bun audit",
     "api:check": "npx --yes @arethetypeswrong/cli@latest --pack ."
   },
   "dependencies": {

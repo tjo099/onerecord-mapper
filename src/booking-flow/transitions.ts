@@ -58,6 +58,15 @@ export function acceptBookingRequest(req: BookingRequest): ParseResult<BookingOp
   return { ok: true, value: opt }
 }
 
+/**
+ * @deprecated v0.2 deprecation; removal in v0.3.
+ *
+ * Skips the `BookingOptionRequest` intermediate state per spec §5.4
+ * STATE_DIAGRAM. Use `acceptBookingOptionViaRequest(opt)` instead and
+ * chain to your persistence layer's BookingOptionRequest -> Booking
+ * transition. If the IATA §5.4 reconciliation accepts the §5.2
+ * shortcut, this annotation will be relaxed.
+ */
 export function acceptBookingOption(opt: BookingOption): ParseResult<Booking> {
   const t = canTransition('BookingOption', 'REQUEST_PENDING', 'accept')
   if (!t)

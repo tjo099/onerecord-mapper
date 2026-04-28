@@ -96,9 +96,6 @@ export const FIELD_TYPES: Readonly<Record<string, string>> = Object.freeze({
  * Returns `'*'` for polymorphic fields where any logistics-object
  * `@type` is valid.
  */
-export function expectedTypeFor(
-  className: string,
-  fieldName: string,
-): string | undefined {
+export function expectedTypeFor(className: string, fieldName: string): string | undefined {
   return FIELD_TYPES[`${className}.${fieldName}`]
 }

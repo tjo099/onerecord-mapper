@@ -4,6 +4,124 @@ All notable changes are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/), versioning follows
 [SemVer](https://semver.org/) per the policy in `MIGRATING.md`.
 
+## [0.2.0] - 2026-04-28
+
+First publicly verifiable release. Closes 3 of 5 v0.1.x spec
+deviations; documents 6 newly-identified deviations as deferred to
+v0.3 with explicit "what to do today" guidance for integrators.
+
+### Added
+
+- **`acceptBookingOptionViaRequest(opt)`** — spec §5.4-correct booking
+  transition that returns the intermediate `BookingOptionRequest` state
+  instead of jumping straight to `Booking`. Closes deviation #1
+  partially (forwarder→carrier hop only; carrier-side acceptance flow
+  is v0.3 work).
+- **Graph-walk dispatcher** — opt-in cross-node integrity validation
+  via `createMapper({ graphWalk: true })` or
+  `onerecord.dispatch.deserialize.<Class>`. Emits all four reserved
+  ParseError kinds: `duplicate_id_in_graph`, `missing_id`,
+  `wrong_type_for_endpoint`, `missing_type`. Default per-class
+  deserializers unchanged. Closes deviation #2 for JSON-LD structural
+  integrity (domain-semantic checks remain deviation #6, deferred).
+- **`walkGraph` helper** at `src/safety/walk-graph.ts` — visitor-pattern
+  recursive walker shared by `preValidate` and `dispatchGraphWalk`.
+  Single traversal, no double-walk overhead.
+- **`FIELD_TYPES` map** at `src/dispatch/field-types.ts` — covers all
+  32 cargo classes with field-to-expected-type mappings; polymorphic
+  fields marked `'*'`.
+- **Property-based round-trip tests** for the 7 remaining Ring 1+2
+  classes (Shipment, Piece, Address, Person, Organization, Party,
+  AccountNumber). Joins the existing Waybill test. Total runtime ~1.6s.
+- **`PARSE_ERROR_KINDS.length === 22` lock test** — fails CI on
+  unexpected union drift.
+- **Contract test harness + 3 PoC tests** at `test/contract/` against
+  the OLF-hosted reference NE:ONE Server. Includes Keycloak auth +
+  defensive RDF-strict-mode wire-format adapter (envelope shape,
+  ObjectProperty `@id` wrapping, xsd-typed literals, `@graph` response
+  unwrap). Excluded from the default `bun run test`; run via
+  `bun run test:contract` after starting the local NE:ONE stack.
+- **`MAINTENANCE.md`** — release playbook + signing key info + npm
+  credential policy + bus-factor note (R8 mitigation).
+- **Five new spec deviations (#6–#10)** documented as deferred to v0.3:
+  domain-semantic cross-node validation, IRI dereferenceability,
+  blank-node rejection, IRI canonicalization, `@context` array-order.
+- **Spec deviation #11** — STATE_DIAGRAM source-state keys do not
+  match `BookingOption.optionStatus` enum; documents intentional
+  hardcode in the four `*BookingOption` transitions.
+
+### Changed
+
+- **FSU code fixture regenerated** with a real `sha256:` blob hash
+  (`f5f483a5...`) sourced from upstream IATA-Cargo via the new sibling
+  [`tjo099/onerecord-xlsx-tools`](https://github.com/tjo099/onerecord-xlsx-tools)
+  tool. v0.1.x's hand-pinned 26 codes diverged from the upstream working
+  draft by 6 codes in each direction. Per Phase 0 verification the
+  upstream set is adopted: removes CLR, FOO, FWB, OFD, RCM, RCV; adds
+  DOC, DPU, FIW, FOW, OCI, OSI. `FSU_EVENT_CODES` const updated to
+  match. Closes deviation #4.
+- Spec rev-2 wording corrected: the reference NE:ONE Server is hosted
+  by the **Open Logistics Foundation Working Group on Digital Air
+  Cargo**, not IATA-Cargo. OLF License v1.3 — unrestricted CI use
+  confirmed (R6 closure).
+
+### Deprecated
+
+- **`acceptBookingOption`** — marked `@deprecated`; removal in v0.3
+  unless IATA §5.4 reconciliation restores the §5.2 shortcut. Migrate
+  to `acceptBookingOptionViaRequest`.
+
+### Removed
+
+- **`xlsx` devDep** moved to the sibling
+  [`tjo099/onerecord-xlsx-tools`](https://github.com/tjo099/onerecord-xlsx-tools)
+  repo. Closes the two high-severity advisories on the main library's
+  surface (Prototype Pollution + ReDoS). `bun audit` now shows 2
+  remaining vitest-transitive moderates only.
+- `scripts/convert-iata-xlsx.ts` — moved to the sibling repo.
+
+### Fixed
+
+- v0.1.2 GitHub Release page backfilled (the auto-create step in
+  `release.yml` failed on the v0.1.2 publish before commit `d8acc2c`
+  added the explicit `git fetch --tags --force` step).
+- Re-enabled four `it.skip` placeholder tests in `test/deserialize-errors/`:
+  `forbidden_state_transition`, `operation_field_not_allowed`,
+  `prototype_pollution_attempt` + `invalid_pointer` (via `applyChange`),
+  and `change_partial_failure`. Plus the four graph-walk-emitted kinds
+  (`duplicate_id_in_graph`, `missing_id`, `missing_type`,
+  `wrong_type_for_endpoint`) — formerly placeholders, now real
+  assertions against `dispatchGraphWalk`.
+
+### Plan deviations (v0.2.0 work that diverged from the original plan)
+
+- **Phase 2 Task 2.1 reinterpreted (Path B)** — the plan proposed
+  reading `canTransition` source state from `opt.optionStatus`. The
+  Phase 2 readiness scan showed this would break every BookingOption
+  transition because STATE_DIAGRAM source-state keys don't align with
+  the schema's optionStatus enum. The hardcode is intentional pending
+  v0.3 reconciliation; deviation #11 documents the underlying issue.
+- **Phase 5 partial scope** — 3 of 6 contract test topics implemented
+  (Waybill, Shipment, BookingRequest); Piece, Operations, Notification
+  use the same harness pattern and are deferred to v0.3. CI integration
+  (release.yml NE:ONE gate, nightly contract job) deferred — bundling
+  the multi-service NE:ONE stack for headless GitHub Actions runners
+  is non-trivial. Run manually before tagging.
+- **Phase 1 Task 1.5 location** — sibling repo cloned to
+  `F:/dev/onerecord-xlsx-tools/` (matching the maintainer's
+  `F:/dev/` convention) instead of the plan's `/tmp/`.
+- **Plan-vs-API drifts surfaced and corrected** — the plan's verbatim
+  test code for Tasks 1.2/1.3/1.4 used an obsolete Operations API
+  (`o`/`s`/`v` shorthand vs. real `op`/`path`/`value`;
+  `Change.operations` vs. real `Change.hasOperation`; `add`/`replace`
+  enum vs. real `ADD`/`DELETE`). Test bodies rewritten to match real
+  schemas. Plan's `findContainingClass` always-returns-undefined logic
+  bug fixed in `dispatchGraphWalk` (depth-1 wrong-type checks now fire).
+- **Test paths normalized** — `test/api-surface/` and `test/dispatch/`
+  in the plan's File Structure table actually live at
+  `test/unit/api-surface/` and replaced existing placeholders in
+  `test/deserialize-errors/`.
+
 ## [0.1.2] - 2026-04-27 (npm publish — supersedes 0.1.1)
 
 `@flaks/onerecord` is now published to the public npm registry as a

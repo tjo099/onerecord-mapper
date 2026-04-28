@@ -30,6 +30,12 @@ Use this library if you're building cargo software that needs to:
 - **Refuse** malformed graphs early — depth bombs, prototype-pollution
   attempts, empty arrays on the wire, circular references — before they
   reach Zod or your downstream code.
+- **Catch cross-node graph violations** with `createMapper({ graphWalk: true })`
+  or the `onerecord.dispatch.deserialize.<Class>` namespace —
+  `duplicate_id_in_graph`, `missing_id`, `wrong_type_for_endpoint`,
+  `missing_type`, all surfaced as typed `ParseError` variants. Default
+  per-class deserializers stay structural-only for v0.1.x compatibility;
+  graph-walk is opt-in.
 - **Type-check** every parse-failure path: `ParseError` is a 22-variant
   discriminated union, so the compiler tells you when you've forgotten a
   failure mode.
@@ -37,13 +43,49 @@ Use this library if you're building cargo software that needs to:
 Skip it if you want a generic JSON-LD or RDF toolkit; this is purpose-built
 for the IATA cargo ontology and the ONE Record API spec 2.2.0.
 
+### Publicly verifiable
+
+This library publishes verifiable artifacts so consumers can audit the
+conformance claim independently:
+
+- All releases are GPG-signed git tags + signed npm tarballs (per
+  [`MAINTENANCE.md`](MAINTENANCE.md)).
+- Every spec deviation is documented in [`docs/spec-deviations.md`](docs/spec-deviations.md)
+  with status banners (CLOSED, PARTIAL, deferred-to-v0.3) and explicit
+  guidance on what consumers should do today.
+- Property-based round-trip tests for the eight Ring 1+2 classes
+  (Waybill, Shipment, Piece, Address, Person, Organization, Party,
+  AccountNumber) — `serialize(deserialize(x))` is field-equivalent for
+  any value an `Arbitrary` produces.
+- Contract tests at `test/contract/` exercise the wire format
+  end-to-end against the OLF-hosted reference NE:ONE Server (the IATA
+  OneRecord reference implementation). See [`CONTRIBUTING.md`](CONTRIBUTING.md)
+  for how to run them.
+
 ## Status
 
-`v0.1.0` covers the 32 canonical cargo data model classes (Ring 1–5 plus
-the booking-flow classes) with full round-trip codecs, Zod schemas,
-snapshot tests, property-based round-trip tests, and pre-Zod safety
-primitives. The library is Apache-2.0 and ready for use within the v0.x
-stability policy described in [`MIGRATING.md`](MIGRATING.md).
+`v0.2.0` ships:
+
+- The 32 canonical cargo data model classes (Ring 1–5 plus booking-flow)
+  with full round-trip codecs, Zod schemas, snapshot tests, and pre-Zod
+  safety primitives.
+- Opt-in **graph-walk dispatcher** (`createMapper({ graphWalk: true })` or
+  `onerecord.dispatch.deserialize.<Class>`) emitting all four cross-node
+  integrity ParseError kinds.
+- Spec-correct **`acceptBookingOptionViaRequest`** transition that returns
+  the `BookingOptionRequest` intermediate per spec §5.4. The legacy
+  `acceptBookingOption` is `@deprecated` (removal v0.3 unless IATA §5.4
+  reconciliation restores the §5.2 shortcut).
+- Property-based round-trip tests for **all 8 Ring 1+2 classes**.
+- FSU code fixture regenerated with a real `sha256:` blob hash, sourced
+  from upstream IATA-Cargo via the sibling
+  [`tjo099/onerecord-xlsx-tools`](https://github.com/tjo099/onerecord-xlsx-tools)
+  tool. Library no longer carries the `xlsx` devDep — closes the two
+  high-severity Prototype Pollution + ReDoS advisories.
+- See [`docs/roadmap.md`](docs/roadmap.md) for what's next.
+
+The library is Apache-2.0 and ready for use within the v0.x stability
+policy described in [`MIGRATING.md`](MIGRATING.md).
 
 Spec compliance: cargo data model **3.2 (2025-07 endorsed standard)**, API
 spec **2.2.0**. A small number of deliberate divergences from canonical
@@ -61,7 +103,7 @@ bun add @flaks/onerecord
 pnpm add @flaks/onerecord
 ```
 
-Pin a minor range in production (e.g. `"@flaks/onerecord": "^0.1.0"`).
+Pin a minor range in production (e.g. `"@flaks/onerecord": "^0.2.0"`).
 Per `MIGRATING.md`, minor versions may introduce breaking changes
 documented in `CHANGELOG.md`; patch versions will not.
 
@@ -69,7 +111,7 @@ Installing from a git tag is also supported for testing forks or
 unreleased branches:
 
 ```bash
-bun add git+https://github.com/tjo099/onerecord-mapper#v0.1.2
+bun add git+https://github.com/tjo099/onerecord-mapper#v0.2.0
 ```
 
 ## Usage

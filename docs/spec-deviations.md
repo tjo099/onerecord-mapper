@@ -38,6 +38,15 @@ the `BookingOption` codec, persisting the intermediate state explicitly.
 
 ## 2. Graph-walk validation kinds reserved but not emitted
 
+**Status (v0.2.0)**: CLOSED for JSON-LD structural integrity.
+`createMapper({ graphWalk: true })` and `onerecord.dispatch.deserialize.<Class>`
+emit all four kinds (`duplicate_id_in_graph`, `missing_id`,
+`wrong_type_for_endpoint`, `missing_type`) for cross-node violations
+on direct children of the root node. Domain-semantic cross-node
+validation (AWB consistency, total-pieces sums, etc.) and
+deeper-than-direct-child wrong_type checks are tracked as deviation
+#6, deferred to v0.3.
+
 **Spec**: a graph-walk validation pass would emit
 `duplicate_id_in_graph`, `missing_id`, `wrong_type_for_endpoint`, and
 `missing_type` for cross-node integrity violations.

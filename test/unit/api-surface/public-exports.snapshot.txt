@@ -89,6 +89,7 @@ checkIriCanonical
 checkServerInformation
 createMapper
 defaultIriStrategy
+dereferenceIri
 deserializeAccessDelegation
 deserializeAccessDelegationRequest
 deserializeAccountNumber

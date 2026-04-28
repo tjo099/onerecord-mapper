@@ -144,19 +144,29 @@ integrity only.
 application layer. Do not rely on the library to catch
 cargo-semantics violations.
 
-## 7. IRI dereferenceability checking (deferred to v0.3.0)
+## 7. IRI dereferenceability checking
+
+**Status (v0.2.0)**: CLOSED via opt-in helper. New
+`dereferenceIri(iri, opts)` async utility at `src/iri/dereference.ts`
+performs a `HEAD` (with `GET` fallback on 405) against the IRI,
+returning a structured `{ reachable, status?, reason?, message? }`
+result. Honors `AbortSignal` for cancellation/timeout (default 5 s).
+Optional `authHeader` for protected resources. Custom `fetcher`
+override for testing.
+
+The library does **not** wire the helper into per-class deserializers
+or the dispatch path — dereferenceability is async and would force
+every deserialize call into network I/O. Consumers opt in by calling
+the helper from their application layer when they need it.
 
 **Spec**: §3.2 requires IRIs in OneRecord be dereferenceable.
 
-**v0.1.x and v0.2.0 behavior**: validates IRI scheme/host/syntax via
-`safeIri` (`src/iri/safe-iri.ts`) but does not check that the IRI
-actually resolves.
+**v0.1.x behavior**: not enforced at all; `safeIri` only validates
+scheme/host/syntax.
 
-**Resolution path**: v0.3.0 (likely opt-in, since dereferencing is
-async and adds latency).
-
-**What to do today**: integrators that need dereferenceability
-checks must implement them in the application layer.
+**v0.2.0 behavior**: opt-in via `dereferenceIri` export. Default
+deserializers continue to validate IRI shape only — dereferenceability
+is the integrator's call.
 
 ## 8. Blank-node rejection
 

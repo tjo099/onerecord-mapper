@@ -166,6 +166,20 @@ export type ParseError =
       path: string
       meta?: Record<string, unknown>
     }
+  // v0.2 (deferral F, partially closes deviation #6): emitted by the
+  // dispatch graph-walk when a root-level domain-semantic cardinality
+  // constraint is violated (e.g. Waybill missing the required
+  // `shipmentInformation`). v0.3 expands to AWB consistency,
+  // total-pieces/weight sums, and reference resolvability.
+  | {
+      kind: 'domain_constraint_violation'
+      className: string
+      field: string
+      expected: 'required'
+      specRef: string
+      path: string
+      meta?: Record<string, unknown>
+    }
 
 /**
  * Manifest of every ParseError kind — single source of truth.
@@ -198,6 +212,7 @@ export const PARSE_ERROR_KINDS = [
   'blank_node_forbidden',
   'iri_not_canonical',
   'context_order_violation',
+  'domain_constraint_violation',
 ] as const satisfies ReadonlyArray<ParseError['kind']>
 
 /**
@@ -241,6 +256,7 @@ export const PARSE_ERROR_KIND_TO_FILE: Record<ParseError['kind'], string> = {
   blank_node_forbidden: 'blank-node.test.ts',
   iri_not_canonical: 'iri-canonical.test.ts',
   context_order_violation: 'context-order.test.ts',
+  domain_constraint_violation: 'domain-constraints.test.ts',
 }
 
 /** Public-safe redaction of a ParseError. By default exposes only `kind`. */

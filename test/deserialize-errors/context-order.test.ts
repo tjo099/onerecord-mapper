@@ -51,6 +51,7 @@ describe('dispatchGraphWalk -> context_order_violation (deferral E)', () => {
       '@context': ['https://other-allowed.example', CARGO_CONTEXT_IRI],
       '@type': 'Waybill',
       '@id': 'https://example/wb',
+      shipmentInformation: 'https://example/sh',
     }
     // Note: 'https://other-allowed.example' isn't actually in ALLOWED_CONTEXTS,
     // but checkContextOrder only validates the LAST element. The earlier
@@ -64,6 +65,7 @@ describe('dispatchGraphWalk -> context_order_violation (deferral E)', () => {
       '@context': CARGO_CONTEXT_IRI,
       '@type': 'Waybill',
       '@id': 'https://example/wb',
+      shipmentInformation: 'https://example/sh',
     }
     const r = dispatchGraphWalk(input, 'Waybill')
     expect(r.ok).toBe(true)

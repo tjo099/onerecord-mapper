@@ -438,6 +438,8 @@ export { checkIriCanonical, looksLikeIri } from './dispatch/iri-canonical.js'
 export type { IriCanonicalReason, IriCanonicalResult } from './dispatch/iri-canonical.js'
 export { checkContextOrder } from './dispatch/context-order.js'
 export type { ContextOrderResult } from './dispatch/context-order.js'
+export { DOMAIN_CONSTRAINTS, checkDomainConstraints } from './dispatch/domain-constraints.js'
+export type { DomainConstraint, DomainConstraintViolation } from './dispatch/domain-constraints.js'
 // v0.2 — opt-in IRI dereferenceability helper (deviation #7 closure, deferral I)
 export { dereferenceIri } from './iri/dereference.js'
 export type { DereferenceIriOpts, DereferenceIriResult } from './iri/dereference.js'

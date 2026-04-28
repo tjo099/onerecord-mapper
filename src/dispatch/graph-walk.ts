@@ -1,6 +1,7 @@
 import type { ParseError, ParseResult } from '../result.js'
 import { walkGraph } from '../safety/walk-graph.js'
 import { checkContextOrder } from './context-order.js'
+import { checkDomainConstraints } from './domain-constraints.js'
 import { expectedTypeFor } from './field-types.js'
 import { checkIriCanonical, looksLikeIri } from './iri-canonical.js'
 
@@ -42,6 +43,28 @@ export function dispatchGraphWalk(input: unknown, rootClass: string): ParseResul
           got: ctx as string[],
           lastUnallowed: orderR.lastUnallowed,
           path: '$["@context"]',
+        },
+      }
+    }
+  }
+
+  // domain_constraint_violation (deviation #6 partial closure, deferral F):
+  // root-level cardinality constraints from spec §5.x. Today: Waybill
+  // requires shipmentInformation; Shipment requires containedPieces.
+  // v0.3 expands with AWB consistency, total-pieces/weight sums, and
+  // reference resolvability.
+  if (typeof input === 'object' && input !== null && !Array.isArray(input)) {
+    const violation = checkDomainConstraints(rootClass, input as Record<string, unknown>)
+    if (violation) {
+      return {
+        ok: false,
+        error: {
+          kind: 'domain_constraint_violation',
+          className: violation.className,
+          field: violation.field,
+          expected: violation.expected,
+          specRef: violation.specRef,
+          path: `$.${violation.field}`,
         },
       }
     }

@@ -124,7 +124,22 @@ not cycles) are correctly accepted without false positives.
 untrusted sources. They are semantically equivalent — both indicate a
 malformed graph that the library refused to parse.
 
-## 6. Domain-semantic cross-node validation (deferred to v0.3.0)
+## 6. Domain-semantic cross-node validation
+
+**Status (v0.2.0)**: PARTIALLY CLOSED. Root-level cardinality
+constraints (`Waybill.shipmentInformation` required;
+`Shipment.containedPieces` required ≥1 element) are enforced by the
+opt-in dispatch path via the new `domain_constraint_violation`
+ParseError kind (per `src/dispatch/domain-constraints.ts`). Default
+per-class deserializers preserve v0.1.x permissive behavior — the
+schema continues to mark these fields as optional, the dispatch path
+rejects payloads that omit them.
+
+**Sub-items still deferred to v0.3.0:**
+- AWB number consistency between Waybill ↔ embedded Shipments
+- total-pieces / total-weight sums between Shipment ↔ Pieces
+- reference resolvability for IRIs that reference nodes inside vs
+  outside the graph
 
 **Spec**: cross-node integrity for cargo-domain semantics — AWB
 number consistency between Waybill and embedded Shipments,
@@ -134,15 +149,13 @@ exactly one Shipment, Shipment MUST have ≥1 Piece), reference
 resolvability for IRIs that reference nodes inside vs outside the
 graph.
 
-**v0.1.x and v0.2.0 behavior**: not validated. v0.2.0's graph-walk
-dispatcher (deviation #2 closure) covers JSON-LD structural
-integrity only.
+**v0.1.x behavior**: not validated. Even basic cardinality (Waybill
+without `shipmentInformation`) was silently accepted.
 
-**Resolution path**: v0.3.0.
-
-**What to do today**: domain-side validation lives in your
-application layer. Do not rely on the library to catch
-cargo-semantics violations.
+**v0.2.0 behavior**: opt-in cardinality enforcement via dispatch.
+The other three sub-items are still deferred — they require
+multi-node graph traversal (sums) or external resolution
+(resolvability), neither in v0.2 scope.
 
 ## 7. IRI dereferenceability checking
 

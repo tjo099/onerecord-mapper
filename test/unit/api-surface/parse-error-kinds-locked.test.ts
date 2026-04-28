@@ -6,11 +6,12 @@ describe('PARSE_ERROR_KINDS lock (T3.6)', () => {
   // v0.3 expansion (e.g. blank_node_forbidden, iri_not_canonical for
   // deviations #8 + #9) requires updating this lock as part of the
   // v0.3 PR — explicit, not silent.
-  it('union has exactly 25 kinds', () => {
-    // Bumped 22 -> 25 in v0.2 with `blank_node_forbidden` (deviation #8),
-    // `iri_not_canonical` (deviation #9), and `context_order_violation`
-    // (deviation #10).
-    expect(PARSE_ERROR_KINDS.length).toBe(25)
+  it('union has exactly 26 kinds', () => {
+    // Bumped 22 -> 26 in v0.2 with `blank_node_forbidden` (deviation #8),
+    // `iri_not_canonical` (deviation #9), `context_order_violation`
+    // (deviation #10), and `domain_constraint_violation` (deviation #6
+    // partial closure).
+    expect(PARSE_ERROR_KINDS.length).toBe(26)
   })
 
   it('every kind is a non-empty snake_case string', () => {

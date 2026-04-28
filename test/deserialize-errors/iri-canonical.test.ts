@@ -46,6 +46,7 @@ describe('dispatchGraphWalk -> iri_not_canonical (deferral D)', () => {
     const input = {
       '@id': 'HTTPS://example.com/wb',
       '@type': 'Waybill',
+      shipmentInformation: 'https://example.com/sh', // satisfy domain #6 cardinality
     }
     const r = dispatchGraphWalk(input, 'Waybill')
     expect(r.ok).toBe(false)

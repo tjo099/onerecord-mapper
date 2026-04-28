@@ -74,6 +74,55 @@ If your change touches OneRecord spec semantics:
 - If the change deliberately deviates from the spec, document the deviation
   in `CHANGELOG.md` under "Plan deviations" with reasoning.
 
+## Running contract tests locally
+
+Contract tests at `test/contract/` exercise the library against the
+**OLF-hosted reference NE:ONE Server** (the IATA OneRecord reference
+implementation). They verify our wire format actually round-trips
+through a real server, not just our own codecs.
+
+These tests are **excluded from the default `bun run test` run** (network
+dependency). Run them explicitly with `bun run test:contract` after
+bringing up the local NE:ONE stack.
+
+**Stack setup** (one-time): clone the upstream NE:ONE repository, then
+bring up the multi-service stack. The develop branch's base
+`docker-compose.yml` has three undocumented gaps (Keycloak hostname/port
+plumbing, Redis service definition, OIDC issuer/JWKS URLs); the working
+overlay is `docker-compose.fix-oidc.yml`. Stack composition:
+
+```bash
+git clone https://git.openlogisticsfoundation.org/wg-digitalaircargo/ne-one.git
+cd ne-one
+docker compose \
+  -f src/main/docker-compose/docker-compose.yml \
+  -f src/main/docker-compose/docker-compose.graphdb-server.yml \
+  -f src/main/docker-compose/docker-compose.graphdb.yml \
+  -f src/main/docker-compose/docker-compose.minio.yml \
+  -f src/main/docker-compose/docker-compose.mockserver.yml \
+  -f src/main/docker-compose/docker-compose.keycloak.yml \
+  -f src/main/docker-compose/docker-compose.fix-oidc.yml \
+  up -d
+```
+
+**Service URLs** (defaults; override via env vars):
+- NE:ONE API: `http://localhost:8080` (`NEONE_URL`)
+- Keycloak: `http://localhost:8989` (`NEONE_KEYCLOAK_URL`, `NEONE_REALM=neone`)
+- OIDC client credentials: `neone-client` / well-known dev secret
+  (`NEONE_CLIENT_ID`, `NEONE_CLIENT_SECRET`)
+
+**Wire-format adapter**: `test/contract/_neone-client.ts` translates
+between our 3.2 envelope (`@context` string, `@type` literal, client-minted
+`@id`) and NE:ONE's accepted shape (`@context` object form, `@type` array
+including `LogisticsObject`, server-assigned `@id`). It also defensively
+wraps OWL ObjectProperty values, code-list values, and xsd literals per
+the gotchas catalog at the top of the file. Tests skip cleanly via
+`it.skipIf(!stackUp)` when the stack is unreachable.
+
+**CI integration**: contract tests are not run in CI in v0.2.0 — bundling
+the multi-service stack for headless GitHub Actions runners is non-trivial
+and is deferred to v0.3. Run them manually before tagging a release.
+
 ## Versioning
 
 This project follows [SemVer](https://semver.org/) per the policy in

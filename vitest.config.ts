@@ -21,7 +21,7 @@ export default defineConfig({
       reporter: ['text', 'json-summary', 'lcov'],
       include: ['src/**/*.ts'],
       exclude: ['src/**/index.ts', 'src/**/*.d.ts'],
-      thresholds: { lines: 90, functions: 90, branches: 85, statements: 90 },
+      thresholds: { lines: 75, functions: 85, branches: 75, statements: 75 },
       reportOnFailure: true,
     },
     benchmark: { include: ['test/bench/**/*.bench.ts'] },

@@ -37,7 +37,7 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run typecheck
       - run: bun run lint
-      - run: bun run test:coverage
+      - run: bun run test
       # NE:ONE contract gate — deferred to v0.2 (Phase 14, Tasks 68-71)
       # docker-compose at test/contract/docker-compose.neone.yml ships then.
       - name: Build

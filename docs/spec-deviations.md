@@ -105,6 +105,85 @@ not cycles) are correctly accepted without false positives.
 untrusted sources. They are semantically equivalent — both indicate a
 malformed graph that the library refused to parse.
 
+## 6. Domain-semantic cross-node validation (deferred to v0.3.0)
+
+**Spec**: cross-node integrity for cargo-domain semantics — AWB
+number consistency between Waybill and embedded Shipments,
+total-pieces / total-weight consistency between Shipment and the
+sum of its Pieces, graph-level cardinality (Waybill MUST have
+exactly one Shipment, Shipment MUST have ≥1 Piece), reference
+resolvability for IRIs that reference nodes inside vs outside the
+graph.
+
+**v0.1.x and v0.2.0 behavior**: not validated. v0.2.0's graph-walk
+dispatcher (deviation #2 closure) covers JSON-LD structural
+integrity only.
+
+**Resolution path**: v0.3.0.
+
+**What to do today**: domain-side validation lives in your
+application layer. Do not rely on the library to catch
+cargo-semantics violations.
+
+## 7. IRI dereferenceability checking (deferred to v0.3.0)
+
+**Spec**: §3.2 requires IRIs in OneRecord be dereferenceable.
+
+**v0.1.x and v0.2.0 behavior**: validates IRI scheme/host/syntax via
+`safeIri` (`src/iri/safe-iri.ts`) but does not check that the IRI
+actually resolves.
+
+**Resolution path**: v0.3.0 (likely opt-in, since dereferencing is
+async and adds latency).
+
+**What to do today**: integrators that need dereferenceability
+checks must implement them in the application layer.
+
+## 8. Blank-node rejection (deferred to v0.3.0)
+
+**Spec**: OneRecord forbids blank nodes (`_:b0` style identifiers)
+in the canonical wire form.
+
+**v0.1.x and v0.2.0 behavior**: blank-node `@id` values like
+`_:b0` pass `safeIri` validation (they're not malformed) and
+surface as `zod_validation` somewhere downstream — wrong error class.
+
+**Resolution path**: v0.3.0 — add `blank_node_forbidden`
+`ParseError.kind`, emitted from a pre-Zod check.
+
+**What to do today**: assume blank nodes won't appear from
+spec-compliant peers; if they do, validation will fail with a
+non-specific error.
+
+## 9. IRI canonicalization (deferred to v0.3.0)
+
+**Spec**: RFC 3987 + spec §3.2 require percent-encoding
+normalization, lowercase scheme/host, no default-port.
+
+**v0.1.x and v0.2.0 behavior**: not enforced.
+
+**Resolution path**: v0.3.0 — add `iri_not_canonical`
+`ParseError.kind`.
+
+**What to do today**: round-trip safety is preserved, but two
+non-canonical-but-equivalent IRIs (e.g. `HTTPS://EXAMPLE.COM/...`
+and `https://example.com/...`) compare unequal.
+
+## 10. `@context` array order resolution (deferred to v0.3.0)
+
+**Spec**: JSON-LD 1.1 specifies that when `@context` is an array,
+later contexts override earlier ones.
+
+**v0.1.x and v0.2.0 behavior**: `@context` validation in
+`assertContextAllowed` uses set semantics, not order semantics.
+
+**Resolution path**: v0.3.0 — adopt JSON-LD 1.1 array-order
+semantics; possibly add `context_order_violation` kind.
+
+**What to do today**: do not rely on order-dependent context
+override behavior; pin `@context` to a single canonical IRI in
+your wire format.
+
 ---
 
 ## How deviations are tracked

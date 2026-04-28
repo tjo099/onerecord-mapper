@@ -3,6 +3,7 @@ import { detectCycle } from './circular-ref.js'
 import type { SafetyLimits } from './limits.js'
 import { mergeLimits } from './limits.js'
 import { scanForPollution } from './prototype-pollution.js'
+import { walkGraph } from './walk-graph.js'
 
 export interface PreValidateOpts {
   limits?: Partial<SafetyLimits>
@@ -46,75 +47,11 @@ export function preValidate(input: unknown, opts: PreValidateOpts = {}): ParseRe
     }
   }
 
-  // 2. Recursive walk
-  let nodes = 0
-  function walk(v: unknown, depth: number, path: string): ParseResult<true> {
-    nodes++
-    if (nodes > limits.maxNodes) {
-      return {
-        ok: false,
-        error: {
-          kind: 'node_count_limit_exceeded',
-          count: nodes,
-          limit: limits.maxNodes,
-          ...metaSlice,
-        },
-      }
-    }
-    if (depth > limits.maxDepth) {
-      return {
-        ok: false,
-        error: {
-          kind: 'depth_limit_exceeded',
-          depth,
-          limit: limits.maxDepth,
-          path,
-          ...metaSlice,
-        },
-      }
-    }
-    if (typeof v === 'string') {
-      if (v.length > limits.maxStringLength) {
-        return {
-          ok: false,
-          error: {
-            kind: 'string_too_long',
-            length: v.length,
-            limit: limits.maxStringLength,
-            path,
-            ...metaSlice,
-          },
-        }
-      }
-      return { ok: true, value: true }
-    }
-    if (v === null || typeof v !== 'object') return { ok: true, value: true }
-    if (Array.isArray(v)) {
-      if (v.length > limits.maxArrayLength) {
-        return {
-          ok: false,
-          error: {
-            kind: 'array_too_long',
-            length: v.length,
-            limit: limits.maxArrayLength,
-            path,
-            ...metaSlice,
-          },
-        }
-      }
-      for (let i = 0; i < v.length; i++) {
-        const r = walk(v[i], depth + 1, `${path}[${i}]`)
-        if (!r.ok) return r
-      }
-      return { ok: true, value: true }
-    }
-    for (const k of Object.getOwnPropertyNames(v)) {
-      const r = walk((v as Record<string, unknown>)[k], depth + 1, `${path}.${k}`)
-      if (!r.ok) return r
-    }
-    return { ok: true, value: true }
-  }
-  const walkR = walk(input, 0, '$')
+  // 2. Recursive walk — delegates to walkGraph for depth/node/string/array
+  // limit enforcement. Behavior is byte-equivalent to the inline walk
+  // preValidate carried through v0.1.x; visitor-pattern extraction makes
+  // the same single-traversal usable by src/dispatch/graph-walk.ts.
+  const walkR = walkGraph(input, { limits, ...(opts.meta ? { meta: opts.meta } : {}) })
   if (!walkR.ok) return walkR
 
   // 3. Prototype-pollution

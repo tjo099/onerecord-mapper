@@ -158,21 +158,25 @@ async and adds latency).
 **What to do today**: integrators that need dereferenceability
 checks must implement them in the application layer.
 
-## 8. Blank-node rejection (deferred to v0.3.0)
+## 8. Blank-node rejection
+
+**Status (v0.2.0)**: CLOSED. Pre-Zod check at `src/safety/blank-node.ts`
+emits the new `blank_node_forbidden` ParseError kind for any `@id`
+value matching `_:<label>` syntax. Runs as step 5 in `preValidate`,
+after the depth/node walk + prototype-pollution scan + cycle
+detection. The four `*BookingOption` and `Waybill`/`Shipment`/etc.
+deserializers all inherit the check via `preValidate`.
 
 **Spec**: OneRecord forbids blank nodes (`_:b0` style identifiers)
 in the canonical wire form.
 
-**v0.1.x and v0.2.0 behavior**: blank-node `@id` values like
-`_:b0` pass `safeIri` validation (they're not malformed) and
-surface as `zod_validation` somewhere downstream — wrong error class.
+**v0.1.x behavior**: blank-node `@id` values like
+`_:b0` passed `safeIri` validation (they're not malformed) and
+surfaced as `zod_validation` somewhere downstream — wrong error class.
 
-**Resolution path**: v0.3.0 — add `blank_node_forbidden`
-`ParseError.kind`, emitted from a pre-Zod check.
-
-**What to do today**: assume blank nodes won't appear from
-spec-compliant peers; if they do, validation will fail with a
-non-specific error.
+**v0.2.0 behavior**: rejected pre-Zod with the dedicated
+`blank_node_forbidden` kind; `error.blankId` carries the offending
+identifier; `error.path` carries the JSON path to the violating `@id`.
 
 ## 9. IRI canonicalization (deferred to v0.3.0)
 

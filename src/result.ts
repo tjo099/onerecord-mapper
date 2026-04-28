@@ -131,10 +131,21 @@ export type ParseError =
       path: string
       meta?: Record<string, unknown>
     }
+  // v0.2 (deferral C, closes deviation #8): emitted by the pre-Zod check
+  // at safety/blank-node.ts when an `@id` value uses the JSON-LD blank-node
+  // syntax (`_:b0`-style). Per spec §3.2 the canonical wire form forbids
+  // blank nodes — peers must use stable IRIs.
+  | {
+      kind: 'blank_node_forbidden'
+      blankId: string
+      path: string
+      meta?: Record<string, unknown>
+    }
 
 /**
  * Manifest of every ParseError kind — single source of truth.
  * v3 (A1-R2-B2): bumped 21 -> 22 with the addition of `invalid_pointer`.
+ * v0.2 (deferral C): bumped 22 -> 23 with the addition of `blank_node_forbidden`.
  */
 export const PARSE_ERROR_KINDS = [
   'unknown_context',
@@ -159,6 +170,7 @@ export const PARSE_ERROR_KINDS = [
   'prototype_pollution_attempt',
   'incompatible_ontology_version',
   'invalid_pointer',
+  'blank_node_forbidden',
 ] as const satisfies ReadonlyArray<ParseError['kind']>
 
 /**
@@ -199,6 +211,7 @@ export const PARSE_ERROR_KIND_TO_FILE: Record<ParseError['kind'], string> = {
   prototype_pollution_attempt: 'prototype-key-injection.test.ts',
   incompatible_ontology_version: 'zod-shape.test.ts',
   invalid_pointer: 'prototype-key-injection.test.ts',
+  blank_node_forbidden: 'blank-node.test.ts',
 }
 
 /** Public-safe redaction of a ParseError. By default exposes only `kind`. */

@@ -1,4 +1,5 @@
 import type { ParseResult } from '../result.js'
+import { scanForBlankNodes } from './blank-node.js'
 import { detectCycle } from './circular-ref.js'
 import type { SafetyLimits } from './limits.js'
 import { mergeLimits } from './limits.js'
@@ -61,6 +62,11 @@ export function preValidate(input: unknown, opts: PreValidateOpts = {}): ParseRe
   // 4. JS cycles
   const cycleR = detectCycle(input)
   if (!cycleR.ok) return cycleR
+
+  // 5. Blank-node `@id` rejection (v0.2 deferral C, deviation #8 closure).
+  // Spec §3.2 forbids blank nodes (`_:b0`-style) in the canonical wire form.
+  const blankR = scanForBlankNodes(input, opts.meta ? { meta: opts.meta } : {})
+  if (!blankR.ok) return blankR
 
   return { ok: true, value: input }
 }

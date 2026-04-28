@@ -20,10 +20,11 @@ describe('result module', () => {
     expect(errResult.ok).toBe(false)
   })
 
-  it('PARSE_ERROR_KINDS lists exactly the variants in the union (22 — adds invalid_pointer in v3)', () => {
+  it('PARSE_ERROR_KINDS lists exactly the variants in the union (23 — v0.2 adds blank_node_forbidden)', () => {
     expectTypeOf<(typeof PARSE_ERROR_KINDS)[number]>().toEqualTypeOf<ParseError['kind']>()
-    expect(PARSE_ERROR_KINDS).toHaveLength(22)
+    expect(PARSE_ERROR_KINDS).toHaveLength(23)
     expect(PARSE_ERROR_KINDS).toContain('invalid_pointer')
+    expect(PARSE_ERROR_KINDS).toContain('blank_node_forbidden')
   })
 
   it('PARSE_ERROR_KIND_TO_FILE has exactly one entry per kind (v3 — A2-R2-B5)', () => {

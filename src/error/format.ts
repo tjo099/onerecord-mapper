@@ -74,6 +74,9 @@ export function formatError(e: ParseError): string {
     case 'invalid_pointer':
       return `invalid_pointer at ${e.path}: ${e.reason} (pointer=${e.pointer})`
 
+    case 'blank_node_forbidden':
+      return `blank_node_forbidden at ${e.path}: ${e.blankId}`
+
     default:
       return assertNever(e)
   }

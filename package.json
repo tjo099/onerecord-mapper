@@ -64,7 +64,7 @@
     "test:contract": "vitest run --config vitest.contract.config.ts",
     "test:property": "vitest run test/property",
     "audit": "bun audit",
-    "api:check": "npx --yes @arethetypeswrong/cli@latest --pack ."
+    "api:check": "npx --yes @arethetypeswrong/cli@latest --pack . --profile esm-only"
   },
   "dependencies": {
     "zod": "^4.0.0"

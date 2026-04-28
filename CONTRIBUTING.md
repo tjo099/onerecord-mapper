@@ -85,11 +85,31 @@ These tests are **excluded from the default `bun run test` run** (network
 dependency). Run them explicitly with `bun run test:contract` after
 bringing up the local NE:ONE stack.
 
-**Stack setup** (one-time): clone the upstream NE:ONE repository, then
-bring up the multi-service stack. The develop branch's base
-`docker-compose.yml` has three undocumented gaps (Keycloak hostname/port
-plumbing, Redis service definition, OIDC issuer/JWKS URLs); the working
-overlay is `docker-compose.fix-oidc.yml`. Stack composition:
+**Stack setup**: two paths.
+
+**Path A — bundled compose (faster, recommended for v0.2)**:
+this repo ships a single-file compose at
+`test/contract/docker-compose.neone.yml`. The Keycloak realm config
+is not bundled (OLF License v1.3 §4 distribution review pending);
+fetch it on-demand:
+
+```bash
+mkdir -p test/contract/keycloak
+curl -fsSL -o test/contract/keycloak/neone-realms.json \
+  https://git.openlogisticsfoundation.org/wg-digitalaircargo/ne-one/-/raw/develop/src/main/docker-compose/keycloak/neone-realms.json
+docker compose -f test/contract/docker-compose.neone.yml up -d --wait
+```
+
+Uses NE:ONE in-memory mode (no GraphDB), so it's lighter than the
+full OLF stack. Note: in-memory mode is permissive on RDF strictness
+(see `_neone-client.ts` adapter notes); for stricter validation
+(GraphDB-backed v3.2 ontology), use Path B.
+
+**Path B — full OLF stack** (clone the upstream repo). The develop
+branch's base `docker-compose.yml` has three undocumented gaps
+(Keycloak hostname/port plumbing, Redis service definition, OIDC
+issuer/JWKS URLs); the working overlay is `docker-compose.fix-oidc.yml`.
+Stack composition:
 
 ```bash
 git clone https://git.openlogisticsfoundation.org/wg-digitalaircargo/ne-one.git
@@ -119,9 +139,15 @@ wraps OWL ObjectProperty values, code-list values, and xsd literals per
 the gotchas catalog at the top of the file. Tests skip cleanly via
 `it.skipIf(!stackUp)` when the stack is unreachable.
 
-**CI integration**: contract tests are not run in CI in v0.2.0 — bundling
-the multi-service stack for headless GitHub Actions runners is non-trivial
-and is deferred to v0.3. Run them manually before tagging a release.
+**CI integration**: contract tests are not auto-run in CI in v0.2.0.
+A skeleton bundled compose exists at `test/contract/docker-compose.neone.yml`
+(see Path A above) but headless GitHub Actions integration would
+need: (a) the realm JSON shipped or fetched at runtime,
+(b) per-run `docker compose down -v` to avoid GraphDB saturation
+(observed in 2026-04-28 testing — the in-memory backend can hang
+POST after ~30-50 cumulative resources). Both are v0.3 work.
+Run contract tests manually before tagging a release; the bundled
+compose is the closest portable starting point.
 
 ## Versioning
 

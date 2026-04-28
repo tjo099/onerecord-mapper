@@ -1,0 +1,9 @@
+# Drop the upstream OLF Keycloak realm config here.
+#
+# Fetch via:
+#   curl -fsSL -o neone-realms.json \
+#     https://git.openlogisticsfoundation.org/wg-digitalaircargo/ne-one/-/raw/develop/src/main/docker-compose/keycloak/neone-realms.json
+#
+# Not bundled in this repo — OLF License v1.3 §4 distribution
+# conditions would require a NOTICE + license-mixing review.
+# v0.3 may revisit if a separate "test fixtures" repo is set up.

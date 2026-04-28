@@ -61,7 +61,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:bench": "vitest bench",
-    "test:contract": "vitest run test/contract",
+    "test:contract": "vitest run --config vitest.contract.config.ts",
     "test:property": "vitest run test/property",
     "audit:bun": "bun audit",
     "audit:osv": "npx --yes osv-scanner@latest --lockfile=bun.lock",

@@ -9,11 +9,23 @@ import { CARGO_CONTEXT_IRI } from '../version.js'
 import { canTransition } from './can-transition.js'
 
 /**
- * v3 (A3-R2 top-risk #2): acceptBookingOption DELIBERATELY skips the
- * BookingOptionRequest intermediate and returns a Booking directly. This
- * contradicts spec §5.4 STATE_DIAGRAM (which routes BookingOption.accept ->
- * BookingOptionRequest), but matches spec §5.2 signature. Documented as a
- * deliberate divergence; v0.2 will reconcile.
+ * v0.2 booking-flow status:
+ * - `acceptBookingOptionViaRequest` (below) returns the spec-§5.4
+ *   intermediate `BookingOptionRequest` — the spec-correct path.
+ * - `acceptBookingOption` (legacy, @deprecated) continues to return
+ *   `Booking` directly per spec §5.2 signature; removal v0.3 unless
+ *   IATA §5.4 reconciliation restores the §5.2 shortcut.
+ *
+ * Source-state hardcode: all four BookingOption transition functions
+ * (acceptBookingOption, rejectBookingOption, revokeBookingOption,
+ * acceptBookingOptionViaRequest) pass the constant `'REQUEST_PENDING'`
+ * as the source state to `canTransition` rather than reading
+ * `opt.optionStatus`. This is intentional — see deviation #11 in
+ * `docs/spec-deviations.md`. The schema's optionStatus enum
+ * (OPTION_PROPOSED/_ACCEPTED/_REJECTED) does not align with
+ * STATE_DIAGRAM.BookingOption's source-state keys (REQUEST_PENDING).
+ * Reading `opt.optionStatus` would make every transition fail.
+ * Reconciliation deferred to v0.3.
  */
 
 const TENANT = 'transitions'

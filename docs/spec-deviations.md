@@ -184,6 +184,47 @@ semantics; possibly add `context_order_violation` kind.
 override behavior; pin `@context` to a single canonical IRI in
 your wire format.
 
+## 11. STATE_DIAGRAM source-state keys do not match `BookingOption.optionStatus` enum (deferred to v0.3.0)
+
+**Spec**: a BookingOption's permitted transitions should be gated by its
+own `optionStatus` field — i.e. `STATE_DIAGRAM.BookingOption[opt.optionStatus][action]`
+should resolve.
+
+**v0.1.x and v0.2.0 behavior**: the `STATE_DIAGRAM.BookingOption` map
+uses `'REQUEST_PENDING'` as its only source-state key, but
+`BookingOptionSchema.optionStatus` permits
+`'OPTION_PROPOSED' | 'OPTION_ACCEPTED' | 'OPTION_REJECTED'` only —
+none of which match `'REQUEST_PENDING'`. The four `*BookingOption`
+transition functions (`acceptBookingOption`, `rejectBookingOption`,
+`revokeBookingOption`, and the v0.2-introduced
+`acceptBookingOptionViaRequest`) all pass the constant
+`'REQUEST_PENDING'` to `canTransition`. The hardcode is the only
+thing keeping the call resolvable; reading `opt.optionStatus`
+(the apparent natural implementation) would cause every transition
+to return `forbidden_state_transition`. Pre-existing v0.1.x bug:
+`revokeBookingOption` returns `optionStatus: 'OPTION_REJECTED'`
+(not `OPTION_REVOKED`) — `OPTION_REVOKED` is also missing from the
+schema enum, so even fixing the bug requires the schema rework
+described below.
+
+**Resolution path**: v0.3.0. Two coherent fixes:
+
+- (a) Rework `STATE_DIAGRAM.BookingOption` source-state keys to
+  `OPTION_PROPOSED` / `OPTION_ACCEPTED` / `OPTION_REJECTED` per spec
+  §5.4 (and add `OPTION_REVOKED` to `BookingOptionSchema.optionStatus`),
+  then read `opt.optionStatus` in the transition functions.
+- (b) Pursue an IATA spec amendment that aligns the resource enum with
+  the state-diagram keys (lower likelihood).
+
+Choice deferred until IATA §5.4 reconciliation is settled — see also
+deviation #1 (related; v0.2 closed half via
+`acceptBookingOptionViaRequest`).
+
+**What to do today**: nothing. The hardcoded source state matches
+what `STATE_DIAGRAM` contains; transitions resolve correctly. The
+mismatch between schema and state-machine is invisible to consumers
+of the booking-flow helpers.
+
 ---
 
 ## How deviations are tracked

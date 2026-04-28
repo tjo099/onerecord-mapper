@@ -16,12 +16,17 @@ import { expectedTypeFor } from './field-types.js'
  * Does NOT replace per-class Zod schema validation — that runs after this
  * pass succeeds, in `dispatch.deserialize.<Class>`.
  *
- * v0.2 limitation: `wrong_type_for_endpoint` is only checked for direct
- * children of the root node. Comprehensive containing-class tracking
- * for deeper nesting is deferred to v0.3 (deviation #6 closure).
+ * v0.2: containing-class tracking via path-keyed map of object @types,
+ * so `wrong_type_for_endpoint` and `missing_id` checks fire for all
+ * embedded references, not just direct children of the root.
  */
 export function dispatchGraphWalk(input: unknown, rootClass: string): ParseResult<true> {
   const seen = new Map<string, string>() // @id -> first path seen
+  // Path-keyed @type lookup: maps each object node's path to its declared
+  // (or root-defaulted) @type. Used to resolve the containing class when
+  // checking wrong_type_for_endpoint / missing_id at any depth.
+  const pathToType = new Map<string, string>()
+  pathToType.set('$', rootClass)
   let firstError: ParseError | undefined
 
   const walkR = walkGraph(input, {}, (node, path, _depth) => {
@@ -32,6 +37,10 @@ export function dispatchGraphWalk(input: unknown, rootClass: string): ParseResul
     const id = typeof obj['@id'] === 'string' ? obj['@id'] : undefined
     const type = typeof obj['@type'] === 'string' ? obj['@type'] : undefined
 
+    // Record this object's @type by path so children can find their
+    // containing class. Falls back to rootClass for the root path.
+    if (type) pathToType.set(path, type)
+
     // missing_type: every non-leaf node must declare @type
     if (!type && hasObjectChildren(obj)) {
       firstError = { kind: 'missing_type', path }
@@ -39,9 +48,11 @@ export function dispatchGraphWalk(input: unknown, rootClass: string): ParseResul
     }
 
     const parentField = pathToParentField(path)
+    const containingClass = parentField ? containingClassFor(path, pathToType) : undefined
 
-    // missing_id: nodes embedded in cross-reference positions must have @id
-    if (parentField && !id && requiresId(parentField, rootClass)) {
+    // missing_id: nodes embedded in cross-reference positions must have @id.
+    // Cross-reference positions are fields in FIELD_TYPES for the containing class.
+    if (parentField && containingClass && !id && requiresId(parentField, containingClass)) {
       firstError = {
         kind: 'missing_id',
         objectType: type ?? 'unknown',
@@ -59,10 +70,11 @@ export function dispatchGraphWalk(input: unknown, rootClass: string): ParseResul
       seen.set(id, path)
     }
 
-    // wrong_type_for_endpoint: embedded @type must match the field's expected class.
-    // v0.2 only validates direct children of the root; deeper nesting is v0.3.
-    if (type && parentField && isDirectChildOfRoot(path)) {
-      const expected = expectedTypeFor(rootClass, parentField)
+    // wrong_type_for_endpoint: embedded @type must match the field's
+    // expected class. Now checked at any depth — containing class
+    // resolved via the path-keyed @type map.
+    if (type && parentField && containingClass) {
+      const expected = expectedTypeFor(containingClass, parentField)
       if (expected && expected !== '*' && expected !== type) {
         firstError = {
           kind: 'wrong_type_for_endpoint',
@@ -99,23 +111,36 @@ function pathToParentField(path: string): string | undefined {
 }
 
 /**
- * True for paths exactly one segment below the root (e.g. `$.field`,
- * `$.field[0]`). False for `$` itself or deeper paths.
+ * Resolve the containing class for the node at `path` by looking up the
+ * @type recorded at the parent object's path. Skips array-index segments
+ * (those don't carry their own @type).
+ *
+ * Examples (rootClass = 'Waybill'):
+ *  - `$.shipmentInformation` → parent path `$` → 'Waybill'
+ *  - `$.shipmentInformation.consignee` → parent path `$.shipmentInformation`
+ *    → whatever @type was declared on that node (typically 'Shipment')
+ *  - `$.containedPieces[0]` → strip `[0]` then `.containedPieces` → '$' → 'Waybill'
+ *    (the array container itself isn't an object node so we step past it)
+ *  - `$.containedPieces[0].dimensions` → parent path `$.containedPieces[0]`
+ *    → @type at that path (typically 'Piece')
  */
-function isDirectChildOfRoot(path: string): boolean {
-  if (path === '$') return false
-  const segments = path.split('.').slice(1) // strip leading "$"
-  return segments.length === 1
+function containingClassFor(path: string, pathToType: Map<string, string>): string | undefined {
+  if (path === '$') return undefined
+  // Strip the trailing `.field` or `[N]` segment to get the parent path.
+  const stripped = path.replace(/\[\d+\]$/, '')
+  const lastDot = stripped.lastIndexOf('.')
+  if (lastDot < 0) return undefined
+  let parentPath = stripped.slice(0, lastDot)
+  if (parentPath === '') parentPath = '$'
+  return pathToType.get(parentPath)
 }
 
 /**
  * A field requires `@id` on referenced nodes if it's in `FIELD_TYPES`
- * (= it points at another logistics-object node). Scalar fields and
- * unmapped fields don't require `@id`.
- *
- * v0.2 only checks direct children of root — same scope as
- * wrong_type_for_endpoint. Deeper nesting is v0.3.
+ * for the given containing class (= the field points at another
+ * logistics-object node). Scalar fields and unmapped fields don't
+ * require `@id`.
  */
-function requiresId(parentField: string, rootClass: string): boolean {
-  return expectedTypeFor(rootClass, parentField) !== undefined
+function requiresId(parentField: string, containingClass: string): boolean {
+  return expectedTypeFor(containingClass, parentField) !== undefined
 }

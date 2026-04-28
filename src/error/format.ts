@@ -80,6 +80,9 @@ export function formatError(e: ParseError): string {
     case 'iri_not_canonical':
       return `iri_not_canonical at ${e.path}: ${e.reason} (iri=${e.iri})`
 
+    case 'context_order_violation':
+      return `context_order_violation at ${e.path}: last element '${e.lastUnallowed}' is not in the allowlist (effective context per JSON-LD 1.1)`
+
     default:
       return assertNever(e)
   }

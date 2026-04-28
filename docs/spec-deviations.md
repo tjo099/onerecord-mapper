@@ -199,20 +199,29 @@ normalization is intentionally NOT checked (modern URL parsers
 already normalize it; the false-positive surface was too high
 for v0.2). Considered for v0.3 if integrators report mismatches.
 
-## 10. `@context` array order resolution (deferred to v0.3.0)
+## 10. `@context` array order resolution
+
+**Status (v0.2.0)**: CLOSED for the opt-in dispatch path. The
+`dispatchGraphWalk` (and therefore `createMapper({ graphWalk: true })`
++ `onerecord.dispatch.deserialize.<Class>`) emits the new
+`context_order_violation` ParseError kind when the root `@context` is
+an array whose LAST element is not in the allowlist. Per JSON-LD 1.1
+§3.7, later items override earlier ones for term definitions, so the
+last element is the effective cargo-term context — if it's
+unallowed, cargo-term semantics are not what the consumer thinks.
 
 **Spec**: JSON-LD 1.1 specifies that when `@context` is an array,
 later contexts override earlier ones.
 
-**v0.1.x and v0.2.0 behavior**: `@context` validation in
-`assertContextAllowed` uses set semantics, not order semantics.
+**v0.1.x behavior**: `@context` validation in `assertContextAllowed`
+used set semantics — any allowed context anywhere in the array
+passed.
 
-**Resolution path**: v0.3.0 — adopt JSON-LD 1.1 array-order
-semantics; possibly add `context_order_violation` kind.
-
-**What to do today**: do not rely on order-dependent context
-override behavior; pin `@context` to a single canonical IRI in
-your wire format.
+**v0.2.0 behavior**: default `assertContextAllowed` keeps set
+semantics (v0.1.x compat — no breaking change in default deserializers).
+Dispatch path adds the order-aware check on top: array `@context`
+must end with an allowed entry, otherwise `context_order_violation`
+fires before per-class Zod validation.
 
 ## 11. STATE_DIAGRAM source-state keys do not match `BookingOption.optionStatus` enum (deferred to v0.3.0)
 

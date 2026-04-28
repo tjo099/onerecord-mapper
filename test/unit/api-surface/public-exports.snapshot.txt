@@ -84,6 +84,7 @@ asJsonPointer
 assertContextAllowed
 assertOntologyVersion
 canTransition
+checkContextOrder
 checkIriCanonical
 checkServerInformation
 createMapper

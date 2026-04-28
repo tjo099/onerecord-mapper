@@ -153,6 +153,19 @@ export type ParseError =
       path: string
       meta?: Record<string, unknown>
     }
+  // v0.2 (deferral E, closes deviation #10): emitted by the dispatch
+  // graph-walk when the root `@context` is an array whose LAST element
+  // is not in the allowlist. JSON-LD 1.1 §3.7 specifies later items
+  // override earlier ones, so the last item is the effective context
+  // for term definitions. Opt-in via dispatch only — default
+  // assertContextAllowed preserves v0.1.x set semantics.
+  | {
+      kind: 'context_order_violation'
+      got: string[]
+      lastUnallowed: string
+      path: string
+      meta?: Record<string, unknown>
+    }
 
 /**
  * Manifest of every ParseError kind — single source of truth.
@@ -184,6 +197,7 @@ export const PARSE_ERROR_KINDS = [
   'invalid_pointer',
   'blank_node_forbidden',
   'iri_not_canonical',
+  'context_order_violation',
 ] as const satisfies ReadonlyArray<ParseError['kind']>
 
 /**
@@ -226,6 +240,7 @@ export const PARSE_ERROR_KIND_TO_FILE: Record<ParseError['kind'], string> = {
   invalid_pointer: 'prototype-key-injection.test.ts',
   blank_node_forbidden: 'blank-node.test.ts',
   iri_not_canonical: 'iri-canonical.test.ts',
+  context_order_violation: 'context-order.test.ts',
 }
 
 /** Public-safe redaction of a ParseError. By default exposes only `kind`. */

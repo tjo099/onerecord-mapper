@@ -1,5 +1,6 @@
 import type { ParseError, ParseResult } from '../result.js'
 import { walkGraph } from '../safety/walk-graph.js'
+import { checkContextOrder } from './context-order.js'
 import { expectedTypeFor } from './field-types.js'
 import { checkIriCanonical, looksLikeIri } from './iri-canonical.js'
 
@@ -24,6 +25,28 @@ import { checkIriCanonical, looksLikeIri } from './iri-canonical.js'
  * embedded references, not just direct children of the root.
  */
 export function dispatchGraphWalk(input: unknown, rootClass: string): ParseResult<true> {
+  // context_order_violation (deviation #10 closure, deferral E): if the
+  // root @context is an array, verify the LAST element is allowed.
+  // Per JSON-LD 1.1 §3.7 later items override earlier ones for term
+  // definitions; the last item is the effective cargo-term context.
+  // String-form @context is delegated to assertContextAllowed (already
+  // runs in the per-class deserializer).
+  if (typeof input === 'object' && input !== null && '@context' in input) {
+    const ctx = (input as Record<string, unknown>)['@context']
+    const orderR = checkContextOrder(ctx)
+    if (!orderR.ok && orderR.lastUnallowed !== undefined) {
+      return {
+        ok: false,
+        error: {
+          kind: 'context_order_violation',
+          got: ctx as string[],
+          lastUnallowed: orderR.lastUnallowed,
+          path: '$["@context"]',
+        },
+      }
+    }
+  }
+
   const seen = new Map<string, string>() // @id -> first path seen
   // Path-keyed @type lookup: maps each object node's path to its declared
   // (or root-defaulted) @type. Used to resolve the containing class when

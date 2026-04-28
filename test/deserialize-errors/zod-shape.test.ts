@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { WaybillCodec, applyChange } from '../../src/index.js'
 import type { Change } from '../../src/classes/change/schema.js'
-import type { Waybill } from '../../src/classes/waybill/schema.js'
 import { deserializeWaybill } from '../../src/classes/waybill/index.js'
+import type { Waybill } from '../../src/classes/waybill/schema.js'
+import { WaybillCodec, applyChange } from '../../src/index.js'
 import { CARGO_CONTEXT_IRI } from '../../src/version.js'
 import { createWaybill } from '../factories/waybill.js'
 

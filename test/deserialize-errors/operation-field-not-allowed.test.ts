@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { asJsonPointer, validateOperation } from '../../src/index.js'
 import type { Operation } from '../../src/classes/operation/schema.js'
+import { asJsonPointer, validateOperation } from '../../src/index.js'
 import { CARGO_CONTEXT_IRI } from '../../src/version.js'
 
 describe('deserialize -> operation_field_not_allowed', () => {

@@ -1,4 +1,7 @@
 import { describe, expect, it } from 'vitest'
+import { WaybillCodec, applyChange } from '../../src/index.js'
+import type { Change } from '../../src/classes/change/schema.js'
+import type { Waybill } from '../../src/classes/waybill/schema.js'
 import { deserializeWaybill } from '../../src/classes/waybill/index.js'
 import { CARGO_CONTEXT_IRI } from '../../src/version.js'
 import { createWaybill } from '../factories/waybill.js'
@@ -32,8 +35,46 @@ describe('deserialize -> zod_validation + adjacent shape errors', () => {
     if (!r.ok) expect(r.error.meta).toStrictEqual({ requestId: 'rq1' })
   })
 
-  it.skip('change_partial_failure (Phase 9 — applyChange)', () => {
-    // Filled in when applyChange lands.
+  it('change_partial_failure: applyChange wraps post-apply zod failure', () => {
+    const wb: Waybill = {
+      '@context': CARGO_CONTEXT_IRI,
+      '@type': 'Waybill',
+      '@id': 'https://test.example/test/waybill/wb1',
+      waybillType: 'MASTER',
+      waybillPrefix: '123',
+      waybillNumber: '12345678',
+    }
+    // Two ops: the first replaces waybillPrefix with a valid 3-digit value;
+    // the second replaces waybillNumber with a non-8-digit value, which the
+    // post-apply codec re-validation rejects (waybillNumber = /^\d{8}$/).
+    const change: Change = {
+      '@context': CARGO_CONTEXT_IRI,
+      '@type': 'Change',
+      '@id': 'https://test.example/test/change/c1',
+      hasOperation: [
+        {
+          '@context': CARGO_CONTEXT_IRI,
+          '@type': 'Operation',
+          '@id': 'https://test.example/test/operation/op1',
+          op: 'ADD',
+          path: '/waybillPrefix',
+          value: '999',
+        },
+        {
+          '@context': CARGO_CONTEXT_IRI,
+          '@type': 'Operation',
+          '@id': 'https://test.example/test/operation/op2',
+          op: 'ADD',
+          path: '/waybillNumber',
+          value: 'abc',
+        },
+      ],
+    }
+    const r = applyChange(WaybillCodec, wb, change)
+    expect(r.ok).toBe(false)
+    if (!r.ok) {
+      expect(r.error.kind).toBe('change_partial_failure')
+    }
   })
 
   it.skip('incompatible_ontology_version (Phase 5+ — version mismatch via assertOntologyVersion)', () => {

@@ -178,19 +178,26 @@ surfaced as `zod_validation` somewhere downstream — wrong error class.
 `blank_node_forbidden` kind; `error.blankId` carries the offending
 identifier; `error.path` carries the JSON path to the violating `@id`.
 
-## 9. IRI canonicalization (deferred to v0.3.0)
+## 9. IRI canonicalization
+
+**Status (v0.2.0)**: CLOSED for the opt-in dispatch path. The
+`dispatchGraphWalk` (and therefore `createMapper({ graphWalk: true })`
++ `onerecord.dispatch.deserialize.<Class>`) emits the new
+`iri_not_canonical` ParseError kind for any IRI string in the graph
+that has uppercase scheme, uppercase host, or an explicit default
+port (`:443` for https, `:80` for http). Default per-class
+deserializers stay v0.1.x-permissive — canonicalization is opt-in,
+matching the deviation #2 (graph-walk) opt-in pattern.
 
 **Spec**: RFC 3987 + spec §3.2 require percent-encoding
 normalization, lowercase scheme/host, no default-port.
 
-**v0.1.x and v0.2.0 behavior**: not enforced.
+**v0.1.x behavior**: not enforced.
 
-**Resolution path**: v0.3.0 — add `iri_not_canonical`
-`ParseError.kind`.
-
-**What to do today**: round-trip safety is preserved, but two
-non-canonical-but-equivalent IRIs (e.g. `HTTPS://EXAMPLE.COM/...`
-and `https://example.com/...`) compare unequal.
+**v0.2.0 behavior**: opt-in via dispatch. Percent-encoding case
+normalization is intentionally NOT checked (modern URL parsers
+already normalize it; the false-positive surface was too high
+for v0.2). Considered for v0.3 if integrators report mismatches.
 
 ## 10. `@context` array order resolution (deferred to v0.3.0)
 

@@ -23,9 +23,9 @@ describe('deserialize-errors catalogue (v3)', () => {
     expect(missing).toHaveLength(0)
   })
 
-  it('produces a 16-file deduplicated set after collapsing (v0.2: was 15, blank-node.test.ts added)', () => {
+  it('produces a 17-file deduplicated set after collapsing (v0.2: blank-node + iri-canonical added)', () => {
     const fileSet = new Set(Object.values(PARSE_ERROR_KIND_TO_FILE))
-    expect(fileSet.size).toBe(16)
+    expect(fileSet.size).toBe(17)
   })
 
   it('every file in the rename map has at least one kind pointing at it', () => {

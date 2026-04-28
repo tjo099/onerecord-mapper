@@ -84,6 +84,7 @@ asJsonPointer
 assertContextAllowed
 assertOntologyVersion
 canTransition
+checkIriCanonical
 checkServerInformation
 createMapper
 defaultIriStrategy
@@ -123,6 +124,7 @@ extractInvalidIriIssue
 findInvalidIriInIssues
 formatError
 fsuCodeToEventTypeCode
+looksLikeIri
 mergeLimits
 ok
 onerecord

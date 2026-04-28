@@ -1,6 +1,7 @@
 import type { ParseError, ParseResult } from '../result.js'
 import { walkGraph } from '../safety/walk-graph.js'
 import { expectedTypeFor } from './field-types.js'
+import { checkIriCanonical, looksLikeIri } from './iri-canonical.js'
 
 /**
  * Cross-node graph integrity analysis. Runs as a single walk via
@@ -10,6 +11,8 @@ import { expectedTypeFor } from './field-types.js'
  *  - `wrong_type_for_endpoint` — a node's `@type` does not match the
  *    declared expected type for the field that references it.
  *  - `missing_type` — a non-leaf node lacks `@type`.
+ *  - `iri_not_canonical` — an IRI string is not in canonical form
+ *    (lowercase scheme/host, no default port; RFC 3987 + spec §3.2).
  *
  * Returns `ok: true` if the graph is structurally sound (per spec §3.2 + §7.1).
  *
@@ -31,6 +34,24 @@ export function dispatchGraphWalk(input: unknown, rootClass: string): ParseResul
 
   const walkR = walkGraph(input, {}, (node, path, _depth) => {
     if (firstError) return // short-circuit on first error
+
+    // iri_not_canonical: check every IRI-shaped string value in the
+    // graph (deviation #9 closure, deferral D). Runs before the
+    // object-only checks below because string values are visited
+    // separately by walkGraph.
+    if (typeof node === 'string' && looksLikeIri(node)) {
+      const r = checkIriCanonical(node)
+      if (!r.canonical && r.reason) {
+        firstError = {
+          kind: 'iri_not_canonical',
+          iri: node,
+          reason: r.reason,
+          path,
+        }
+      }
+      return
+    }
+
     if (typeof node !== 'object' || node === null || Array.isArray(node)) return
 
     const obj = node as Record<string, unknown>

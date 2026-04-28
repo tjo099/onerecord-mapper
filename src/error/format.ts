@@ -77,6 +77,9 @@ export function formatError(e: ParseError): string {
     case 'blank_node_forbidden':
       return `blank_node_forbidden at ${e.path}: ${e.blankId}`
 
+    case 'iri_not_canonical':
+      return `iri_not_canonical at ${e.path}: ${e.reason} (iri=${e.iri})`
+
     default:
       return assertNever(e)
   }

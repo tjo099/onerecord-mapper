@@ -141,6 +141,18 @@ export type ParseError =
       path: string
       meta?: Record<string, unknown>
     }
+  // v0.2 (deferral D, closes deviation #9): emitted by the dispatch
+  // graph-walk when an IRI string is not in RFC 3987 / spec §3.2
+  // canonical form (lowercase scheme, lowercase host, no default port).
+  // Opt-in only (dispatch namespace + createMapper({ graphWalk: true })) —
+  // default deserializers stay v0.1.x-permissive.
+  | {
+      kind: 'iri_not_canonical'
+      iri: string
+      reason: 'scheme_not_lowercase' | 'host_not_lowercase' | 'default_port'
+      path: string
+      meta?: Record<string, unknown>
+    }
 
 /**
  * Manifest of every ParseError kind — single source of truth.
@@ -171,6 +183,7 @@ export const PARSE_ERROR_KINDS = [
   'incompatible_ontology_version',
   'invalid_pointer',
   'blank_node_forbidden',
+  'iri_not_canonical',
 ] as const satisfies ReadonlyArray<ParseError['kind']>
 
 /**
@@ -212,6 +225,7 @@ export const PARSE_ERROR_KIND_TO_FILE: Record<ParseError['kind'], string> = {
   incompatible_ontology_version: 'zod-shape.test.ts',
   invalid_pointer: 'prototype-key-injection.test.ts',
   blank_node_forbidden: 'blank-node.test.ts',
+  iri_not_canonical: 'iri-canonical.test.ts',
 }
 
 /** Public-safe redaction of a ParseError. By default exposes only `kind`. */

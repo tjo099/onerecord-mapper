@@ -83,5 +83,9 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "overrides": {
+    "vite": "^6.4.2",
+    "esbuild": "^0.25.0"
   }
 }

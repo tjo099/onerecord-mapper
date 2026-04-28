@@ -12,7 +12,7 @@ export default defineConfig({
     setupFiles: ['./test/setup.ts'],
     pool: 'threads',
     poolOptions: { threads: { singleThread: false } },
-    ...(SHARD && SHARD_TOTAL ? { shard: { index: Number(SHARD), count: Number(SHARD_TOTAL) } } : {}),
+    ...(SHARD && SHARD_TOTAL ? { shard: `${SHARD}/${SHARD_TOTAL}` } : {}),
     snapshotFormat: { printBasicPrototype: false },
     resolveSnapshotPath: (testPath, snapExtension) =>
       testPath.replace(/\.test\.ts$/, '.snap' + snapExtension),

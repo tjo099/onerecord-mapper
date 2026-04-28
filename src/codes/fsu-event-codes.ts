@@ -1,30 +1,32 @@
-// Codes verified against IATA-Cargo XFSU-Status-Codes.xlsx via the fixture
-// at test/fixtures/iata/xfsu-status-codes.json (Task 37a). Per spec
-// acceptance #2: exactly 26 codes.
+// Codes derived from IATA-Cargo XFSU Status Codes.xlsx via the sibling
+// onerecord-xlsx-tools convert script; pinned by SHA256 of the upstream
+// xlsx blob in test/fixtures/iata/xfsu-status-codes.json. v0.2.0 adopted
+// the upstream 26 codes (Phase 0.2 Outcome C, see spec §2.4); 6 codes
+// changed in each direction vs. the v0.1.x hand-pin.
 export const FSU_EVENT_CODES = Object.freeze({
   ARR: 'ARR',
   AWD: 'AWD',
   AWR: 'AWR',
   BKD: 'BKD',
   CCD: 'CCD',
-  CLR: 'CLR',
   CRC: 'CRC',
   DDL: 'DDL',
   DEP: 'DEP',
   DIS: 'DIS',
   DLV: 'DLV',
+  DOC: 'DOC',
+  DPU: 'DPU',
+  FIW: 'FIW',
   FOH: 'FOH',
-  FOO: 'FOO',
-  FWB: 'FWB',
+  FOW: 'FOW',
   MAN: 'MAN',
   NFD: 'NFD',
-  OFD: 'OFD',
+  OCI: 'OCI',
+  OSI: 'OSI',
   PRE: 'PRE',
   RCF: 'RCF',
-  RCM: 'RCM',
   RCS: 'RCS',
   RCT: 'RCT',
-  RCV: 'RCV',
   TFD: 'TFD',
   TGC: 'TGC',
   TRM: 'TRM',

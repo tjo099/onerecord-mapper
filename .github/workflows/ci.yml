@@ -45,7 +45,7 @@ jobs:
       - name: bun audit (GHSA)
         run: bun audit
       - name: OSV scan (osv.dev)
-        uses: google/osv-scanner-action/osv-scanner-action@v2.3.5
+        uses: google/osv-scanner-action/osv-scanner-action@v2.3.8
         with:
           scan-args: |-
             --lockfile=./bun.lock

@@ -1,0 +1,6 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "LineItemPackage",
+  "@id": "https://snapshot.example/wf/lineitempackage/fixed-id",
+  "packageSlac": 1
+}

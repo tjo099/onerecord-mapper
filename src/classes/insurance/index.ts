@@ -1,0 +1,5 @@
+export { InsuranceCodec } from './codec.js'
+export { deserializeInsurance } from './deserialize.js'
+export { InsuranceSchema } from './schema.js'
+export type { Insurance, JsonLdInsurance } from './schema.js'
+export { serializeInsurance, serializeInsuranceStrict } from './serialize.js'

@@ -1,0 +1,9 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "Insurance",
+  "@id": "https://snapshot.example/wf/insurance/fixed-id",
+  "insuredAmount": {
+    "numericalValue": 1000,
+    "currencyUnit": "NOK"
+  }
+}

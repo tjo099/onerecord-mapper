@@ -1,0 +1,7 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "Company",
+  "@id": "https://snapshot.example/wf/company/fixed-id",
+  "name": "Kuehne+Nagel",
+  "iataCargoAgentCode": "8112345"
+}

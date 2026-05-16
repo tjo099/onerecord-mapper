@@ -1,0 +1,5 @@
+export { CompanyCodec } from './codec.js'
+export { deserializeCompany } from './deserialize.js'
+export { CompanySchema } from './schema.js'
+export type { JsonLdCompany, Company } from './schema.js'
+export { serializeCompany, serializeCompanyStrict } from './serialize.js'

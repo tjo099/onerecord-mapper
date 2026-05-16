@@ -1,0 +1,5 @@
+export { OtherChargeCodec } from './codec.js'
+export { deserializeOtherCharge } from './deserialize.js'
+export { OtherChargeSchema } from './schema.js'
+export type { JsonLdOtherCharge, OtherCharge } from './schema.js'
+export { serializeOtherCharge, serializeOtherChargeStrict } from './serialize.js'

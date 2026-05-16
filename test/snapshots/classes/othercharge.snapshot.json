@@ -1,0 +1,6 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "OtherCharge",
+  "@id": "https://snapshot.example/wf/othercharge/fixed-id",
+  "otherChargeCode": "MY"
+}

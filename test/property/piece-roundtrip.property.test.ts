@@ -21,6 +21,30 @@ const pieceArb = fc.record({
   dimensions: fc.option(dimensionsArb, { nil: undefined }),
   goodsDescription: fc.option(fc.string({ minLength: 0, maxLength: 1024 }), { nil: undefined }),
   slac: fc.option(fc.integer({ min: 0, max: 10_000 }), { nil: undefined }),
+  specialHandlingCodes: fc.option(
+    fc.array(fc.constantFrom('PER', 'EAP', 'ELI', 'ICE'), { minLength: 1, maxLength: 3 }),
+    { nil: undefined },
+  ),
+  otherIdentifiers: fc.option(
+    fc.array(
+      fc.record({
+        otherIdentifierType: fc.constant('BARCODE'),
+        textualValue: fc.string({ minLength: 1 }),
+      }),
+      { minLength: 1, maxLength: 3 },
+    ),
+    { nil: undefined },
+  ),
+  ofShipment: fc.option(iriArb('shipment'), { nil: undefined }),
+  containedPieces: fc.option(fc.array(iriArb('piece'), { minLength: 1, maxLength: 3 }), {
+    nil: undefined,
+  }),
+  upid: fc.option(fc.string({ minLength: 1, maxLength: 128 }), { nil: undefined }),
+  packagingType: fc.option(iriArb('packagingtype'), { nil: undefined }),
+  securityDeclarations: fc.option(
+    fc.array(iriArb('securitydeclaration'), { minLength: 1, maxLength: 3 }),
+    { nil: undefined },
+  ),
 })
 
 describe('Piece round-trip property (fast-check)', () => {

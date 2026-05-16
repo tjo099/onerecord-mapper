@@ -1,0 +1,5 @@
+export { CustomsInformationCodec } from './codec.js'
+export { deserializeCustomsInformation } from './deserialize.js'
+export { CustomsInformationSchema } from './schema.js'
+export type { CustomsInformation, JsonLdCustomsInformation } from './schema.js'
+export { serializeCustomsInformation, serializeCustomsInformationStrict } from './serialize.js'

@@ -1,0 +1,6 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "CustomsInformation",
+  "@id": "https://snapshot.example/wf/customsinformation/fixed-id",
+  "ociLineNumber": 1
+}

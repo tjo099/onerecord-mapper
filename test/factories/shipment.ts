@@ -10,7 +10,6 @@ export function createShipment(
     ...envelope('Shipment'),
     '@type': 'Shipment',
     totalGrossWeight: { unit: 'KGM', value: 100 },
-    pieceCount: 1,
     ...overrides,
   } as ShipmentFactoryShape
 }

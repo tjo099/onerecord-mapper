@@ -1,0 +1,6 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "WaybillLineItem",
+  "@id": "https://snapshot.example/wf/waybilllineitem/fixed-id",
+  "lineItemNumber": 1
+}

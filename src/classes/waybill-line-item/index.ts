@@ -1,0 +1,5 @@
+export { WaybillLineItemCodec } from './codec.js'
+export { deserializeWaybillLineItem } from './deserialize.js'
+export { WaybillLineItemSchema } from './schema.js'
+export type { JsonLdWaybillLineItem, WaybillLineItem } from './schema.js'
+export { serializeWaybillLineItem, serializeWaybillLineItemStrict } from './serialize.js'

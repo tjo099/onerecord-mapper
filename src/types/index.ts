@@ -36,13 +36,20 @@ export type { BookingShipment, JsonLdBookingShipment } from '../classes/booking-
 export type { BookingTimes, JsonLdBookingTimes } from '../classes/booking-times/index.js'
 export type { Change, JsonLdChange } from '../classes/change/index.js'
 export type { ChangeRequest, JsonLdChangeRequest } from '../classes/change-request/index.js'
+export type { Company, JsonLdCompany } from '../classes/company/index.js'
+export type {
+  CustomsInformation,
+  JsonLdCustomsInformation,
+} from '../classes/customs-information/index.js'
 export type { HandlingService, JsonLdHandlingService } from '../classes/handling-service/index.js'
+export type { Insurance, JsonLdInsurance } from '../classes/insurance/index.js'
+export type { JsonLdLineItemPackage, LineItemPackage } from '../classes/line-item-package/index.js'
 export type { JsonLdLocation, Location } from '../classes/location/index.js'
 export type { JsonLdLogisticsEvent, LogisticsEvent } from '../classes/logistics-event/index.js'
 export type { JsonLdMovementTime, MovementTime } from '../classes/movement-time/index.js'
 export type { JsonLdNotification, Notification } from '../classes/notification/index.js'
 export type { JsonLdOperation, Operation } from '../classes/operation/index.js'
-export type { JsonLdOrganization, Organization } from '../classes/organization/index.js'
+export type { JsonLdOtherCharge, OtherCharge } from '../classes/other-charge/index.js'
 export type { JsonLdParty, Party } from '../classes/party/index.js'
 export type { JsonLdPerson, Person } from '../classes/person/index.js'
 export type { JsonLdPiece, Piece } from '../classes/piece/index.js'
@@ -70,3 +77,7 @@ export type {
   VerificationRequest,
 } from '../classes/verification-request/index.js'
 export type { JsonLdWaybill, Waybill } from '../classes/waybill/index.js'
+export type {
+  JsonLdWaybillLineItem,
+  WaybillLineItem,
+} from '../classes/waybill-line-item/index.js'

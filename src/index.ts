@@ -113,15 +113,68 @@ export {
 } from './classes/person/index.js'
 export type { JsonLdPerson, Person } from './classes/person/index.js'
 
-// Ring 2 — Organization
+// Ring 2 — Company
 export {
-  OrganizationCodec,
-  OrganizationSchema,
-  deserializeOrganization,
-  serializeOrganization,
-  serializeOrganizationStrict,
-} from './classes/organization/index.js'
-export type { JsonLdOrganization, Organization } from './classes/organization/index.js'
+  CompanyCodec,
+  CompanySchema,
+  deserializeCompany,
+  serializeCompany,
+  serializeCompanyStrict,
+} from './classes/company/index.js'
+export type { Company, JsonLdCompany } from './classes/company/index.js'
+
+// Ring 2 — CustomsInformation
+export {
+  CustomsInformationCodec,
+  CustomsInformationSchema,
+  deserializeCustomsInformation,
+  serializeCustomsInformation,
+  serializeCustomsInformationStrict,
+} from './classes/customs-information/index.js'
+export type {
+  CustomsInformation,
+  JsonLdCustomsInformation,
+} from './classes/customs-information/index.js'
+
+// Ring 2 — Insurance
+export {
+  InsuranceCodec,
+  InsuranceSchema,
+  deserializeInsurance,
+  serializeInsurance,
+  serializeInsuranceStrict,
+} from './classes/insurance/index.js'
+export type { Insurance, JsonLdInsurance } from './classes/insurance/index.js'
+
+// Ring 2 — LineItemPackage
+export {
+  LineItemPackageCodec,
+  LineItemPackageSchema,
+  deserializeLineItemPackage,
+  serializeLineItemPackage,
+  serializeLineItemPackageStrict,
+} from './classes/line-item-package/index.js'
+export type { JsonLdLineItemPackage, LineItemPackage } from './classes/line-item-package/index.js'
+
+// Ring 2 — OtherCharge
+export {
+  OtherChargeCodec,
+  OtherChargeSchema,
+  deserializeOtherCharge,
+  serializeOtherCharge,
+  serializeOtherChargeStrict,
+} from './classes/other-charge/index.js'
+export type { JsonLdOtherCharge, OtherCharge } from './classes/other-charge/index.js'
+
+// Ring 2 — WaybillLineItem
+export {
+  WaybillLineItemCodec,
+  WaybillLineItemSchema,
+  deserializeWaybillLineItem,
+  serializeWaybillLineItem,
+  serializeWaybillLineItemStrict,
+} from './classes/waybill-line-item/index.js'
+export type { JsonLdWaybillLineItem, WaybillLineItem } from './classes/waybill-line-item/index.js'
 
 // Ring 2 — Party
 export {

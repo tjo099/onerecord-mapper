@@ -21,13 +21,17 @@ import * as BT from './classes/booking-times/index.js'
 import * as Bk from './classes/booking/index.js'
 import * as CR from './classes/change-request/index.js'
 import * as Ch from './classes/change/index.js'
+import * as Co from './classes/company/index.js'
+import * as CI from './classes/customs-information/index.js'
 import * as HS from './classes/handling-service/index.js'
+import * as In from './classes/insurance/index.js'
+import * as LIP from './classes/line-item-package/index.js'
 import * as Lc from './classes/location/index.js'
 import * as Le from './classes/logistics-event/index.js'
 import * as Mt from './classes/movement-time/index.js'
 import * as Nt from './classes/notification/index.js'
 import * as Op from './classes/operation/index.js'
-import * as Or from './classes/organization/index.js'
+import * as OC from './classes/other-charge/index.js'
 import * as Pa from './classes/party/index.js'
 import * as Pe from './classes/person/index.js'
 import * as Pc from './classes/piece/index.js'
@@ -38,23 +42,32 @@ import * as Su from './classes/subscription/index.js'
 import * as Tm from './classes/transport-movement/index.js'
 import * as VR from './classes/verification-request/index.js'
 import * as Vf from './classes/verification/index.js'
+import * as WLI from './classes/waybill-line-item/index.js'
 import * as Wb from './classes/waybill/index.js'
 
 /**
- * Every concrete class module. Order matches the Phase 5-11 implementation
- * order (Ring 1 -> Ring 2 -> Ring 3 -> Ring 4 -> Ring 5 -> Booking).
+ * Every concrete class module. Originally ordered by Phase 5-11 implementation
+ * rings (Ring 1 -> Ring 2 -> Ring 3 -> Ring 4 -> Ring 5 -> Booking); as of
+ * v0.3.0 FWB-equivalence (Batch 1), six classes were added (Company,
+ * WaybillLineItem, OtherCharge, CustomsInformation, Insurance, LineItemPackage)
+ * and Organization was retired — map order is not semantically significant.
  *
  * `as const` preserves literal keys so mapped types over `keyof typeof CLASSES`
- * generate strongly-typed factory methods. The implementer never hand-writes
- * the 32 method signatures — `Mapper` derives them from this map.
+ * generate strongly-typed factory methods. `EXPECTED_CLASS_COUNT` derives from
+ * `Object.keys(CLASSES).length` — no manual count is maintained.
  */
 export const CLASSES = {
   Waybill: Wb,
   Shipment: Sh,
   Piece: Pc,
+  Company: Co,
+  CustomsInformation: CI,
+  Insurance: In,
+  LineItemPackage: LIP,
+  OtherCharge: OC,
   Party: Pa,
-  Organization: Or,
   Person: Pe,
+  WaybillLineItem: WLI,
   Address: Ad,
   AccountNumber: An,
   TransportMovement: Tm,

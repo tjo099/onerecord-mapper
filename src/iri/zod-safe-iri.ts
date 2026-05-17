@@ -77,6 +77,10 @@ export function extractInvalidIriIssue(
  * lifted to ParseError (or null if none). Per-class deserializers prefer this
  * to the per-issue helper because the negative-test catalogue asserts
  * `r.error.kind === 'invalid_iri'` on the FIRST IRI failure.
+ *
+ * Recurses into `invalid_union` nested error sets so that safeIri failures
+ * inside a z.union() arm are still surfaced correctly (e.g. partyDetails IdRef
+ * union — see 3.2-rc2 :partyDetails TTL:1881, :Party restriction TTL:8080).
  */
 export function findInvalidIriInIssues(
   issues: ReadonlyArray<{
@@ -84,6 +88,22 @@ export function findInvalidIriInIssues(
     message?: string
     path: ReadonlyArray<PropertyKey>
     params?: unknown
+    errors?: ReadonlyArray<
+      ReadonlyArray<{
+        code?: string
+        message?: string
+        path: ReadonlyArray<PropertyKey>
+        params?: unknown
+        errors?: ReadonlyArray<
+          ReadonlyArray<{
+            code?: string
+            message?: string
+            path: ReadonlyArray<PropertyKey>
+            params?: unknown
+          }>
+        >
+      }>
+    >
   }>,
   envelopePathPrefix = '$',
 ): Extract<ParseError, { kind: 'invalid_iri' }> | null {
@@ -94,6 +114,13 @@ export function findInvalidIriInIssues(
         : `${envelopePathPrefix}.${issue.path.map(String).join('.')}`
     const extracted = extractInvalidIriIssue(issue, dotted)
     if (extracted) return extracted
+    // Recurse into invalid_union nested error sets
+    if (issue.code === 'invalid_union' && Array.isArray(issue.errors)) {
+      for (const nestedIssues of issue.errors) {
+        const nested = findInvalidIriInIssues(nestedIssues, dotted)
+        if (nested) return nested
+      }
+    }
   }
   return null
 }

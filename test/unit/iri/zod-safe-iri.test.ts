@@ -91,4 +91,77 @@ describe('safeIri()', () => {
     // biome-ignore lint/style/noNonNullAssertion: test asserts post-precondition
     expect(result!.path).toBe('$.referredBookingOption')
   })
+
+  it('findInvalidIriInIssues recurses into invalid_union nested errors — positive (1b.9)', () => {
+    // Synthesise an invalid_union issue (e.g. partyDetails IdRef union) whose first arm
+    // contains a safeIri-tagged custom issue and whose second arm is a non-safeIri issue.
+    // Without the invalid_union recursion branch the positive test would return null.
+    const issues = [
+      {
+        code: 'invalid_union' as const,
+        message: 'Invalid input',
+        path: ['partyDetails'] as PropertyKey[],
+        errors: [
+          [
+            {
+              code: 'custom' as const,
+              message: 'invalid_iri',
+              path: [] as PropertyKey[],
+              params: {
+                __safe_iri__: true,
+                kind: 'invalid_iri',
+                got: 'http://attacker',
+                reason: 'disallowed_scheme',
+              },
+            },
+          ],
+          [
+            {
+              code: 'invalid_type' as const,
+              message: 'Expected object, received string',
+              path: [] as PropertyKey[],
+            },
+          ],
+        ],
+      },
+    ]
+    const r = findInvalidIriInIssues(issues, '$')
+    expect(r).not.toBeNull()
+    // biome-ignore lint/style/noNonNullAssertion: test asserts post-precondition
+    expect(r!.kind).toBe('invalid_iri')
+    // biome-ignore lint/style/noNonNullAssertion: test asserts post-precondition
+    expect(r!.path).toBe('$.partyDetails')
+    // biome-ignore lint/style/noNonNullAssertion: test asserts post-precondition
+    expect(r!.got).toBe('http://attacker')
+    // biome-ignore lint/style/noNonNullAssertion: test asserts post-precondition
+    expect(r!.reason).toBe('disallowed_scheme')
+  })
+
+  it('findInvalidIriInIssues returns null for invalid_union with no safeIri arm — negative (1b.9)', () => {
+    // All union arms are non-safeIri issues; recursion should find nothing and return null.
+    const issues = [
+      {
+        code: 'invalid_union' as const,
+        message: 'Invalid input',
+        path: ['partyDetails'] as PropertyKey[],
+        errors: [
+          [
+            {
+              code: 'invalid_type' as const,
+              message: 'Expected string, received object',
+              path: [] as PropertyKey[],
+            },
+          ],
+          [
+            {
+              code: 'invalid_type' as const,
+              message: 'Expected object, received string',
+              path: [] as PropertyKey[],
+            },
+          ],
+        ],
+      },
+    ]
+    expect(findInvalidIriInIssues(issues, '$')).toBeNull()
+  })
 })

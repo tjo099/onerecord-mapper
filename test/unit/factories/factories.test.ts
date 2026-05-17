@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { EXPECTED_CLASS_COUNT } from '../../../src/factory-classes.js'
 import { snapshotFixtureFor } from '../../factories/common.js'
 import * as factories from '../../factories/index.js'
 import { createWaybill } from '../../factories/waybill.js'
@@ -33,8 +34,10 @@ describe('createWaybill factory', () => {
     expect(a['@id']).toBe(b['@id'])
   })
 
-  it('exposes 32 factories total (one per v0.1.0 class)', () => {
+  it('exposes one create-factory per registered class (count auto-derived from CLASSES)', () => {
     const names = Object.keys(factories).filter((k) => k.startsWith('create'))
-    expect(names).toHaveLength(32)
+    // Never a literal count — derive from EXPECTED_CLASS_COUNT so adding a
+    // class that lacks a factory is caught automatically (F12 rule).
+    expect(names).toHaveLength(EXPECTED_CLASS_COUNT)
   })
 })

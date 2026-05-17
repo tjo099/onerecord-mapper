@@ -7,15 +7,15 @@ describe('applyChange (v3)', () => {
   it('ADD on a missing field succeeds', () => {
     const wb = WaybillSchema.parse(createWaybill())
     const r = applyChange(WaybillCodec, wb, {
-      hasOperation: [{ op: 'ADD', path: '/totalGrossWeight', value: { unit: 'KGM', value: 100 } }],
+      hasOperation: [{ op: 'ADD', path: '/shippingRefNo', value: 'REF001' }],
     })
     expect(r.ok).toBe(true)
   })
 
   it('DELETE on a present field succeeds', () => {
-    const wb = WaybillSchema.parse(createWaybill({ totalGrossWeight: { unit: 'KGM', value: 50 } }))
+    const wb = WaybillSchema.parse(createWaybill({ shippingRefNo: 'REF001' }))
     const r = applyChange(WaybillCodec, wb, {
-      hasOperation: [{ op: 'DELETE', path: '/totalGrossWeight' }],
+      hasOperation: [{ op: 'DELETE', path: '/shippingRefNo' }],
     })
     expect(r.ok).toBe(true)
   })
@@ -56,7 +56,7 @@ describe('applyChange atomicity', () => {
     const wb = WaybillSchema.parse(createWaybill())
     const before = JSON.stringify(wb)
     applyChange(WaybillCodec, wb, {
-      hasOperation: [{ op: 'ADD', path: '/totalGrossWeight', value: { unit: 'KGM', value: 100 } }],
+      hasOperation: [{ op: 'ADD', path: '/shippingRefNo', value: 'REF001' }],
     })
     expect(JSON.stringify(wb)).toBe(before)
   })
@@ -66,7 +66,7 @@ describe('applyChange atomicity', () => {
     const before = JSON.stringify(wb)
     applyChange(WaybillCodec, wb, {
       hasOperation: [
-        { op: 'ADD', path: '/totalGrossWeight', value: { unit: 'KGM', value: 100 } },
+        { op: 'ADD', path: '/shippingRefNo', value: 'REF001' },
         { op: 'ADD', path: '/', value: 1 },
       ],
     })
@@ -76,7 +76,7 @@ describe('applyChange atomicity', () => {
   it('produces null-prototype output (no Object.prototype on result graph)', () => {
     const wb = WaybillSchema.parse(createWaybill())
     const r = applyChange(WaybillCodec, wb, {
-      hasOperation: [{ op: 'ADD', path: '/totalGrossWeight', value: { unit: 'KGM', value: 100 } }],
+      hasOperation: [{ op: 'ADD', path: '/shippingRefNo', value: 'REF001' }],
     })
     expect(r.ok).toBe(true)
     if (r.ok) {

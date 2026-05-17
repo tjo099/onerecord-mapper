@@ -20,11 +20,7 @@ describe('synthetic FWB round-trip (Phase 12)', () => {
     const r = deserializeWaybill(serializeWaybill(wb))
     expect(r.ok).toBe(true)
     if (r.ok) {
-      expect(
-        fieldEquivalent(r.value, wb, {
-          numericFields: { 'totalGrossWeight.value': 'weight' },
-        }),
-      ).toBe(true)
+      expect(fieldEquivalent(r.value, wb, {})).toBe(true)
     }
   })
 
@@ -42,7 +38,7 @@ describe('synthetic FWB round-trip (Phase 12)', () => {
     expect(r.ok).toBe(true)
     if (r.ok) {
       expect(r.value['@id']).toBe(expected['@id'])
-      expect(r.value.shipmentInformation).toBe(expected.shipmentInformation)
+      expect(r.value.shipment).toBe(expected.shipment)
       expect(r.value.referredBookingOption).toBe(expected.referredBookingOption)
     }
   })

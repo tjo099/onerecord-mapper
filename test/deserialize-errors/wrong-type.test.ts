@@ -6,9 +6,9 @@ describe('dispatch.graphWalk -> wrong_type_for_endpoint', () => {
     const input = {
       '@id': 'https://example/wb',
       '@type': 'Waybill',
-      // FIELD_TYPES says Waybill.shipmentInformation expects Shipment.
+      // FIELD_TYPES says Waybill.shipment expects Shipment.
       // Putting a Party here violates the field contract.
-      shipmentInformation: { '@id': 'https://example/p', '@type': 'Party' },
+      shipment: { '@id': 'https://example/p', '@type': 'Party' },
     }
     const r = dispatchGraphWalk(input, 'Waybill')
     expect(r.ok).toBe(false)
@@ -25,7 +25,7 @@ describe('dispatch.graphWalk -> wrong_type_for_endpoint', () => {
     const input = {
       '@id': 'https://example/wb',
       '@type': 'Waybill',
-      shipmentInformation: { '@id': 'https://example/sh', '@type': 'Shipment' },
+      shipment: { '@id': 'https://example/sh', '@type': 'Shipment' },
     }
     const r = dispatchGraphWalk(input, 'Waybill')
     expect(r.ok).toBe(true)
@@ -41,18 +41,18 @@ describe('dispatch.graphWalk -> wrong_type_for_endpoint', () => {
     expect(r.ok).toBe(true)
   })
 
-  it('detects wrong_type at depth 2 (Shipment.consignee should be Party)', () => {
+  it('detects wrong_type at depth 2 (Shipment.waybill should be Waybill)', () => {
     // Containing-class tracking via path-keyed @type map (v0.2 enhancement
-    // to depth-1-only check). Waybill.shipmentInformation embeds a
-    // Shipment; Shipment.consignee should be a Party. Putting an
-    // Organization there violates the depth-2 field contract.
+    // to depth-1-only check). Waybill.shipment embeds a
+    // Shipment; Shipment.waybill should be a Waybill. Putting a
+    // Party there violates the depth-2 field contract.
     const input = {
       '@id': 'https://example/wb',
       '@type': 'Waybill',
-      shipmentInformation: {
+      shipment: {
         '@id': 'https://example/sh',
         '@type': 'Shipment',
-        consignee: { '@id': 'https://example/o', '@type': 'Organization' },
+        waybill: { '@id': 'https://example/o', '@type': 'Party' },
       },
     }
     const r = dispatchGraphWalk(input, 'Waybill')
@@ -60,20 +60,20 @@ describe('dispatch.graphWalk -> wrong_type_for_endpoint', () => {
     if (!r.ok) {
       expect(r.error.kind).toBe('wrong_type_for_endpoint')
       if (r.error.kind === 'wrong_type_for_endpoint') {
-        expect(r.error.expected).toBe('Party')
-        expect(r.error.got).toBe('Organization')
+        expect(r.error.expected).toBe('Waybill')
+        expect(r.error.got).toBe('Party')
       }
     }
   })
 
-  it('accepts wrong_type-clean depth-2 graphs (Shipment.consignee = Party)', () => {
+  it('accepts wrong_type-clean depth-2 graphs (Shipment.waybill = Waybill)', () => {
     const input = {
       '@id': 'https://example/wb',
       '@type': 'Waybill',
-      shipmentInformation: {
+      shipment: {
         '@id': 'https://example/sh',
         '@type': 'Shipment',
-        consignee: { '@id': 'https://example/p', '@type': 'Party' },
+        waybill: { '@id': 'https://example/wb2', '@type': 'Waybill' },
       },
     }
     const r = dispatchGraphWalk(input, 'Waybill')

@@ -18,8 +18,8 @@ describe('Operation/Change schema <-> applyChange integration (v3 — closes A2-
           '@type': 'Operation',
           '@id': 'https://test.flaks.example/test-tenant/operation/o1',
           op: 'ADD',
-          path: '/totalGrossWeight',
-          value: { unit: 'KGM', value: 100 },
+          path: '/shippingRefNo',
+          value: 'REF001',
         },
       ],
     })
@@ -36,10 +36,10 @@ describe('Operation/Change schema <-> applyChange integration (v3 — closes A2-
       '@type': 'Operation',
       '@id': 'https://test.flaks.example/test-tenant/operation/o2',
       op: 'DELETE',
-      path: '/totalGrossWeight',
+      path: '/shippingRefNo',
     })
     expect(op.op).toBe('DELETE')
-    expect(op.path).toBe('/totalGrossWeight')
+    expect(op.path).toBe('/shippingRefNo')
     expect(op.value).toBeUndefined()
   })
 })

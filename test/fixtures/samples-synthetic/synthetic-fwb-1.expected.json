@@ -5,10 +5,6 @@
   "waybillType": "MASTER",
   "waybillPrefix": "176",
   "waybillNumber": "12345674",
-  "totalGrossWeight": {
-    "unit": "KGM",
-    "value": 1234.567
-  },
-  "shipmentInformation": "https://test.flaks.example/test-tenant/shipment/synthetic-fwb-1-ship",
+  "shipment": "https://test.flaks.example/test-tenant/shipment/synthetic-fwb-1-ship",
   "referredBookingOption": "https://test.flaks.example/test-tenant/bookingoption/synthetic-fwb-1-bo"
 }

@@ -3,20 +3,20 @@ import { ShipmentCodec, ShipmentSchema } from '../../../src/classes/shipment/ind
 import { applyChange } from '../../../src/operations/apply-change.js'
 import { createShipment } from '../../factories/shipment.js'
 
-// Build a Shipment with a containedPieces array — that's the array we'll
-// probe via /containedPieces/<weird-index>.
+// Build a Shipment with a pieces array — that's the array we'll
+// probe via /pieces/<weird-index>.
 function shipmentWithPieces() {
   return ShipmentSchema.parse(
     createShipment({
-      containedPieces: ['https://example.org/piece/1', 'https://example.org/piece/2'] as never,
+      pieces: ['https://example.org/piece/1', 'https://example.org/piece/2'] as never,
     }),
   )
 }
 
 describe('applyChange path-safety (array-index probes — spec §6.5.4 step 3)', () => {
-  it('rejects /containedPieces/length on array parent', () => {
+  it('rejects /pieces/length on array parent', () => {
     const r = applyChange(ShipmentCodec, shipmentWithPieces(), {
-      hasOperation: [{ op: 'ADD', path: '/containedPieces/length', value: 'x' }],
+      hasOperation: [{ op: 'ADD', path: '/pieces/length', value: 'x' }],
     })
     expect(r.ok).toBe(false)
     if (!r.ok && r.error.kind === 'change_partial_failure') {
@@ -24,9 +24,9 @@ describe('applyChange path-safety (array-index probes — spec §6.5.4 step 3)',
     }
   })
 
-  it('rejects /containedPieces/-1 on array parent', () => {
+  it('rejects /pieces/-1 on array parent', () => {
     const r = applyChange(ShipmentCodec, shipmentWithPieces(), {
-      hasOperation: [{ op: 'ADD', path: '/containedPieces/-1', value: 'x' }],
+      hasOperation: [{ op: 'ADD', path: '/pieces/-1', value: 'x' }],
     })
     expect(r.ok).toBe(false)
     if (!r.ok && r.error.kind === 'change_partial_failure') {
@@ -34,9 +34,9 @@ describe('applyChange path-safety (array-index probes — spec §6.5.4 step 3)',
     }
   })
 
-  it('rejects /containedPieces/1.5 on array parent', () => {
+  it('rejects /pieces/1.5 on array parent', () => {
     const r = applyChange(ShipmentCodec, shipmentWithPieces(), {
-      hasOperation: [{ op: 'ADD', path: '/containedPieces/1.5', value: 'x' }],
+      hasOperation: [{ op: 'ADD', path: '/pieces/1.5', value: 'x' }],
     })
     expect(r.ok).toBe(false)
     if (!r.ok && r.error.kind === 'change_partial_failure') {
@@ -44,9 +44,9 @@ describe('applyChange path-safety (array-index probes — spec §6.5.4 step 3)',
     }
   })
 
-  it('rejects /containedPieces/NaN on array parent', () => {
+  it('rejects /pieces/NaN on array parent', () => {
     const r = applyChange(ShipmentCodec, shipmentWithPieces(), {
-      hasOperation: [{ op: 'ADD', path: '/containedPieces/NaN', value: 'x' }],
+      hasOperation: [{ op: 'ADD', path: '/pieces/NaN', value: 'x' }],
     })
     expect(r.ok).toBe(false)
     if (!r.ok && r.error.kind === 'change_partial_failure') {
@@ -54,9 +54,9 @@ describe('applyChange path-safety (array-index probes — spec §6.5.4 step 3)',
     }
   })
 
-  it('rejects /containedPieces/01 (leading zero) on array parent', () => {
+  it('rejects /pieces/01 (leading zero) on array parent', () => {
     const r = applyChange(ShipmentCodec, shipmentWithPieces(), {
-      hasOperation: [{ op: 'ADD', path: '/containedPieces/01', value: 'x' }],
+      hasOperation: [{ op: 'ADD', path: '/pieces/01', value: 'x' }],
     })
     expect(r.ok).toBe(false)
     if (!r.ok && r.error.kind === 'change_partial_failure') {
@@ -64,9 +64,9 @@ describe('applyChange path-safety (array-index probes — spec §6.5.4 step 3)',
     }
   })
 
-  it('rejects /containedPieces/1e2 (exponent) on array parent', () => {
+  it('rejects /pieces/1e2 (exponent) on array parent', () => {
     const r = applyChange(ShipmentCodec, shipmentWithPieces(), {
-      hasOperation: [{ op: 'ADD', path: '/containedPieces/1e2', value: 'x' }],
+      hasOperation: [{ op: 'ADD', path: '/pieces/1e2', value: 'x' }],
     })
     expect(r.ok).toBe(false)
     if (!r.ok && r.error.kind === 'change_partial_failure') {

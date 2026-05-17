@@ -2,6 +2,6 @@
   "@context": "https://onerecord.iata.org/ns/cargo",
   "@type": "AccountNumber",
   "@id": "https://snapshot.example/wf/accountnumber/fixed-id",
-  "accountNumber": "ACC-12345",
-  "accountType": "INTERNAL"
+  "accountNumberType": "CASS",
+  "textualValue": "8112345"
 }

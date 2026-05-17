@@ -12,12 +12,8 @@ const accountNumberArb = fc.record({
   '@context': fc.constant(CARGO_CONTEXT_IRI),
   '@type': fc.constant('AccountNumber' as const),
   '@id': iriArb('accountnumber'),
-  accountNumber: fc.string({ minLength: 1, maxLength: 35 }),
-  issuedBy: fc.option(iriArb('organization'), { nil: undefined }),
-  accountType: fc.option(
-    fc.constantFrom('IATA_CASS' as const, 'INTERNAL' as const, 'OTHER' as const),
-    { nil: undefined },
-  ),
+  accountNumberType: fc.option(fc.string({ minLength: 1, maxLength: 16 }), { nil: undefined }),
+  textualValue: fc.option(fc.string({ minLength: 1, maxLength: 35 }), { nil: undefined }),
 })
 
 describe('AccountNumber round-trip property (fast-check)', () => {

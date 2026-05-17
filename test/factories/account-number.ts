@@ -9,8 +9,8 @@ export function createAccountNumber(
   return {
     ...envelope('AccountNumber'),
     '@type': 'AccountNumber',
-    accountNumber: 'ACC-12345',
-    accountType: 'INTERNAL',
+    accountNumberType: 'CASS',
+    textualValue: '8112345',
     ...overrides,
   } as AccountNumberFactoryShape
 }

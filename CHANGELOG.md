@@ -49,7 +49,7 @@ change migration guidance.
   `Party.partyDetails` widened to accept `IRI | {@id}` (Person or Company).
   `NI` added as accepted `Party.partyRole` value.
 - **`Waybill`**: dropped `shipmentInformation` (renamed to `shipment`);
-  dropped `totalGrossWeight` (moved to Shipment).
+  dropped `totalGrossWeight` (the field already exists on `Shipment` — use that).
 - **`Shipment`**: dropped `pieceCount`, `totalVolume`, `containedPieces`
   (renamed to `pieces`), `shipper`, `consignee` (moved to `involvedParties`).
 - **`waybillType` enum**: `DIRECT` added.
@@ -101,6 +101,9 @@ Consumers upgrading from v0.2.x must audit the following:
     accepted and everything else including `'3.2.1'` is rejected).
 15. **`domain_constraint_violation`** for `Waybill.shipmentInformation` /
     `Shipment.containedPieces` no longer fires (those fields no longer exist).
+16. **`Party.partyRole`**: `'NI'` (also-notify, AWB box 7) is now an accepted
+    value — exhaustive `switch` statements over `partyRole` must handle it
+    (same migration class as `waybillType` `DIRECT`).
 
 ### Spec deviations
 

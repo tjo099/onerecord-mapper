@@ -483,6 +483,16 @@ export {
 } from './classes/uld/index.js'
 export type { JsonLdULD, ULD } from './classes/uld/index.js'
 
+// Ring 2 — CO2Emissions
+export {
+  CO2EmissionsCodec,
+  CO2EmissionsSchema,
+  deserializeCO2Emissions,
+  serializeCO2Emissions,
+  serializeCO2EmissionsStrict,
+} from './classes/co2-emissions/index.js'
+export type { CO2Emissions, JsonLdCO2Emissions } from './classes/co2-emissions/index.js'
+
 // Phase 15 — error helpers (T72)
 export { formatError, redactError } from './error/index.js'
 

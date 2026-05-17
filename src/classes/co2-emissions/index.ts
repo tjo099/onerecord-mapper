@@ -1,0 +1,5 @@
+export { CO2EmissionsCodec } from './codec.js'
+export { deserializeCO2Emissions } from './deserialize.js'
+export { CO2EmissionsSchema } from './schema.js'
+export type { CO2Emissions, JsonLdCO2Emissions } from './schema.js'
+export { serializeCO2Emissions, serializeCO2EmissionsStrict } from './serialize.js'

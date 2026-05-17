@@ -29,6 +29,8 @@ BookingTimesCodec
 BookingTimesSchema
 CARGO_CONTEXT_IRI
 CARGO_ONTOLOGY_VERSION
+CO2EmissionsCodec
+CO2EmissionsSchema
 ChangeCodec
 ChangeRequestCodec
 ChangeRequestSchema
@@ -116,6 +118,7 @@ deserializeBookingRequest
 deserializeBookingSegment
 deserializeBookingShipment
 deserializeBookingTimes
+deserializeCO2Emissions
 deserializeChange
 deserializeChangeRequest
 deserializeCompany
@@ -178,6 +181,8 @@ serializeBookingShipmentStrict
 serializeBookingStrict
 serializeBookingTimes
 serializeBookingTimesStrict
+serializeCO2Emissions
+serializeCO2EmissionsStrict
 serializeChange
 serializeChangeRequest
 serializeChangeRequestStrict

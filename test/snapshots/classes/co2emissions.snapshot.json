@@ -1,0 +1,9 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "CO2Emissions",
+  "@id": "https://snapshot.example/wf/co2emissions/fixed-id",
+  "calculatedEmissions": {
+    "numericalValue": 1234.5,
+    "unit": "KGM"
+  }
+}

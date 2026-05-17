@@ -21,6 +21,7 @@ import * as BT from './classes/booking-times/index.js'
 import * as Bk from './classes/booking/index.js'
 import * as CR from './classes/change-request/index.js'
 import * as Ch from './classes/change/index.js'
+import * as Co2 from './classes/co2-emissions/index.js'
 import * as Co from './classes/company/index.js'
 import * as CI from './classes/customs-information/index.js'
 import * as HS from './classes/handling-service/index.js'
@@ -61,6 +62,7 @@ export const CLASSES = {
   Waybill: Wb,
   Shipment: Sh,
   Piece: Pc,
+  CO2Emissions: Co2,
   Company: Co,
   CustomsInformation: CI,
   Insurance: In,

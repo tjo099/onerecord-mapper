@@ -21,6 +21,7 @@ export type {
 export type { AccountNumber, JsonLdAccountNumber } from '../classes/account-number/index.js'
 export type { Address, JsonLdAddress } from '../classes/address/index.js'
 export type { Booking, JsonLdBooking } from '../classes/booking/index.js'
+export type { CO2Emissions, JsonLdCO2Emissions } from '../classes/co2-emissions/index.js'
 export type { BookingOption, JsonLdBookingOption } from '../classes/booking-option/index.js'
 export type {
   BookingOptionRequest,

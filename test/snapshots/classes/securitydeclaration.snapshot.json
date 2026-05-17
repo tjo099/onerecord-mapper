@@ -1,0 +1,10 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "SecurityDeclaration",
+  "@id": "https://snapshot.example/wf/securitydeclaration/fixed-id",
+  "screeningMethods": [
+    "XRY"
+  ],
+  "securityStatus": "SPX",
+  "issuedOn": "2026-01-01T00:00:00.000Z"
+}

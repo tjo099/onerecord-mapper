@@ -493,6 +493,29 @@ export {
 } from './classes/co2-emissions/index.js'
 export type { CO2Emissions, JsonLdCO2Emissions } from './classes/co2-emissions/index.js'
 
+// Ring 2 — RegulatedEntity
+export {
+  RegulatedEntityCodec,
+  RegulatedEntitySchema,
+  deserializeRegulatedEntity,
+  serializeRegulatedEntity,
+  serializeRegulatedEntityStrict,
+} from './classes/regulated-entity/index.js'
+export type { JsonLdRegulatedEntity, RegulatedEntity } from './classes/regulated-entity/index.js'
+
+// Ring 2 — SecurityDeclaration
+export {
+  SecurityDeclarationCodec,
+  SecurityDeclarationSchema,
+  deserializeSecurityDeclaration,
+  serializeSecurityDeclaration,
+  serializeSecurityDeclarationStrict,
+} from './classes/security-declaration/index.js'
+export type {
+  JsonLdSecurityDeclaration,
+  SecurityDeclaration,
+} from './classes/security-declaration/index.js'
+
 // Phase 15 — error helpers (T72)
 export { formatError, redactError } from './error/index.js'
 

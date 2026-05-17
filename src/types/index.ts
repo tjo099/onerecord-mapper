@@ -68,6 +68,14 @@ export type {
   JsonLdTransportMovement,
   TransportMovement,
 } from '../classes/transport-movement/index.js'
+export type {
+  JsonLdRegulatedEntity,
+  RegulatedEntity,
+} from '../classes/regulated-entity/index.js'
+export type {
+  JsonLdSecurityDeclaration,
+  SecurityDeclaration,
+} from '../classes/security-declaration/index.js'
 export type { JsonLdULD, ULD } from '../classes/uld/index.js'
 export type {
   JsonLdVerification,

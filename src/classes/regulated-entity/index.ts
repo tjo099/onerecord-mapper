@@ -1,0 +1,5 @@
+export { RegulatedEntityCodec } from './codec.js'
+export { deserializeRegulatedEntity } from './deserialize.js'
+export { RegulatedEntitySchema } from './schema.js'
+export type { JsonLdRegulatedEntity, RegulatedEntity } from './schema.js'
+export { serializeRegulatedEntity, serializeRegulatedEntityStrict } from './serialize.js'

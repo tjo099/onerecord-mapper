@@ -67,8 +67,12 @@ PersonCodec
 PersonSchema
 PieceCodec
 PieceSchema
+RegulatedEntityCodec
+RegulatedEntitySchema
 RequestStatus
 STATE_DIAGRAM
+SecurityDeclarationCodec
+SecurityDeclarationSchema
 SerializationError
 ServerInformationCodec
 ServerInformationSchema
@@ -132,6 +136,8 @@ deserializeOtherCharge
 deserializeParty
 deserializePerson
 deserializePiece
+deserializeRegulatedEntity
+deserializeSecurityDeclaration
 deserializeServerInformation
 deserializeShipment
 deserializeSubscription
@@ -209,6 +215,10 @@ serializePerson
 serializePersonStrict
 serializePiece
 serializePieceStrict
+serializeRegulatedEntity
+serializeRegulatedEntityStrict
+serializeSecurityDeclaration
+serializeSecurityDeclarationStrict
 serializeServerInformation
 serializeServerInformationStrict
 serializeShipment

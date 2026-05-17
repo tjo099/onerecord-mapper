@@ -1,0 +1,7 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "RegulatedEntity",
+  "@id": "https://snapshot.example/wf/regulatedentity/fixed-id",
+  "regulatedEntityCategory": "RA",
+  "regulatedEntityIdentifier": "GB/RA/00012345-1212"
+}

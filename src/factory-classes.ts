@@ -36,6 +36,8 @@ import * as OC from './classes/other-charge/index.js'
 import * as Pa from './classes/party/index.js'
 import * as Pe from './classes/person/index.js'
 import * as Pc from './classes/piece/index.js'
+import * as RE from './classes/regulated-entity/index.js'
+import * as SD from './classes/security-declaration/index.js'
 import * as SI from './classes/server-information/index.js'
 import * as Sh from './classes/shipment/index.js'
 import * as Sr from './classes/subscription-request/index.js'
@@ -98,6 +100,8 @@ export const CLASSES = {
   BookingShipment: BSh,
   BookingTimes: BT,
   ULD: Ul,
+  RegulatedEntity: RE,
+  SecurityDeclaration: SD,
 } as const
 
 export type ClassName = keyof typeof CLASSES

@@ -41,29 +41,29 @@ describe('contract: Waybill round-trip via NE:ONE Server (T5.2)', () => {
   })
 
   it.skipIf(!stackUp)(
-    'preserves a full Waybill including totalGrossWeight + IRI references',
+    'preserves a full Waybill including spec fields + IRI references (1b.8 Path A)',
     async () => {
       const wb = {
         '@context': CARGO_CONTEXT_IRI,
         '@type': 'Waybill',
         '@id': `https://test.flaks.example/test/waybill/contract-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-        waybillType: 'HOUSE' as const,
+        waybillType: 'DIRECT' as const,
         waybillPrefix: '042',
         waybillNumber: '11223344',
-        totalGrossWeight: { unit: 'KGM' as const, value: 1234.567 },
-        shipmentInformation: 'https://test.flaks.example/test/shipment/contract-1',
+        shipment: 'https://test.flaks.example/test/shipment/contract-1',
         referredBookingOption: 'https://test.flaks.example/test/bookingoption/contract-1',
+        declaredValueForCarriage: { numericalValue: 1500, currencyUnit: 'USD' },
+        shippingRefNo: 'REF-CONTRACT-1',
       }
       const wire = WaybillCodec.serialize(wb as never) as Record<string, unknown>
       const { iri } = await postLogisticsObject(wire)
       const got = await getLogisticsObject(iri)
-      expect(got.waybillType).toBe('HOUSE')
+      expect(got.waybillType).toBe('DIRECT')
       expect(got.waybillPrefix).toBe('042')
       expect(got.waybillNumber).toBe('11223344')
-      // totalGrossWeight is a nested object — value preserved as JSON-LD literal
-      expect(got.totalGrossWeight).toBeDefined()
       // IRI references round-trip as strings
-      expect(got.shipmentInformation).toBe('https://test.flaks.example/test/shipment/contract-1')
+      expect(got.shipment).toBe('https://test.flaks.example/test/shipment/contract-1')
+      expect(got.shippingRefNo).toBe('REF-CONTRACT-1')
     },
   )
 })

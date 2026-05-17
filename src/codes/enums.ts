@@ -51,3 +51,15 @@ export const BookingOptionStatus = z.enum([
   'REQUEST_REVOKED',
 ])
 export type BookingOptionStatus = z.infer<typeof BookingOptionStatus>
+
+export const ScreeningMethod = z.enum(['AOM', 'CMD', 'EDD', 'EDS', 'ETD', 'PHS', 'VCK', 'XRY'])
+export type ScreeningMethod = z.infer<typeof ScreeningMethod>
+
+export const SecurityStatus = z.enum(['NSC', 'SCO', 'SHR', 'SPX'])
+export type SecurityStatus = z.infer<typeof SecurityStatus>
+
+export const ScreeningExemption = z.enum(['BIOM', 'DIPL', 'LFSM', 'MAIL', 'NUCL', 'SMUS', 'TRNS'])
+export type ScreeningExemption = z.infer<typeof ScreeningExemption>
+
+export const RegulatedEntityCategoryCode = z.enum(['AO', 'KC', 'RA', 'RC'])
+export type RegulatedEntityCategoryCode = z.infer<typeof RegulatedEntityCategoryCode>

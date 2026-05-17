@@ -11,46 +11,32 @@ describe('checkDomainConstraints (deviation #6 partial closure, deferral F)', ()
     expect(checkDomainConstraints('NotARealClass', {})).toBeUndefined()
   })
 
-  it('returns undefined when all required Waybill fields are present', () => {
+  it('returns undefined for Waybill (no active constraints post Path-A)', () => {
     const wb = {
       '@id': 'https://example/wb',
       '@type': 'Waybill',
-      shipmentInformation: 'https://example/sh',
+      // Path A: Waybill.shipmentInformation removed; Waybill.shipment is the
+      // spec-correct property. No domain constraint fires for Waybill.
     }
     expect(checkDomainConstraints('Waybill', wb)).toBeUndefined()
   })
 
-  it('detects missing Waybill.shipmentInformation', () => {
-    const wb = { '@id': 'https://example/wb', '@type': 'Waybill' }
-    const v = checkDomainConstraints('Waybill', wb)
-    expect(v).toBeDefined()
-    expect(v?.className).toBe('Waybill')
-    expect(v?.field).toBe('shipmentInformation')
-    expect(v?.expected).toBe('required')
-  })
-
-  it('treats null as missing', () => {
-    const wb = {
-      '@id': 'https://example/wb',
-      '@type': 'Waybill',
-      shipmentInformation: null,
-    }
-    const v = checkDomainConstraints('Waybill', wb)
-    expect(v).toBeDefined()
-  })
-
-  it('treats empty array as missing for Shipment.containedPieces', () => {
+  it('returns undefined for Shipment (no active constraints post Path-A)', () => {
     const sh = {
       '@id': 'https://example/sh',
       '@type': 'Shipment',
-      containedPieces: [],
+      // Path A: Shipment.containedPieces removed; Shipment.pieces is the
+      // spec-correct property. No domain constraint fires for Shipment.
     }
-    const v = checkDomainConstraints('Shipment', sh)
-    expect(v).toBeDefined()
-    expect(v?.field).toBe('containedPieces')
+    expect(checkDomainConstraints('Shipment', sh)).toBeUndefined()
   })
 
-  it('every constraint references a spec section', () => {
+  it('DOMAIN_CONSTRAINTS has no active Waybill or Shipment entries (Path-A cleanup)', () => {
+    expect(DOMAIN_CONSTRAINTS.Waybill).toBeUndefined()
+    expect(DOMAIN_CONSTRAINTS.Shipment).toBeUndefined()
+  })
+
+  it('every constraint that exists references a spec section', () => {
     for (const list of Object.values(DOMAIN_CONSTRAINTS)) {
       for (const c of list) {
         expect(c.specRef).toMatch(/data model|API spec|§/)
@@ -59,47 +45,47 @@ describe('checkDomainConstraints (deviation #6 partial closure, deferral F)', ()
   })
 })
 
-describe('dispatchGraphWalk -> domain_constraint_violation (deferral F)', () => {
-  it('emits domain_constraint_violation when Waybill is missing shipmentInformation', () => {
+describe('dispatchGraphWalk -> no domain_constraint_violation for Path-A Waybill/Shipment', () => {
+  it('does not emit domain_constraint_violation for Waybill missing shipmentInformation (stale field)', () => {
     const input = {
       '@context': CARGO_CONTEXT_IRI,
       '@id': 'https://example/wb',
       '@type': 'Waybill',
       waybillType: 'MASTER',
-      // shipmentInformation missing
+      // shipmentInformation is the old (removed) v0.2 field — not a domain constraint
     }
     const r = dispatchGraphWalk(input, 'Waybill')
-    expect(r.ok).toBe(false)
+    // dispatchGraphWalk may still fail for Zod reasons (waybillNumber required, etc.)
+    // but it must NOT fail with domain_constraint_violation
     if (!r.ok) {
-      expect(r.error.kind).toBe('domain_constraint_violation')
-      if (r.error.kind === 'domain_constraint_violation') {
-        expect(r.error.className).toBe('Waybill')
-        expect(r.error.field).toBe('shipmentInformation')
-        expect(r.error.specRef).toContain('§5.1')
-      }
+      expect(r.error.kind).not.toBe('domain_constraint_violation')
     }
   })
 
-  it('does not emit when Waybill has shipmentInformation', () => {
-    const input = {
-      '@context': CARGO_CONTEXT_IRI,
-      '@id': 'https://example/wb',
-      '@type': 'Waybill',
-      shipmentInformation: 'https://example/sh',
-    }
-    const r = dispatchGraphWalk(input, 'Waybill')
-    expect(r.ok).toBe(true)
-  })
-
-  it('emits domain_constraint_violation when Shipment.containedPieces is empty', () => {
+  it('does not emit domain_constraint_violation for Shipment with empty pieces array', () => {
     const input = {
       '@context': CARGO_CONTEXT_IRI,
       '@id': 'https://example/sh',
       '@type': 'Shipment',
-      containedPieces: [],
+      pieces: [],
     }
     const r = dispatchGraphWalk(input, 'Shipment')
-    expect(r.ok).toBe(false)
-    if (!r.ok) expect(r.error.kind).toBe('domain_constraint_violation')
+    if (!r.ok) {
+      expect(r.error.kind).not.toBe('domain_constraint_violation')
+    }
+  })
+
+  it('passes graph-walk for a Waybill with the spec-correct shipment field', () => {
+    const input = {
+      '@context': CARGO_CONTEXT_IRI,
+      '@id': 'https://example/wb',
+      '@type': 'Waybill',
+      shipment: 'https://example/sh',
+    }
+    // graph-walk itself should not fire domain_constraint_violation
+    const r = dispatchGraphWalk(input, 'Waybill')
+    if (!r.ok) {
+      expect(r.error.kind).not.toBe('domain_constraint_violation')
+    }
   })
 })

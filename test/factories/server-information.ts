@@ -10,7 +10,7 @@ export function createServerInformation(
     ...envelope('ServerInformation'),
     '@type': 'ServerInformation',
     serverEndpoint: 'https://example.org/server',
-    cargoOntologyVersion: '3.2',
+    cargoOntologyVersion: '3.2.0',
     apiSpecVersion: '2.2.0',
     ...overrides,
   } as ServerInformationFactoryShape

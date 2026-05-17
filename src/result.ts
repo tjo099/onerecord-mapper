@@ -168,9 +168,9 @@ export type ParseError =
     }
   // v0.2 (deferral F, partially closes deviation #6): emitted by the
   // dispatch graph-walk when a root-level domain-semantic cardinality
-  // constraint is violated (e.g. Waybill missing the required
-  // `shipmentInformation`). v0.3 expands to AWB consistency,
-  // total-pieces/weight sums, and reference resolvability.
+  // constraint is violated. v0.3 (Path A) removed the stale v0.2 constraints
+  // (Waybill.shipmentInformation / Shipment.containedPieces — fields renamed).
+  // Future expansion: AWB consistency, total-pieces/weight sums, resolvability.
   | {
       kind: 'domain_constraint_violation'
       className: string

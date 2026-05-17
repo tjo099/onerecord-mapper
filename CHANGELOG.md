@@ -4,6 +4,112 @@ All notable changes are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/), versioning follows
 [SemVer](https://semver.org/) per the policy in `MIGRATING.md`.
 
+## [0.3.0] - 2026-05-17
+
+FWB-equivalence Path A: 10 new classes, schema rewrites for the core FWB
+classes, full IATA 3.2.0 conformance for the covered class set with documented
+deviations and 3.2.1-forward extensions. See `MIGRATING.md` for per-breaking-
+change migration guidance.
+
+### Added
+
+- **`Company`** class — concrete `:Organization` subtype; retires the abstract
+  `Organization` class. `Party.partyDetails` and all Organization-range fields
+  now point to `Company`.
+- **`WaybillLineItem`** class — FWB rate/charge line item.
+- **`OtherCharge`** class — FWB OCI/other-charge block.
+- **`CustomsInformation`** class — FWB customs information block.
+- **`Insurance`** class — FWB insurance details.
+- **`LineItemPackage`** class — FWB package-level line item.
+- **`ULD`** class — unit load device reference.
+- **`CO2Emissions`** class — carbon emissions per spec §D6.
+- **`RegulatedEntity`** class — security regulated entity (shipper/handler).
+- **`SecurityDeclaration`** class — security declaration per spec §8.
+- **Shared value sub-schemas**: `ValueSchema`, `CurrencyValueSchema`,
+  `DimensionsSchema` — used by all NEW value-typed properties in v0.3.0.
+- **FWB properties** on `Waybill`: `shipment`, `involvedParties`,
+  `waybillLineItems`, `otherCharges`, `carrierDeclarationPlace`,
+  `departureLocation`, `arrivalLocation`, `houseWaybills`, `masterWaybill`,
+  `billingDetails` (IRI ref only; `:BillingDetails` class not modelled — deviation #16).
+  `accountingInformation` — deprecated upstream (owl:deprecated true in
+  3.2-rc2 ~2861) — **deviation #15**.
+- **FWB properties** on `Shipment`: `pieces`, `waybill`, `involvedParties`,
+  `customsInformation`, `insurance`, `securityDeclarations` (accepted as
+  optional 3.2.1-forward extension — deviation #12).
+- **FWB properties** on `Piece`: `ofShipment`, `containedPieces`,
+  `securityDeclarations` (3.2.0-conformant via Piece restriction ~8260).
+- `CARGO_ONTOLOGY_VERSION` bumped from `'3.2'` to `'3.2.0'` (exact endorsed
+  version string). Legacy alias `'3.2'` remains accepted by
+  `assertOntologyVersion` and `checkServerInformation`.
+
+### Changed
+
+- **`Organization` class retired** — replaced by `Company`
+  (`:Company rdfs:subClassOf :Organization`; the only concrete org type shipped).
+  `Party.partyDetails` widened to accept `IRI | {@id}` (Person or Company).
+  `NI` added as accepted `Party.partyRole` value.
+- **`Waybill`**: dropped `shipmentInformation` (renamed to `shipment`);
+  dropped `totalGrossWeight` (moved to Shipment).
+- **`Shipment`**: dropped `pieceCount`, `totalVolume`, `containedPieces`
+  (renamed to `pieces`), `shipper`, `consignee` (moved to `involvedParties`).
+- **`waybillType` enum**: `DIRECT` added.
+- **`waybillPrefix`**: now accepts `[A-Z0-9]{1,3}` (editorial policy relaxation
+  — NOT a spec pattern; the ontology has only `xsd:string maxLength 3`).
+- **`waybillNumber`**: now accepts `[A-Z0-9]+` per 3.2-rc2 ontology pattern.
+- **`AccountNumber`**: `accountNumber`/`issuedBy`/`accountType` renamed to
+  `accountNumberType`/`textualValue`; `issuedBy` removed (wrong domain — belongs
+  to `:SecurityDeclaration`, not `:AccountNumber`).
+- **`CARGO_ONTOLOGY_VERSION`**: `'3.2'` → `'3.2.0'`. `assertOntologyVersion`
+  and `checkServerInformation` now use an exact-alias accepted set
+  (`'3.2'` ≡ `'3.2.0'`, `'3.2.1'` rejected — NOT prefix-tolerant).
+- **`FIELD_TYPES` map**: stale v0.2 entries removed (`Waybill.shipmentInformation`,
+  `Shipment.containedPieces`, `Shipment.consignee`, `Shipment.shipper`,
+  `Organization.address`, `Organization.contactPersons`,
+  `AccountNumber.issuedBy`); ~40 new entries added for v0.3.0 classes.
+- **Domain constraints** (`domain-constraints.ts`): stale v0.2 constraints
+  on `Waybill.shipmentInformation` and `Shipment.containedPieces` removed.
+  No spec basis post-Path-A; the corrected cross-node check
+  (Waybill↔Shipment inverse-property consistency) is deferred.
+
+### BREAKING CHANGES
+
+Consumers upgrading from v0.2.x must audit the following:
+
+1. **`Organization` class removed** — import `Company` instead. Any code
+   referencing `OrganizationSchema`, `OrganizationCodec`, `serializeOrganization`,
+   or `deserializeOrganization` will break.
+2. **`Waybill.shipmentInformation` removed** — use `Waybill.shipment`.
+3. **`Waybill.totalGrossWeight` removed** — field moved to `Shipment`.
+4. **`Shipment.pieceCount` removed** — no direct replacement (compute from `pieces.length`).
+5. **`Shipment.totalVolume` removed** — no direct replacement in v0.3.0.
+6. **`Shipment.containedPieces` removed** — use `Shipment.pieces`.
+7. **`Shipment.shipper` / `Shipment.consignee` removed** — use `Shipment.involvedParties`
+   filtered by `partyRole`.
+8. **`waybillType` enum**: `DIRECT` is now a valid value — exhaustive switches
+   must handle it.
+9. **`waybillPrefix`**: now accepts alphanumeric `[A-Z0-9]{1,3}` — do not
+   assume numeric-only downstream.
+10. **`waybillNumber`**: now accepts `[A-Z0-9]+` — do not assume numeric-only.
+11. **`AccountNumber` fields renamed**: `accountNumber` → `textualValue`,
+    `accountType` → `accountNumberType`; `issuedBy` removed.
+12. **`Party.partyDetails`** widened (additive for accept — a bare IRI still
+    validates; see MIGRATING.md for detail).
+13. **`CARGO_ONTOLOGY_VERSION`** changed from `'3.2'` to `'3.2.0'`. Any code
+    doing `=== '3.2'` on the constant will need updating.
+14. **`assertOntologyVersion('3.2.1')`** now throws (previously any mismatch
+    with `'3.2'` would throw; now the exact-alias set `{'3.2.0','3.2'}` is
+    accepted and everything else including `'3.2.1'` is rejected).
+15. **`domain_constraint_violation`** for `Waybill.shipmentInformation` /
+    `Shipment.containedPieces` no longer fires (those fields no longer exist).
+
+### Spec deviations
+
+- **#12 (reworded)**: `Shipment.securityDeclarations` is a documented
+  3.2.1-forward extension — see `docs/spec-deviations.md#12`.
+- **#14 (new)**: Legacy `{unit,value}` shape on 3 pre-existing fields.
+- **#15 (new)**: `Waybill.accountingInformation` is `owl:deprecated` in 3.2-rc2.
+- **#16 (new)**: `BillingDetails` class not modelled in v0.3.0.
+
 ## [0.2.0] - 2026-04-28
 
 First publicly verifiable release. Closes 3 of 5 v0.1.x spec

@@ -19,8 +19,8 @@ interface SafeIriIssueParams {
 
 /**
  * Zod helper for IRI-shaped fields. Use in every per-class schema for IRI fields:
- *   shipmentInformation: safeIri().optional()
- *   containedPieces: z.array(safeIri()).min(1).optional()
+ *   shipment: safeIri().optional()
+ *   pieces: z.array(safeIri()).min(1).optional()
  *
  * On failure, emits a `custom` Zod issue with a structured `params` payload
  * tagged with `__safe_iri__: true`. Per-class deserializers walk the Zod

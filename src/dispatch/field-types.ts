@@ -4,9 +4,8 @@
  * `wrong_type_for_endpoint` when an embedded node's `@type` does not
  * match the field's contract.
  *
- * Coverage: every field in the 32-class data model that points at
- * another logistics-object node (via `safeIri()` reference or
- * embedded array). Scalar fields and external-endpoint URLs
+ * Coverage: every cross-referencing field across the registered class set.
+ * Scalar fields and external-endpoint URLs
  * (`Subscription.notificationEndpoint`, `ServerInformation.serverEndpoint`)
  * are intentionally omitted — those don't resolve to a OneRecord type.
  *
@@ -25,7 +24,8 @@ export const FIELD_TYPES: Readonly<Record<string, string>> = Object.freeze({
   'AccessDelegation.delegatedFrom': 'Party',
 
   // Account number
-  'AccountNumber.issuedBy': 'Organization',
+  // (AccountNumber.issuedBy removed — :issuedBy is range :Person / domain :SecurityDeclaration,
+  //  not on :AccountNumber; do not repoint)
 
   // Booking ecosystem
   'Booking.forBookingRequest': 'BookingRequest',
@@ -45,9 +45,37 @@ export const FIELD_TYPES: Readonly<Record<string, string>> = Object.freeze({
   'ChangeRequest.forLogisticsObject': '*', // polymorphic
   'ChangeRequest.hasChange': 'Change',
 
+  // CO2Emissions
+  'CO2Emissions.calculationFor': '*', // polymorphic — TransportMovement or Shipment etc.
+  'TransportMovement.co2Emissions': 'CO2Emissions',
+
+  // Company (concrete :Organization subtype — only concrete org type shipped)
+  'Company.basedAtLocation': 'Location',
+  // Organization-range properties pin to 'Company': :Company rdfs:subClassOf :Organization and
+  // Company is the only concrete :Organization subtype this library ships post-Organization-
+  // retirement, so 'Company' is the correct (not over-strict) wrong_type_for_endpoint contract.
+  // Company.contactPersons → 'Person': ontology range is abstract :Actor, :Person rdfs:subClassOf
+  // :Actor, no NonHumanActor shipped, so 'Person' is the correct concrete contract.
+  'Company.contactPersons': 'Person',
+  'Company.parentOrganization': 'Company',
+  'Company.subOrganization': 'Company',
+
+  // CustomsInformation
+  'CustomsInformation.issuedForPiece': 'Piece',
+  'CustomsInformation.issuedForShipment': 'Shipment',
+
   // Handling
   'HandlingService.provider': 'Party',
   'HandlingService.forShipment': 'Shipment',
+
+  // Insurance
+  'Insurance.coveringOrganization': 'Company',
+  'Insurance.insuredShipments': 'Shipment',
+
+  // LineItemPackage / ULD
+  'LineItemPackage.pieceReferences': 'Piece',
+  'WaybillLineItem.lineItemPackages': 'LineItemPackage',
+  'WaybillLineItem.uldReferences': 'ULD',
 
   // Location ↔ Address
   'Location.address': 'Address',
@@ -59,16 +87,34 @@ export const FIELD_TYPES: Readonly<Record<string, string>> = Object.freeze({
   // Notification
   'Notification.relatedLogisticsObject': '*', // polymorphic
 
-  // Organization / Party
-  'Organization.address': 'Address',
-  'Organization.contactPersons': 'Person',
-  'Party.partyDetails': '*', // polymorphic — Person or Organization
+  // Party (Organization retired; partyDetails is Person or Company)
+  'Party.partyDetails': '*', // polymorphic — Person or Company
   'Party.accountNumbers': 'AccountNumber',
 
-  // Shipment / Piece
-  'Shipment.containedPieces': 'Piece',
-  'Shipment.consignee': 'Party',
-  'Shipment.shipper': 'Party',
+  // Piece
+  'Piece.ofShipment': 'Shipment',
+  'Piece.containedPieces': 'Piece',
+  'Piece.securityDeclarations': 'SecurityDeclaration',
+  // Piece.packagingType omitted — :PackagingType is a codes class (enum), not a logistics object
+
+  // RegulatedEntity
+  'RegulatedEntity.owningOrganization': 'Company',
+
+  // SecurityDeclaration
+  'SecurityDeclaration.issuedForPiece': 'Piece',
+  'SecurityDeclaration.issuedBy': 'Person',
+  'SecurityDeclaration.regulatedEntityIssuer': 'RegulatedEntity',
+  'SecurityDeclaration.regulatedEntityAcceptor': 'RegulatedEntity',
+  'SecurityDeclaration.receivedFrom': 'RegulatedEntity',
+  'SecurityDeclaration.otherRegulatedEntities': 'RegulatedEntity',
+
+  // Shipment
+  'Shipment.pieces': 'Piece',
+  'Shipment.waybill': 'Waybill',
+  'Shipment.involvedParties': 'Party',
+  'Shipment.customsInformation': 'CustomsInformation',
+  'Shipment.insurance': 'Insurance',
+  'Shipment.securityDeclarations': 'SecurityDeclaration',
 
   // Subscription
   'SubscriptionRequest.subscription': 'Subscription',
@@ -85,7 +131,16 @@ export const FIELD_TYPES: Readonly<Record<string, string>> = Object.freeze({
   'Verification.verifiedObject': '*', // polymorphic
 
   // Waybill
-  'Waybill.shipmentInformation': 'Shipment',
+  'Waybill.shipment': 'Shipment',
+  'Waybill.involvedParties': 'Party',
+  'Waybill.waybillLineItems': 'WaybillLineItem',
+  'Waybill.otherCharges': 'OtherCharge',
+  'Waybill.carrierDeclarationPlace': 'Location',
+  'Waybill.departureLocation': 'Location',
+  'Waybill.arrivalLocation': 'Location',
+  'Waybill.houseWaybills': 'Waybill',
+  'Waybill.masterWaybill': 'Waybill',
+  // Waybill.billingDetails omitted — :BillingDetails not modelled in v0.3.0 (deviation #16)
   'Waybill.referredBookingOption': 'BookingOption',
 })
 

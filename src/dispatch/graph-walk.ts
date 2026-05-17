@@ -49,10 +49,11 @@ export function dispatchGraphWalk(input: unknown, rootClass: string): ParseResul
   }
 
   // domain_constraint_violation (deviation #6 partial closure, deferral F):
-  // root-level cardinality constraints from spec §5.x. Today: Waybill
-  // requires shipmentInformation; Shipment requires containedPieces.
-  // v0.3 expands with AWB consistency, total-pieces/weight sums, and
-  // reference resolvability.
+  // root-level cardinality constraints from spec §5.x. v0.3 (Path A) removed
+  // the stale v0.2 constraints on Waybill.shipmentInformation /
+  // Shipment.containedPieces (Path A replaced those field names with shipment
+  // / pieces). Future expansion: AWB consistency, total-pieces/weight sums,
+  // and reference resolvability.
   if (typeof input === 'object' && input !== null && !Array.isArray(input)) {
     const violation = checkDomainConstraints(rootClass, input as Record<string, unknown>)
     if (violation) {
@@ -183,12 +184,12 @@ function pathToParentField(path: string): string | undefined {
  * (those don't carry their own @type).
  *
  * Examples (rootClass = 'Waybill'):
- *  - `$.shipmentInformation` → parent path `$` → 'Waybill'
- *  - `$.shipmentInformation.consignee` → parent path `$.shipmentInformation`
+ *  - `$.shipment` → parent path `$` → 'Waybill'
+ *  - `$.shipment.involvedParties` → parent path `$.shipment`
  *    → whatever @type was declared on that node (typically 'Shipment')
- *  - `$.containedPieces[0]` → strip `[0]` then `.containedPieces` → '$' → 'Waybill'
+ *  - `$.pieces[0]` → strip `[0]` then `.pieces` → '$' → 'Waybill' (via Shipment)
  *    (the array container itself isn't an object node so we step past it)
- *  - `$.containedPieces[0].dimensions` → parent path `$.containedPieces[0]`
+ *  - `$.pieces[0].dimensions` → parent path `$.pieces[0]`
  *    → @type at that path (typically 'Piece')
  */
 function containingClassFor(path: string, pathToType: Map<string, string>): string | undefined {

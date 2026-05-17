@@ -287,6 +287,56 @@ what `STATE_DIAGRAM` contains; transitions resolve correctly. The
 mismatch between schema and state-machine is invisible to consumers
 of the booking-flow helpers.
 
+## 12. Shipment.securityDeclarations + SecurityDeclaration.issuedForShipment — 3.2.1-master-only restrictions
+
+**Status (v0.3.0)**: FORWARD-COMPAT. The standalone object property
+`:securityDeclarations` exists in the endorsed 3.2.0 ontology (3.2-rc2
+~2227-2233, `rdfs:range :SecurityDeclaration`, **`owl:comment "Domain :Piece"`**,
+`:vis_inverseProperty :issuedForPiece`) — i.e. it is a **Piece-domain** property,
+not a generic one. `:issuedForShipment` also exists standalone (~1425-1431).
+What is master-only (ontology PRs #344/#346, master changelog 88-89) is the
+**owl:Restriction wiring** of `securityDeclarations` onto `:Shipment`
+(master ~9281-9284) and `issuedForShipment` onto `:SecurityDeclaration`
+(master ~9125-9128). (Line numbers advisory; grep the term.)
+
+**v0.3.0 behaviour**: `Piece.securityDeclarations` IS 3.2.0-conformant (3.2-rc2
+`:Piece` restriction ~8259-8262) and ships fully. `Shipment.securityDeclarations`
+is **non-conformant for 3.2.0** for two reasons: (a) no `:Shipment` restriction
+in 3.2-rc2, and (b) the property's own declared domain is `:Piece`. It is kept
+as an OPTIONAL accepted field purely so a 3.2.1-master peer round-trips; the
+conformance matrix marks it `3.2.1-forward` and it is NOT a 3.2.0 claim.
+`SecurityDeclaration.issuedForShipment` is NOT in the schema (strict-rejected).
+Spec-correct 3.2.0 Shipment→security reachability is transitive:
+`SecurityDeclaration.issuedForPiece → Piece.ofShipment` (the original plan's
+deviation #12 stated this backwards as "`Piece.securityDeclarations` inverse" —
+that reaches Piece, not Shipment; this rewording fixes that bug).
+
+## 14. Legacy {unit,value} value-object shape on 3 pre-existing fields (DD-1)
+
+`Shipment.totalGrossWeight`, `Piece.grossWeight`, `Piece.dimensions` retain the
+v0.2 shape (`{unit:'KGM',value}` / `{l,w,h,unit:'CMT'}`). The 3.2-rc2 ontology
+models these as `:Value` (`{numericalValue, unit}`, ~9968-9987) / `:Dimensions`
+(nested `:Value`, ~6536-6571). All NEW value-typed properties in v0.3.0 use the
+spec-correct `ValueSchema`/`CurrencyValueSchema`/`DimensionsSchema`. Retrofitting
+the 3 legacy fields is a deliberately separate batch (compliance report §4/R3).
+
+## 15. Waybill.accountingInformation is owl:deprecated in 3.2-rc2
+
+`:accountingInformation` (3.2-rc2 ~2856) carries `owl:deprecated true` (~2861).
+v0.3.0 ships it (still a valid term, FWB ACC segment) and the CHANGELOG `### Added`
+notes it as "deprecated upstream — deviation #15" so it is not silent. The
+non-deprecated successor `accountingNotes → :AccountingNote` is a deferred follow-up.
+
+## 16. BillingDetails class not modelled in v0.3.0 (scoped-out FWB gap)
+
+The FWB billing block (tax-due-agent vs tax-due-airline split, AWB-use
+indicator) maps to `:BillingDetails` (3.2-rc2 ~5043+); `Waybill.billingDetails`
+is modelled as a bare IRI ref in v0.3.0 but the `:BillingDetails` class itself
+is NOT created (out of the four-batch scope). Strict FWB billing-block
+reconstruction is therefore not yet possible. Recorded here (not silent) per the
+plan's deviation discipline; modelling `BillingDetails` is a named follow-up
+batch alongside `accountingNotes`/`:AccountingNote`.
+
 ---
 
 ## How deviations are tracked

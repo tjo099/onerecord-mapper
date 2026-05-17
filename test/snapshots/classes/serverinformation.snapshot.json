@@ -3,6 +3,6 @@
   "@type": "ServerInformation",
   "@id": "https://snapshot.example/wf/serverinformation/fixed-id",
   "serverEndpoint": "https://example.org/server",
-  "cargoOntologyVersion": "3.2",
+  "cargoOntologyVersion": "3.2.0",
   "apiSpecVersion": "2.2.0"
 }

@@ -1,18 +1,19 @@
 # @flaks/onerecord
 
-Zero-dependency Zod-first TypeScript mapper for the IATA OneRecord cargo data model 3.2 and API spec 2.2.0.
+Zero-dependency Zod-first TypeScript mapper for the IATA OneRecord cargo data model 3.2.0 and API spec 2.2.0.
 
 ## What it is
 
 `@flaks/onerecord` provides round-trip-safe serialization and deserialization for
-32 OneRecord cargo data model classes. Each class ships with a Zod schema, an
-application-layer TypeScript type, a `JsonLd<T>` brand, `serialize` / `serializeStrict`
-/ `deserialize` functions, and a `Codec` bundle. A factory (`createMapper`) and a
-namespaced facade (`onerecord`) cover the two main consumption patterns. Safety
-primitives (depth, node, string, array, payload limits; prototype-pollution defense;
-IRI validation) run before Zod so that invalid JSON-LD graphs never reach schema
-evaluation. All 22 parse-error variants are typed as a discriminated union (`ParseError`)
-so callers handle every failure mode exhaustively.
+the OneRecord cargo data model class set (Ring 1–5, booking-flow, and FWB-equivalence
+classes added in v0.3.0). Each class ships with a Zod schema, an application-layer
+TypeScript type, a `JsonLd<T>` brand, `serialize` / `serializeStrict` / `deserialize`
+functions, and a `Codec` bundle. A factory (`createMapper`) and a namespaced facade
+(`onerecord`) cover the two main consumption patterns. Safety primitives (depth, node,
+string, array, payload limits; prototype-pollution defense; IRI validation) run before
+Zod so that invalid JSON-LD graphs never reach schema evaluation. All parse-error
+variants are typed as a discriminated union (`ParseError`) so callers handle every
+failure mode exhaustively.
 
 ## Why use this library?
 
@@ -36,14 +37,20 @@ Use this library if you're building cargo software that needs to:
   `missing_type`, all surfaced as typed `ParseError` variants. Default
   per-class deserializers stay structural-only for v0.1.x compatibility;
   graph-walk is opt-in.
-- **Type-check** every parse-failure path: `ParseError` is a 22-variant
-  discriminated union, so the compiler tells you when you've forgotten a
-  failure mode.
+- **Type-check** every parse-failure path: `ParseError` is a discriminated
+  union, so the compiler tells you when you've forgotten a failure mode.
 
 Skip it if you want a generic JSON-LD or RDF toolkit; this is purpose-built
 for the IATA cargo ontology and the ONE Record API spec 2.2.0.
 
-### Publicly verifiable
+### Conformance and verifiability
+
+This library is **3.2.0-conformant for the covered class set, with documented
+deviations and 3.2.1-forward extensions**. Specifically:
+`Shipment.securityDeclarations` is accepted as a documented 3.2.1-forward
+extension (deviation #12). Every deviation is recorded in
+[`docs/spec-deviations.md`](docs/spec-deviations.md) — read that before
+adopting if your integration must match the spec verbatim.
 
 This library publishes verifiable artifacts so consumers can audit the
 conformance claim independently:
@@ -51,12 +58,13 @@ conformance claim independently:
 - All releases are GPG-signed git tags + signed npm tarballs (per
   [`MAINTENANCE.md`](MAINTENANCE.md)).
 - Every spec deviation is documented in [`docs/spec-deviations.md`](docs/spec-deviations.md)
-  with status banners (CLOSED, PARTIAL, deferred-to-v0.3) and explicit
-  guidance on what consumers should do today.
-- Property-based round-trip tests for the eight Ring 1+2 classes
-  (Waybill, Shipment, Piece, Address, Person, Organization, Party,
-  AccountNumber) — `serialize(deserialize(x))` is field-equivalent for
-  any value an `Arbitrary` produces.
+  with status banners (CLOSED, PARTIAL, deferred) and explicit guidance
+  on what consumers should do today.
+- A [`docs/conformance-matrix.md`](docs/conformance-matrix.md) maps each
+  class and field to its binding authority in `IATA-1R-DM-Ontology.ttl`.
+- Property-based round-trip tests for the Ring 1+2 classes
+  — `serialize(deserialize(x))` is field-equivalent for any value an
+  `Arbitrary` produces.
 - Contract tests at `test/contract/` exercise the wire format
   end-to-end against the OLF-hosted reference NE:ONE Server (the IATA
   OneRecord reference implementation). See [`CONTRIBUTING.md`](CONTRIBUTING.md)
@@ -64,11 +72,11 @@ conformance claim independently:
 
 ## Status
 
-`v0.2.0` ships:
+`v0.3.0` ships:
 
-- The 32 canonical cargo data model classes (Ring 1–5 plus booking-flow)
-  with full round-trip codecs, Zod schemas, snapshot tests, and pre-Zod
-  safety primitives.
+- The canonical cargo data model class set (Ring 1–5, booking-flow, plus
+  10 new FWB-equivalence classes in v0.3.0) with full round-trip codecs,
+  Zod schemas, snapshot tests, and pre-Zod safety primitives.
 - Opt-in **graph-walk dispatcher** (`createMapper({ graphWalk: true })` or
   `onerecord.dispatch.deserialize.<Class>`) emitting all four cross-node
   integrity ParseError kinds.
@@ -87,11 +95,11 @@ conformance claim independently:
 The library is Apache-2.0 and ready for use within the v0.x stability
 policy described in [`MIGRATING.md`](MIGRATING.md).
 
-Spec compliance: cargo data model **3.2 (2025-07 endorsed standard)**, API
-spec **2.2.0**. A small number of deliberate divergences from canonical
-spec behavior are documented in
-[`docs/spec-deviations.md`](docs/spec-deviations.md); read that before
-adopting if your integration must match the spec verbatim.
+Spec compliance: cargo data model **3.2.0 (2025-07 endorsed standard, 3.2-rc2 file)**,
+API spec **2.2.0**. The library is 3.2.0-conformant for the covered class set,
+with documented deviations and 3.2.1-forward extensions. See
+[`docs/spec-deviations.md`](docs/spec-deviations.md) and
+[`docs/conformance-matrix.md`](docs/conformance-matrix.md) for the full picture.
 
 ## Install
 
@@ -163,7 +171,7 @@ const jsonLd = onerecord.serialize.Piece(piece)
 
 ### Per-class exports
 
-Each of the 32 classes exposes:
+Each registered class exposes:
 
 | Export | Description |
 |---|---|
@@ -196,9 +204,9 @@ No bound state; suitable for one-off operations and tree-shake-friendly imports.
 
 ### Errors
 
-- `ParseError` — 22-variant discriminated union (`kind` field); covers
-  `zod_validation`, `cardinality_violation`, `invalid_iri`, `depth_limit_exceeded`,
-  `prototype_pollution_attempt`, `invalid_pointer`, and 16 more
+- `ParseError` — discriminated union on `kind`; covers `zod_validation`,
+  `cardinality_violation`, `invalid_iri`, `depth_limit_exceeded`,
+  `prototype_pollution_attempt`, `invalid_pointer`, and more
 - `SerializationError` — `code: 'invalid_application_object' | 'iri_construction_failed'`
 - `formatError(e: ParseError): string` — human-readable message
 - `redactError(e: ParseError): ParseError` — strips PII from error payloads before logging
@@ -288,14 +296,14 @@ import type { Waybill, ParseError } from '@flaks/onerecord/types'
 
 | Spec | Version |
 |---|---|
-| Cargo data model | 3.2 (2025-07 endorsed standard) |
+| Cargo data model | 3.2.0 (2025-07 endorsed standard, 3.2-rc2 ontology file) |
 | API spec | 2.2.0 |
 
 ## Development
 
 ```bash
 bun install
-bun run test       # 518 passing + 10 skipped = 528 total
+bun run test       # see CI for current count
 bun run lint       # Biome
 bun run typecheck  # tsc --noEmit
 ```

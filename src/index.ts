@@ -473,6 +473,16 @@ export type {
   JsonLdHandlingService,
 } from './classes/handling-service/index.js'
 
+// Ring 2 — ULD
+export {
+  ULDCodec,
+  ULDSchema,
+  deserializeULD,
+  serializeULD,
+  serializeULDStrict,
+} from './classes/uld/index.js'
+export type { JsonLdULD, ULD } from './classes/uld/index.js'
+
 // Phase 15 — error helpers (T72)
 export { formatError, redactError } from './error/index.js'
 

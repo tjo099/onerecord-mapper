@@ -67,6 +67,7 @@ export type {
   JsonLdTransportMovement,
   TransportMovement,
 } from '../classes/transport-movement/index.js'
+export type { JsonLdULD, ULD } from '../classes/uld/index.js'
 export type {
   JsonLdVerification,
   UnverifiedVerification,

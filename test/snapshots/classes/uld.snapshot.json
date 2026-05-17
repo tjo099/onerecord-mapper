@@ -1,0 +1,6 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "ULD",
+  "@id": "https://snapshot.example/wf/uld/fixed-id",
+  "uldTypeCode": "AKE"
+}

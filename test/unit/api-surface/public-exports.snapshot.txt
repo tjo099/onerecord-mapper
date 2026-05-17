@@ -78,6 +78,8 @@ SubscriptionRequestCodec
 SubscriptionRequestSchema
 SubscriptionSchema
 TopicType
+ULDCodec
+ULDSchema
 VerificationCodec
 VerificationRequestCodec
 VerificationRequestSchema
@@ -131,6 +133,7 @@ deserializeServerInformation
 deserializeShipment
 deserializeSubscription
 deserializeSubscriptionRequest
+deserializeULD
 deserializeVerification
 deserializeVerificationRequest
 deserializeWaybill
@@ -209,6 +212,8 @@ serializeSubscription
 serializeSubscriptionRequest
 serializeSubscriptionRequestStrict
 serializeSubscriptionStrict
+serializeULD
+serializeULDStrict
 serializeVerification
 serializeVerificationRequest
 serializeVerificationRequestStrict

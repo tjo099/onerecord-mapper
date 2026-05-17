@@ -40,6 +40,7 @@ import * as Sh from './classes/shipment/index.js'
 import * as Sr from './classes/subscription-request/index.js'
 import * as Su from './classes/subscription/index.js'
 import * as Tm from './classes/transport-movement/index.js'
+import * as Ul from './classes/uld/index.js'
 import * as VR from './classes/verification-request/index.js'
 import * as Vf from './classes/verification/index.js'
 import * as WLI from './classes/waybill-line-item/index.js'
@@ -94,6 +95,7 @@ export const CLASSES = {
   BookingSegment: BS,
   BookingShipment: BSh,
   BookingTimes: BT,
+  ULD: Ul,
 } as const
 
 export type ClassName = keyof typeof CLASSES

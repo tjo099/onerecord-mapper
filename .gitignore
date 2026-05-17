@@ -5,6 +5,7 @@ coverage/
 *.log
 *.tsbuildinfo
 .vitest-cache/
+.claude/
 test/fixtures/samples-real/
 .env
 .env.local

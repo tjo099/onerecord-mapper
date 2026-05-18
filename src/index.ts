@@ -484,6 +484,16 @@ export {
 } from './classes/uld/index.js'
 export type { JsonLdULD, ULD } from './classes/uld/index.js'
 
+// ULD Load Composition Phase 1 — LoadingMaterial
+export {
+  LoadingMaterialCodec,
+  LoadingMaterialSchema,
+  deserializeLoadingMaterial,
+  serializeLoadingMaterial,
+  serializeLoadingMaterialStrict,
+} from './classes/loading-material/index.js'
+export type { JsonLdLoadingMaterial, LoadingMaterial } from './classes/loading-material/index.js'
+
 // Ring 2 — CO2Emissions
 export {
   CO2EmissionsCodec,

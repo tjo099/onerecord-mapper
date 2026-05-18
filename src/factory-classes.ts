@@ -28,6 +28,7 @@ import * as HS from './classes/handling-service/index.js'
 import * as In from './classes/insurance/index.js'
 import * as LIP from './classes/line-item-package/index.js'
 import * as Lc from './classes/location/index.js'
+import * as Lm from './classes/loading-material/index.js'
 import * as Le from './classes/logistics-event/index.js'
 import * as Mt from './classes/movement-time/index.js'
 import * as Nt from './classes/notification/index.js'
@@ -100,6 +101,7 @@ export const CLASSES = {
   BookingShipment: BSh,
   BookingTimes: BT,
   ULD: Ul,
+  LoadingMaterial: Lm,
   RegulatedEntity: RE,
   SecurityDeclaration: SD,
 } as const

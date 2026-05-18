@@ -25,6 +25,7 @@ export { CustomsInformationCodec } from './classes/customs-information/index.js'
 export { HandlingServiceCodec } from './classes/handling-service/index.js'
 export { InsuranceCodec } from './classes/insurance/index.js'
 export { LineItemPackageCodec } from './classes/line-item-package/index.js'
+export { LoadingMaterialCodec } from './classes/loading-material/index.js'
 export { LocationCodec } from './classes/location/index.js'
 export { LogisticsEventCodec } from './classes/logistics-event/index.js'
 export { MovementTimeCodec } from './classes/movement-time/index.js'
@@ -49,7 +50,7 @@ export { WaybillLineItemCodec } from './classes/waybill-line-item/index.js'
 
 /**
  * Frozen map of all codecs keyed by class name — useful for consumers
- * who need to iterate over all 32 codecs programmatically.
+ * who need to iterate over all codecs programmatically.
  */
 export const CODECS = Object.freeze(
   Object.fromEntries(

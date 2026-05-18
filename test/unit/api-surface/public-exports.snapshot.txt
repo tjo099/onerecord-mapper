@@ -37,6 +37,9 @@ ChangeRequestSchema
 ChangeSchema
 CompanyCodec
 CompanySchema
+ComposingCodec
+ComposingSchema
+CompositionType
 CustomsInformationCodec
 CustomsInformationSchema
 DEFAULT_SAFETY_LIMITS
@@ -49,6 +52,8 @@ InsuranceCodec
 InsuranceSchema
 LineItemPackageCodec
 LineItemPackageSchema
+LoadingMaterialCodec
+LoadingMaterialSchema
 LogisticsObjectSchema
 NotificationCodec
 NotificationEventType
@@ -86,6 +91,8 @@ SubscriptionSchema
 TopicType
 ULDCodec
 ULDSchema
+UnitCompositionCodec
+UnitCompositionSchema
 VerificationCodec
 VerificationRequestCodec
 VerificationRequestSchema
@@ -126,10 +133,12 @@ deserializeCO2Emissions
 deserializeChange
 deserializeChangeRequest
 deserializeCompany
+deserializeComposing
 deserializeCustomsInformation
 deserializeHandlingService
 deserializeInsurance
 deserializeLineItemPackage
+deserializeLoadingMaterial
 deserializeNotification
 deserializeOperation
 deserializeOtherCharge
@@ -143,6 +152,7 @@ deserializeShipment
 deserializeSubscription
 deserializeSubscriptionRequest
 deserializeULD
+deserializeUnitComposition
 deserializeVerification
 deserializeVerificationRequest
 deserializeWaybill
@@ -195,6 +205,8 @@ serializeChangeRequestStrict
 serializeChangeStrict
 serializeCompany
 serializeCompanyStrict
+serializeComposing
+serializeComposingStrict
 serializeCustomsInformation
 serializeCustomsInformationStrict
 serializeHandlingService
@@ -203,6 +215,8 @@ serializeInsurance
 serializeInsuranceStrict
 serializeLineItemPackage
 serializeLineItemPackageStrict
+serializeLoadingMaterial
+serializeLoadingMaterialStrict
 serializeNotification
 serializeNotificationStrict
 serializeOperation
@@ -229,6 +243,8 @@ serializeSubscriptionRequestStrict
 serializeSubscriptionStrict
 serializeULD
 serializeULDStrict
+serializeUnitComposition
+serializeUnitCompositionStrict
 serializeVerification
 serializeVerificationRequest
 serializeVerificationRequestStrict

@@ -1,0 +1,6 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "Composing",
+  "@id": "https://snapshot.example/wf/composing/fixed-id",
+  "compositionType": "COMPOSITION"
+}

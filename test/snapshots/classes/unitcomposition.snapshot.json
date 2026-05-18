@@ -1,0 +1,5 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "UnitComposition",
+  "@id": "https://snapshot.example/wf/unitcomposition/fixed-id"
+}

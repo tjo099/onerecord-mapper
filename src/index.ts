@@ -484,6 +484,16 @@ export {
 } from './classes/uld/index.js'
 export type { JsonLdULD, ULD } from './classes/uld/index.js'
 
+// ULD Load Composition Phase 1 — UnitComposition
+export {
+  UnitCompositionCodec,
+  UnitCompositionSchema,
+  deserializeUnitComposition,
+  serializeUnitComposition,
+  serializeUnitCompositionStrict,
+} from './classes/unit-composition/index.js'
+export type { JsonLdUnitComposition, UnitComposition } from './classes/unit-composition/index.js'
+
 // ULD Load Composition Phase 1 — LoadingMaterial
 export {
   LoadingMaterialCodec,

@@ -1,0 +1,5 @@
+export { UnitCompositionCodec } from './codec.js'
+export { deserializeUnitComposition } from './deserialize.js'
+export { UnitCompositionSchema } from './schema.js'
+export type { JsonLdUnitComposition, UnitComposition } from './schema.js'
+export { serializeUnitComposition, serializeUnitCompositionStrict } from './serialize.js'

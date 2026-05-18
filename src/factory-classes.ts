@@ -44,6 +44,7 @@ import * as Sh from './classes/shipment/index.js'
 import * as Sr from './classes/subscription-request/index.js'
 import * as Su from './classes/subscription/index.js'
 import * as Tm from './classes/transport-movement/index.js'
+import * as UC from './classes/unit-composition/index.js'
 import * as Ul from './classes/uld/index.js'
 import * as VR from './classes/verification-request/index.js'
 import * as Vf from './classes/verification/index.js'
@@ -101,6 +102,7 @@ export const CLASSES = {
   BookingShipment: BSh,
   BookingTimes: BT,
   ULD: Ul,
+  UnitComposition: UC,
   LoadingMaterial: Lm,
   RegulatedEntity: RE,
   SecurityDeclaration: SD,

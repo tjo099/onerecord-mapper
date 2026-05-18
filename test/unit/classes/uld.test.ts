@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import {
   ULDCodec,
   ULDSchema,
@@ -6,6 +7,7 @@ import {
   serializeULDStrict,
 } from '../../../src/classes/uld/index.js'
 import { createULD } from '../../factories/uld.js'
+import { testIri } from '../../factories/common.js'
 import { roundTripHarness } from './_harness.js'
 
 roundTripHarness({
@@ -16,4 +18,19 @@ roundTripHarness({
   deserialize: deserializeULD,
   codec: ULDCodec,
   factory: createULD,
+})
+
+describe('ULD.inUnitComposition', () => {
+  it('round-trips a valid IRI and rejects an invalid IRI with invalid_iri', () => {
+    const validIri = testIri('UnitComposition')
+    const withValid = createULD({ inUnitComposition: validIri })
+    const rValid = deserializeULD(serializeULD(withValid))
+    expect(rValid.ok).toBe(true)
+    if (rValid.ok) expect(rValid.value.inUnitComposition).toBe(validIri)
+
+    const withInvalid = { ...createULD(), inUnitComposition: 'not-a-valid-iri' }
+    const rInvalid = deserializeULD(withInvalid)
+    expect(rInvalid.ok).toBe(false)
+    if (!rInvalid.ok) expect(rInvalid.error.kind).toBe('invalid_iri')
+  })
 })

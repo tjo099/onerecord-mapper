@@ -352,7 +352,11 @@ future patch without changing existing wire shapes.
 meaningful value in the ULD-composition context (a loading action does not
 carry its own contact or time-type metadata distinct from the parent
 `UnitComposition`). They can be added non-breakingly when a consumer
-demonstrates a concrete need.
+demonstrates a concrete need. Note: the omitted property here is the ontology
+ObjectProperty `:contactDetails` — this is a **distinct property** from
+`:contactPersons`, which IS modelled on `Composing` as part of its
+`:LogisticsActivity` subset. Omitting `:contactDetails` is not a contradiction
+of the shipped `:contactPersons` field.
 
 **Inherited properties omitted from `UnitComposition`:**
 
@@ -362,7 +366,10 @@ properties that are redundant or undefined for a ULD-load record: execution
 status is implicit in the booking/flight-leg lifecycle, check actions belong
 to a ramp inspection flow not modelled here, and contact / served-services
 data are not part of the composition payload. All are addable in a later
-patch.
+patch. As with `Composing`, the omitted `:contactDetails` is a **distinct
+ontology ObjectProperty** from `:contactPersons`; `:contactPersons` IS
+modelled on `UnitComposition` and omitting `:contactDetails` is not a
+contradiction of that shipped field.
 
 **`CompositionType` as a bare-string `z.enum` on the wire:**
 
@@ -407,6 +414,16 @@ are ontology-valid choices: `otherIdentifiers` is simply not available on
 this branch, while `contactPersons` is a legitimate though optional
 `:LogisticsActivity` property retained for completeness. Recorded here so
 the asymmetry reads as deliberate rather than an oversight.
+
+The reason `Composing` carries `otherIdentifiers` while `UnitComposition`
+does not is that the two classes sit on **different ontology ancestor
+branches**: `:Composing rdfs:subClassOf :LogisticsAction`, whose branch
+defines `otherIdentifiers`; versus `:UnitComposition rdfs:subClassOf
+:LogisticsActivity`, whose branch (`:UnitComposition` → `:LogisticsActivity`
+→ `:LogisticsObject`) does not define `otherIdentifiers`. `:LogisticsAction`
+and `:LogisticsActivity` are distinct classes in different ancestor chains.
+Both the inclusion on `Composing` and the omission on `UnitComposition` are
+ontology-valid and deliberate — not an oversight.
 
 **Forward-provisioned columns not populated in Phase 1:**
 

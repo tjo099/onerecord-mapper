@@ -42,6 +42,7 @@ export type { DeserializeOpts, SafetyLimits, SerializeOpts } from './safety/limi
 export {
   BookingOptionStatus,
   BookingStatus,
+  CompositionType,
   NotificationEventType,
   PatchOperation,
   Permission,

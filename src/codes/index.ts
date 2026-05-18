@@ -12,6 +12,7 @@ export {
   SecurityStatus,
   ScreeningExemption,
   RegulatedEntityCategoryCode,
+  CompositionType,
 } from './enums.js'
 export { FSU_EVENT_CODES, fsuCodeToEventTypeCode } from './fsu-event-codes.js'
 export type { FsuCode, FsuEventMapping } from './fsu-event-codes.js'

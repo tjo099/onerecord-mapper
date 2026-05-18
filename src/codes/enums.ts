@@ -63,3 +63,6 @@ export type ScreeningExemption = z.infer<typeof ScreeningExemption>
 
 export const RegulatedEntityCategoryCode = z.enum(['AO', 'KC', 'RA', 'RC'])
 export type RegulatedEntityCategoryCode = z.infer<typeof RegulatedEntityCategoryCode>
+
+export const CompositionType = z.enum(['COMPOSITION', 'DECOMPOSITION'])
+export type CompositionType = z.infer<typeof CompositionType>

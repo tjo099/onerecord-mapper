@@ -337,6 +337,86 @@ reconstruction is therefore not yet possible. Recorded here (not silent) per the
 plan's deviation discipline; modelling `BillingDetails` is a named follow-up
 batch alongside `accountingNotes`/`:AccountingNote`.
 
+## 17. ULD composition classes — modelling deviations
+
+Three new classes shipped in v0.3.x — `Composing`, `UnitComposition`, and
+the `CompositionType` code-list enum — deliberately omit or reinterpret
+several upstream ontology properties. All deviations are non-breaking: every
+omitted property is optional in the 3.2-rc2 ontology and can be added in a
+future patch without changing existing wire shapes.
+
+**Inherited properties omitted from `Composing`:**
+
+`Composing` omits `actionTimeType` and `contactDetails`. Both are defined on
+`:LogisticsActivity` (the ontology ancestor) but are optional and have no
+meaningful value in the ULD-composition context (a loading action does not
+carry its own contact or time-type metadata distinct from the parent
+`UnitComposition`). They can be added non-breakingly when a consumer
+demonstrates a concrete need.
+
+**Inherited properties omitted from `UnitComposition`:**
+
+`UnitComposition` omits `executionStatus`, `checkActions`, `contactDetails`,
+and `servedServices`. These are optional `:LogisticsActivity` / `:LogisticsObject`
+properties that are redundant or undefined for a ULD-load record: execution
+status is implicit in the booking/flight-leg lifecycle, check actions belong
+to a ramp inspection flow not modelled here, and contact / served-services
+data are not part of the composition payload. All are addable in a later
+patch.
+
+**`CompositionType` as a bare-string `z.enum` on the wire:**
+
+`CompositionType` is implemented as a bare-string `z.enum([...])` in
+`src/codes/enums.ts`. This is the established package-wide convention for
+code-list enumerations — every enum in that file (e.g. `RequestStatus`,
+`SecurityStatus`) is a bare-string `z.enum`, not a Zod object or branded
+type. The deviation is that the spec treats `CompositionType` as a
+`:CodeListElement` reference-object, but the wire representation here is a
+plain string matching the code value. This matches the package's existing
+approach to all other IATA code-list enums and is intentional.
+
+**`UnitComposition.slac` is ULD-level, not Piece-level:**
+
+`UnitComposition.slac` records the Shipper's Load And Count (SLAC) at the
+ULD level — the total piece count the shipper declared for the entire ULD
+load. This is distinct from `Piece.slac`, which is the piece-level SLAC
+declared on an individual piece record. Consumers querying both levels must
+not double-count: summing `Piece.slac` across pieces already covers the
+shipper's declared count at piece granularity; `UnitComposition.slac` is a
+separate ULD-aggregate figure and should be treated as its own datum.
+
+**`LoadingUnit.inUnitComposition` max-1 reinterpreted as per-leg:**
+
+The ontology declares `inUnitComposition` with a max-cardinality of 1 (one
+current composition per LoadingUnit). The cargo-erp persistence layer
+reinterprets this as "one current composition per ULD per flight leg" —
+multiple `unit_compositions` rows can exist for a single ULD, each scoped
+to a different flight leg, forming the cross-leg composition history as a
+row set. This package's schema enforces max-1 literally (matching the
+ontology), so the multi-row pattern is a consumer-side modeling choice
+invisible to the package. Noted here so readers do not infer from the
+schema's max-1 that a ULD can only ever have had one composition record.
+
+**Modelling-taste asymmetry — `otherIdentifiers` vs `contactPersons`:**
+
+`UnitComposition` drops `otherIdentifiers` (absent from the
+`:UnitComposition` / `:LogisticsActivity` / `:LogisticsObject` ontology
+branch — it is not a defined property on any of these ancestors) yet keeps
+`contactPersons` as a minimal inherited `:LogisticsActivity` subset. Both
+are ontology-valid choices: `otherIdentifiers` is simply not available on
+this branch, while `contactPersons` is a legitimate though optional
+`:LogisticsActivity` property retained for completeness. Recorded here so
+the asymmetry reads as deliberate rather than an oversight.
+
+**Forward-provisioned columns not populated in Phase 1:**
+
+The Phase 1 migration creates `unit_compositions.composition_identifier` and
+`unit_compositions.slac` in the database schema, but no Phase 1 code path
+writes to either column — the FFM RPC populates neither. Both columns exist
+for Phase 1.5+ / Phase 2 consumers. Documented here so a reader inspecting
+the schema does not assume these fields are populated by any existing cargo-erp
+code path in Phase 1.
+
 ---
 
 ## How deviations are tracked

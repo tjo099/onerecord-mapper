@@ -1,0 +1,5 @@
+export { ComposingCodec } from './codec.js'
+export { deserializeComposing } from './deserialize.js'
+export { ComposingSchema } from './schema.js'
+export type { JsonLdComposing, Composing } from './schema.js'
+export { serializeComposing, serializeComposingStrict } from './serialize.js'

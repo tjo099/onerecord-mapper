@@ -22,6 +22,7 @@ import * as Bk from './classes/booking/index.js'
 import * as CR from './classes/change-request/index.js'
 import * as Ch from './classes/change/index.js'
 import * as Co2 from './classes/co2-emissions/index.js'
+import * as Cp from './classes/composing/index.js'
 import * as Co from './classes/company/index.js'
 import * as CI from './classes/customs-information/index.js'
 import * as HS from './classes/handling-service/index.js'
@@ -104,6 +105,7 @@ export const CLASSES = {
   ULD: Ul,
   UnitComposition: UC,
   LoadingMaterial: Lm,
+  Composing: Cp,
   RegulatedEntity: RE,
   SecurityDeclaration: SD,
 } as const

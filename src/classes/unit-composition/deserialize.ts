@@ -7,7 +7,10 @@ import { findFirstEmptyArray, nullProtoClone, withMeta } from '../shared/parse-u
 import type { UnitComposition } from './schema.js'
 import { UnitCompositionSchema } from './schema.js'
 
-export function deserializeUnitComposition(input: unknown, opts: DeserializeOpts = {}): ParseResult<UnitComposition> {
+export function deserializeUnitComposition(
+  input: unknown,
+  opts: DeserializeOpts = {},
+): ParseResult<UnitComposition> {
   // 1. Pre-Zod sanity (depth/nodes/string/array/payload/pollution/cycle)
   const preOpts: Parameters<typeof preValidate>[1] = {}
   if (opts.limits !== undefined) preOpts.limits = opts.limits

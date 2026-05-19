@@ -7,7 +7,10 @@ import { findFirstEmptyArray, nullProtoClone, withMeta } from '../shared/parse-u
 import type { LoadingMaterial } from './schema.js'
 import { LoadingMaterialSchema } from './schema.js'
 
-export function deserializeLoadingMaterial(input: unknown, opts: DeserializeOpts = {}): ParseResult<LoadingMaterial> {
+export function deserializeLoadingMaterial(
+  input: unknown,
+  opts: DeserializeOpts = {},
+): ParseResult<LoadingMaterial> {
   // 1. Pre-Zod sanity (depth/nodes/string/array/payload/pollution/cycle)
   const preOpts: Parameters<typeof preValidate>[1] = {}
   if (opts.limits !== undefined) preOpts.limits = opts.limits

@@ -6,8 +6,9 @@ import {
   serializeULD,
   serializeULDStrict,
 } from '../../../src/classes/uld/index.js'
-import { createULD } from '../../factories/uld.js'
+import type { SafeIri } from '../../../src/iri/strategy.js'
 import { testIri } from '../../factories/common.js'
+import { createULD } from '../../factories/uld.js'
 import { roundTripHarness } from './_harness.js'
 
 roundTripHarness({
@@ -22,7 +23,7 @@ roundTripHarness({
 
 describe('ULD.inUnitComposition', () => {
   it('round-trips a valid IRI and rejects an invalid IRI with invalid_iri', () => {
-    const validIri = testIri('UnitComposition')
+    const validIri = testIri('UnitComposition') as SafeIri
     const withValid = createULD({ inUnitComposition: validIri })
     const rValid = deserializeULD(serializeULD(withValid))
     expect(rValid.ok).toBe(true)

@@ -1,6 +1,12 @@
-import { roundTripHarness } from './_harness.js'
-import { LoadingMaterialCodec, LoadingMaterialSchema, deserializeLoadingMaterial, serializeLoadingMaterial, serializeLoadingMaterialStrict } from '../../../src/classes/loading-material/index.js'
+import {
+  LoadingMaterialCodec,
+  LoadingMaterialSchema,
+  deserializeLoadingMaterial,
+  serializeLoadingMaterial,
+  serializeLoadingMaterialStrict,
+} from '../../../src/classes/loading-material/index.js'
 import { createLoadingMaterial } from '../../factories/loading-material.js'
+import { roundTripHarness } from './_harness.js'
 
 roundTripHarness({
   className: 'LoadingMaterial',

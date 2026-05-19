@@ -5,7 +5,10 @@ import { omitEmpty } from '../shared/parse-utils.js'
 import type { JsonLdUnitComposition, UnitComposition } from './schema.js'
 import { UnitCompositionSchema } from './schema.js'
 
-export function serializeUnitComposition(input: UnitComposition, _opts?: SerializeOpts): JsonLdUnitComposition {
+export function serializeUnitComposition(
+  input: UnitComposition,
+  _opts?: SerializeOpts,
+): JsonLdUnitComposition {
   const r = UnitCompositionSchema.safeParse(input)
   if (!r.success) {
     throw new SerializationError(
@@ -17,7 +20,10 @@ export function serializeUnitComposition(input: UnitComposition, _opts?: Seriali
   return omitEmpty(r.data) as unknown as JsonLdUnitComposition
 }
 
-export function serializeUnitCompositionStrict(input: UnitComposition, _opts?: SerializeOpts): ParseResult<JsonLdUnitComposition> {
+export function serializeUnitCompositionStrict(
+  input: UnitComposition,
+  _opts?: SerializeOpts,
+): ParseResult<JsonLdUnitComposition> {
   const r = UnitCompositionSchema.safeParse(input)
   if (!r.success) {
     return {

@@ -2,7 +2,7 @@ import type { ParseResult } from '../../result.js'
 import { SerializationError } from '../../result.js'
 import type { SerializeOpts } from '../../safety/limits.js'
 import { omitEmpty } from '../shared/parse-utils.js'
-import type { JsonLdComposing, Composing } from './schema.js'
+import type { Composing, JsonLdComposing } from './schema.js'
 import { ComposingSchema } from './schema.js'
 
 export function serializeComposing(input: Composing, _opts?: SerializeOpts): JsonLdComposing {
@@ -17,7 +17,10 @@ export function serializeComposing(input: Composing, _opts?: SerializeOpts): Jso
   return omitEmpty(r.data) as unknown as JsonLdComposing
 }
 
-export function serializeComposingStrict(input: Composing, _opts?: SerializeOpts): ParseResult<JsonLdComposing> {
+export function serializeComposingStrict(
+  input: Composing,
+  _opts?: SerializeOpts,
+): ParseResult<JsonLdComposing> {
   const r = ComposingSchema.safeParse(input)
   if (!r.success) {
     return {

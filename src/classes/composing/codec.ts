@@ -1,6 +1,6 @@
 import type { Codec } from '../shared/codec.js'
 import { deserializeComposing } from './deserialize.js'
-import type { JsonLdComposing, Composing } from './schema.js'
+import type { Composing, JsonLdComposing } from './schema.js'
 import { ComposingSchema } from './schema.js'
 import { serializeComposing, serializeComposingStrict } from './serialize.js'
 

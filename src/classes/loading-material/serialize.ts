@@ -5,7 +5,10 @@ import { omitEmpty } from '../shared/parse-utils.js'
 import type { JsonLdLoadingMaterial, LoadingMaterial } from './schema.js'
 import { LoadingMaterialSchema } from './schema.js'
 
-export function serializeLoadingMaterial(input: LoadingMaterial, _opts?: SerializeOpts): JsonLdLoadingMaterial {
+export function serializeLoadingMaterial(
+  input: LoadingMaterial,
+  _opts?: SerializeOpts,
+): JsonLdLoadingMaterial {
   const r = LoadingMaterialSchema.safeParse(input)
   if (!r.success) {
     throw new SerializationError(
@@ -17,7 +20,10 @@ export function serializeLoadingMaterial(input: LoadingMaterial, _opts?: Seriali
   return omitEmpty(r.data) as unknown as JsonLdLoadingMaterial
 }
 
-export function serializeLoadingMaterialStrict(input: LoadingMaterial, _opts?: SerializeOpts): ParseResult<JsonLdLoadingMaterial> {
+export function serializeLoadingMaterialStrict(
+  input: LoadingMaterial,
+  _opts?: SerializeOpts,
+): ParseResult<JsonLdLoadingMaterial> {
   const r = LoadingMaterialSchema.safeParse(input)
   if (!r.success) {
     return {

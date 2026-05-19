@@ -1,6 +1,12 @@
-import { roundTripHarness } from './_harness.js'
-import { ComposingCodec, ComposingSchema, deserializeComposing, serializeComposing, serializeComposingStrict } from '../../../src/classes/composing/index.js'
+import {
+  ComposingCodec,
+  ComposingSchema,
+  deserializeComposing,
+  serializeComposing,
+  serializeComposingStrict,
+} from '../../../src/classes/composing/index.js'
 import { createComposing } from '../../factories/composing.js'
+import { roundTripHarness } from './_harness.js'
 
 roundTripHarness({
   className: 'Composing',

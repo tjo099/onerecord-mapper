@@ -4,6 +4,42 @@ All notable changes are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/), versioning follows
 [SemVer](https://semver.org/) per the policy in `MIGRATING.md`.
 
+## [0.4.0] - 2026-05-19
+
+ULD composition classes: the `:UnitComposition` / `:Composing` /
+`:LoadingMaterial` ULD-build model plus the `CompositionType` code list.
+Purely **additive** — no breaking changes, no schema rewrites. Every
+modelling deviation is non-breaking and documented in
+`docs/spec-deviations.md` §17. No migration required (see `MIGRATING.md`).
+
+### Added
+
+- **`CompositionType`** code list — `COMPOSITION` | `DECOMPOSITION`
+  (`:CompositionType` individuals); the action sense of a `Composing` record.
+- **`LoadingMaterial`** class — `:LoadingMaterial` (dunnage / securing /
+  load-distribution material used in a ULD build).
+- **`UnitComposition`** class — `:UnitComposition` (the assembled ULD-load
+  record grouping a `ULD` with its constituent `Piece`s and loading material).
+- **`Composing`** class — `:Composing` (the `:LogisticsActivity`-derived
+  loading/unloading action that produces or breaks a `UnitComposition`;
+  carries `compositionType`).
+- **`ULD.inUnitComposition`** property — back-reference from a `ULD` to the
+  `UnitComposition` it participates in.
+- Codecs, schemas, and `serialize*` / `serialize*Strict` / `deserialize*`
+  helpers for `LoadingMaterial`, `UnitComposition`, and `Composing`
+  (`*Codec`, `*Schema`, `serializeComposing`, `serializeComposingStrict`,
+  `deserializeComposing`, and the `UnitComposition` / `LoadingMaterial`
+  equivalents).
+
+### Notes
+
+- Several inherited optional `:LogisticsActivity` / `:LogisticsObject`
+  properties are intentionally omitted from `Composing` / `UnitComposition`
+  (e.g. `actionTimeType`, `contactDetails`, `executionStatus`,
+  `checkActions`, `servedServices`). All are optional in the 3.2-rc2
+  ontology and can be added non-breakingly later — see
+  `docs/spec-deviations.md` §17 for the per-property rationale.
+
 ## [0.3.0] - 2026-05-17
 
 FWB-equivalence Path A: 10 new classes, schema rewrites for the core FWB

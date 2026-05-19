@@ -2,6 +2,21 @@
 
 This file documents one entry per minor release.
 
+## Migrating from v0.3.x to v0.4.0
+
+**No action required.** v0.4.0 is purely additive: it introduces the ULD
+composition model (`UnitComposition`, `Composing`, `LoadingMaterial`, the
+`CompositionType` code list, and the `ULD.inUnitComposition` back-reference).
+
+- No classes removed, no fields renamed, no schema shapes changed.
+- Existing v0.3.x wire payloads validate and round-trip unchanged.
+- Adopt the new classes only if you produce or consume ULD-build records;
+  otherwise upgrading is transparent.
+
+Per the SemVer policy below, this minor bump carries no breaking changes
+(it could have, but does not). Every modelling deviation in the new classes
+is non-breaking and documented in `docs/spec-deviations.md` §17.
+
 ## Migrating from v0.2.x to v0.3.0
 
 v0.3.0 is a **breaking release**. Review every item below before upgrading.

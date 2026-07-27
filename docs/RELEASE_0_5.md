@@ -63,8 +63,16 @@ git push origin v0.5.0
 ```
 
 The workflow is safe to rerun after a partial GitHub Actions failure: it skips
-the npm publish step when the exact immutable version already exists. Never
-reuse a version for different content; increment the patch version instead.
+the npm publish step when the exact immutable version already exists and
+overwrites the two release assets (the npm tarball and SBOM) in place. Retry an
+existing signed tag from `main` without moving or recreating it:
+
+```powershell
+gh workflow run release.yml --ref main -f tag=v0.5.0
+```
+
+Never reuse a version for different content; increment the patch version
+instead.
 
 Verify the result:
 

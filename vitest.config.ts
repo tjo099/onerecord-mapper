@@ -11,7 +11,6 @@ export default defineConfig({
     exclude: ['test/contract/**', 'test/bench/**', 'test/bundle-size/**', 'node_modules/**', 'dist/**'],
     setupFiles: ['./test/setup.ts'],
     pool: 'threads',
-    poolOptions: { threads: { singleThread: false } },
     ...(SHARD && SHARD_TOTAL ? { shard: `${SHARD}/${SHARD_TOTAL}` } : {}),
     snapshotFormat: { printBasicPrototype: false },
     resolveSnapshotPath: (testPath, snapExtension) =>

@@ -4,6 +4,37 @@ All notable changes are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/), versioning follows
 [SemVer](https://semver.org/) per the policy in `MIGRATING.md`.
 
+## [0.5.0] - 2026-07-26
+
+ONE Record API 2.2.0 interoperability boundary for applications that must
+work both inside the Flaks sphere and with standards-only peers.
+
+### Added
+
+- Strict Zod wire schemas for ServerInformation, ChangeRequest,
+  SubscriptionRequest, AccessDelegationRequest, Notification, and their
+  embedded API objects.
+- `assertEndorsedServerInformation`, which rejects peers that do not advertise
+  JSON-LD, API 2.2.0, the non-versioned cargo ontology IRI, and its separately
+  versioned 3.2.0 IRI.
+- `OneRecordPeerProfileSchema` for transporting standards endpoint and OIDC
+  discovery metadata through Flaks Connect without coupling the ONE Record
+  protocol to Connect.
+- The `@flaks/onerecord/api` export and equivalent root exports.
+- A shared implementation profile in `docs/ONE_RECORD_2_2_PROFILE.md`.
+
+### Changed
+
+- `__VERSION__` now reports `0.5.0`.
+- API-layer schemas accept compact `api:`/`cargo:` references as well as
+  absolute IRIs, matching the JSON-LD examples in the endorsed standard.
+
+### Compatibility
+
+- Existing cargo-model codecs and application-layer types are unchanged.
+- No network publication is performed by this repository change. Consumers
+  must move to 0.5.0 only after the package release gate is completed.
+
 ## [0.4.0] - 2026-05-19
 
 ULD composition classes: the `:UnitComposition` / `:Composing` /

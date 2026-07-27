@@ -6,7 +6,7 @@ export {
   assertContextAllowed,
 } from './context.js'
 
-export const __VERSION__ = '0.4.0' as const
+export const __VERSION__ = '0.5.0' as const
 export const CARGO_ONTOLOGY_VERSION = '3.2.0' as const
 export const API_SPEC_VERSION = '2.2.0' as const
 

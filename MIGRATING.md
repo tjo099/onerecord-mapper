@@ -2,6 +2,28 @@
 
 This file documents one entry per minor release.
 
+## Migrating from v0.4.x to v0.5.0
+
+Existing cargo-model imports require no changes. v0.5.0 adds a stricter,
+separate API wire boundary:
+
+```ts
+import {
+  OneRecordServerInformationSchema,
+  OneRecordPeerProfileSchema,
+  assertEndorsedServerInformation,
+} from '@flaks/onerecord/api'
+```
+
+Use these schemas at HTTP and Flaks Connect boundaries. Do not substitute the
+older cargo-model `ServerInformationSchema` for API 2.2.0 wire validation; it
+is retained for compatibility with existing application-layer mappings.
+
+The peer profile contains discovery metadata, not credentials. A Connect
+credential bundle may carry this profile, but each application must still
+authenticate, authorize, and communicate using standard ONE Record endpoints
+when the peer is not part of the Flaks sphere.
+
 ## Migrating from v0.3.x to v0.4.0
 
 **No action required.** v0.4.0 is purely additive: it introduces the ULD

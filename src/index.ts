@@ -570,3 +570,8 @@ export type { DomainConstraint, DomainConstraintViolation } from './dispatch/dom
 // v0.2 — opt-in IRI dereferenceability helper (deviation #7 closure, deferral I)
 export { dereferenceIri } from './iri/dereference.js'
 export type { DereferenceIriOpts, DereferenceIriResult } from './iri/dereference.js'
+
+// v0.5 — strict API 2.2.0 wire contracts and Flaks/standards peer profile.
+// The OneRecord* prefix lets these coexist with the legacy cargo-model
+// codecs above during the compatibility window.
+export * from './api/index.js'

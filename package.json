@@ -77,16 +77,18 @@
     "@arethetypeswrong/cli": "^0.16.0",
     "@biomejs/biome": "^1.9.0",
     "@types/node": "^20.14.0",
-    "@vitest/coverage-v8": "^2.1.0",
+    "@vitest/coverage-v8": "^3.2.6",
     "fast-check": "^3.22.0",
     "typescript": "^5.6.0",
-    "vitest": "^2.1.0"
+    "vitest": "^3.2.6"
   },
   "publishConfig": {
     "access": "public"
   },
   "overrides": {
-    "vite": "^6.4.2",
-    "esbuild": "^0.25.0"
+    "brace-expansion": "^5.0.6",
+    "esbuild": "^0.25.0",
+    "postcss": "^8.5.18",
+    "vite": "^6.4.3"
   }
 }

@@ -112,6 +112,17 @@ export function roundTripHarness<App, Wire, T extends string>(
       expect(r.ok).toBe(true)
     })
 
+    it('serializeStrict returns validation details on impossible input', () => {
+      const r = serializeStrict({} as never)
+      expect(r.ok).toBe(false)
+      if (!r.ok) {
+        expect(r.error.kind).toBe('zod_validation')
+        if (r.error.kind === 'zod_validation') {
+          expect(r.error.issues.length).toBeGreaterThan(0)
+        }
+      }
+    })
+
     it('serializer throws SerializationError instance on impossible input', () => {
       expect(() => serialize({} as never)).toThrow(/SerializationError|invalid_application_object/)
     })

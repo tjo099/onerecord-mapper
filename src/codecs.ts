@@ -36,10 +36,13 @@ export { OtherChargeCodec } from './classes/other-charge/index.js'
 export { PartyCodec } from './classes/party/index.js'
 export { PersonCodec } from './classes/person/index.js'
 export { PieceCodec } from './classes/piece/index.js'
+export { PriceCodec } from './classes/price/index.js'
+export { RatingsCodec } from './classes/ratings/index.js'
 export { ServerInformationCodec } from './classes/server-information/index.js'
 export { ShipmentCodec } from './classes/shipment/index.js'
 export { SubscriptionCodec } from './classes/subscription/index.js'
 export { SubscriptionRequestCodec } from './classes/subscription-request/index.js'
+export { TransportLegsCodec } from './classes/transport-legs/index.js'
 export { TransportMovementCodec } from './classes/transport-movement/index.js'
 export { RegulatedEntityCodec } from './classes/regulated-entity/index.js'
 export { SecurityDeclarationCodec } from './classes/security-declaration/index.js'
@@ -62,5 +65,3 @@ export const CODECS = Object.freeze(
     ]),
   ),
 ) as Record<keyof typeof CLASSES, unknown>
-export { PriceCodec } from './classes/price/index.js'
-export { RatingsCodec } from './classes/ratings/index.js'

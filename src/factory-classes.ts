@@ -46,6 +46,7 @@ import * as SI from './classes/server-information/index.js'
 import * as Sh from './classes/shipment/index.js'
 import * as Sr from './classes/subscription-request/index.js'
 import * as Su from './classes/subscription/index.js'
+import * as TL from './classes/transport-legs/index.js'
 import * as Tm from './classes/transport-movement/index.js'
 import * as Ul from './classes/uld/index.js'
 import * as UC from './classes/unit-composition/index.js'
@@ -112,6 +113,7 @@ export const CLASSES = {
   SecurityDeclaration: SD,
   Price: Pr,
   Ratings: Ra,
+  TransportLegs: TL,
 } as const
 
 export type ClassName = keyof typeof CLASSES

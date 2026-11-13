@@ -106,3 +106,13 @@ export type {
 } from '../classes/shared/distribution.js'
 export type { JsonLdPrice, Price } from '../classes/price/index.js'
 export type { JsonLdRatings, Ratings } from '../classes/ratings/index.js'
+export type { JsonLdTransportLegs, TransportLegs } from '../classes/transport-legs/index.js'
+export type {
+  BookingOptionStatus,
+  BookingStatus,
+  ChargeIdentifier,
+  EntitlementCode,
+  PrepaidCollectIndicator,
+  SpaceAllocationCode,
+  TransportMeansServiceType,
+} from '../codes/enums.js'

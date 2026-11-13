@@ -1,0 +1,10 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "TransportLegs",
+  "@id": "https://snapshot.example/wf/transportlegs/fixed-id",
+  "arrivalLocation": "https://test.flaks.example/test-tenant/location/00000000-0000-0000-0000-000000000021",
+  "departureDate": "2026-01-01T00:00:00.000Z",
+  "departureLocation": "https://test.flaks.example/test-tenant/location/00000000-0000-0000-0000-000000000020",
+  "legNumber": 1,
+  "transportIdentifier": "LH8400"
+}

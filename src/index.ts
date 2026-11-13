@@ -613,3 +613,13 @@ export {
   serializeRatingsStrict,
 } from './classes/ratings/index.js'
 export type { JsonLdRatings, Ratings } from './classes/ratings/index.js'
+
+// v0.6 — TransportLegs
+export {
+  TransportLegsCodec,
+  TransportLegsSchema,
+  deserializeTransportLegs,
+  serializeTransportLegs,
+  serializeTransportLegsStrict,
+} from './classes/transport-legs/index.js'
+export type { JsonLdTransportLegs, TransportLegs } from './classes/transport-legs/index.js'

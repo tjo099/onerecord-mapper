@@ -117,6 +117,8 @@ SubscriptionRequestCodec
 SubscriptionRequestSchema
 SubscriptionSchema
 TopicType
+TransportLegsCodec
+TransportLegsSchema
 TransportMeansServiceType
 ULDCodec
 ULDSchema
@@ -183,6 +185,7 @@ deserializeServerInformation
 deserializeShipment
 deserializeSubscription
 deserializeSubscriptionRequest
+deserializeTransportLegs
 deserializeULD
 deserializeUnitComposition
 deserializeVerification
@@ -277,6 +280,8 @@ serializeSubscription
 serializeSubscriptionRequest
 serializeSubscriptionRequestStrict
 serializeSubscriptionStrict
+serializeTransportLegs
+serializeTransportLegsStrict
 serializeULD
 serializeULDStrict
 serializeUnitComposition

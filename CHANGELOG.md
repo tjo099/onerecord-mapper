@@ -27,7 +27,10 @@ Upgrade receivers first (see `MIGRATING.md`).
 - 21 `FIELD_TYPES` entries for the new links.
 - Vendored IATA ONE Record 3.2 / 3.3.0 ontology files (MIT), a typed
   restriction extractor and a conformance guard that checks the chain
-  schemas against them.
+  schemas against them. 3.3.0 was endorsed on 2026-07-25 and is the current
+  endorsed release; the package intentionally stays on the 3.2.0 pin, and
+  every in-scope Quote & Book class is identical in 3.3.0 (the guard proves
+  this).
 - A `./codecs` runtime-surface snapshot, superset and mixed-fleet property
   tests against a frozen 0.5.0 oracle, and a Quote & Book chain fixture.
 - Deviations #18 to #22 in `docs/spec-deviations.md`, a Quote & Book wire

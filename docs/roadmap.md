@@ -32,8 +32,12 @@ ontology pin stays 3.2.0. See [`../CHANGELOG.md`](../CHANGELOG.md) and the
   legacy `BookingTimes` / `BookingSegment` / `BookingPreferences` classes with
   the ontology model (deviation #21). The legacy booking-chain keys must go
   by `removeBy` 0.8.0 (deviation #18).
-- **3.3.0 pin migration** — move the ontology pin from 3.2.0 to 3.3.0 once it
-  is endorsed; the 3.3.0 files are already vendored for the conformance guard.
+- **3.3.0 pin migration** — IATA COTB endorsed ONE Record Data Model 3.3.0 on
+  2026-07-25, and it is the current endorsed release. The package
+  intentionally stays on 3.2.0: the pin is package-wide and peers run 3.2.
+  Every in-scope Quote & Book class is identical in 3.3.0, and the
+  conformance guard proves this; the 3.3.0 files are already vendored. Moving
+  the pin is a planned follow-up.
 
 ## Previous milestone — v0.3.0 (released 2026-05-17)
 

@@ -137,6 +137,9 @@ Line numbers (`Lnnnn`) are exact lines in the official `2025-07-standard`
 `IATA-1R-DM-Ontology.ttl` at IATA commit `49e8ac1`, unlike the advisory `~`
 anchors above. The guard `test/unit/ontology/quote-book-conformance.test.ts`
 checks every schema below against the vendored ontology.
+ONE Record 3.3.0 was endorsed by IATA COTB on 2026-07-25 and is the current
+endorsed release; the package intentionally stays on the 3.2.0 pin, and every
+in-scope class below is identical in 3.3.0 (the guard proves this).
 
 | Class | TTL line | Status | Test file |
 |---|---|---|---|

@@ -64,6 +64,10 @@ rejected as `cardinality_violation`; omit the key instead. Note that
 `BookingOption.additionalInformation` is single-valued (a string), while
 `Booking.additionalInformation` is multi-valued (an array of strings).
 
+### Free text under the graph walk
+
+Whitespace-free strings in non-IRI fields that contain a scheme-like prefix (e.g. `URGENT:Handle`, or a website `HTTPS://Example.com/x` in `ContactDetail.textualValue`) are still checked for canonical IRI form under the graph walk and can yield `iri_not_canonical` (deviation #9).
+
 ### Reference IRIs are canonicalised, `@id` is kept verbatim
 
 `safeIri` canonicalises every reference IRI it parses: it lowercases the

@@ -18,9 +18,11 @@ strict), so a 0.6.0 producer must not send ontology-shaped objects to a
 - **Keys made optional.** `BookingOption.forBookingRequest` remains an
   ontology key but is no longer required. The legacy keys
   `BookingOption.optionStatus`, `BookingRequest.requestStatus` and
-  `BookingRequest.requestor` were required and are now optional. Code that
-  reads them must handle `undefined` (deviation #18).
-- **`Booking.bookingStatus` widened.** It accepts the four `:BookingStatus`
+  `BookingRequest.requestor` were required and are now optional. Likewise
+  `Booking.bookingStatus` and `Booking.forBookingRequest` were required in
+  0.5.0 and are now optional. Code that reads them must handle `undefined`
+  (deviation #18).
+- **`Booking.bookingStatus` widened and optional.** It accepts the four `:BookingStatus`
   values (`CONFIRMED`, `DELETED`, `QUEUED`, `REJECTED`) and, for 0.5.0
   compatibility, `REQUEST_ACCEPTED` and `REQUEST_REVOKED`.
 - **`codes.BookingStatus` and `codes.BookingOptionStatus` changed values.**
@@ -36,14 +38,16 @@ strict), so a 0.6.0 producer must not send ontology-shaped objects to a
   `STATE_DIAGRAM` and `canTransition` are `@deprecated`. They now refuse
   ontology-shaped inputs: `statusBookingOption` present returns
   `reason: 'ontology_status_present'`, and an absent `optionStatus` returns
-  `reason: 'legacy_status_absent'`. Every 0.5.0-valid input behaves as before.
+  `reason: 'legacy_status_absent'`. `acceptBookingRequest` likewise refuses an
+  input with no `requestStatus`, returning `forbidden_state_transition` with
+  `reason: 'legacy_status_absent'` and `from: 'BookingRequest.(absent)'`. Every 0.5.0-valid input behaves as before.
 - **Role swap.** The legacy booking flow assigns the roles the other way
   round to the ontology, and `BookingTimes`, `BookingSegment` and
   `BookingPreferences` are LogisticsObject-shaped legacy classes where the
   ontology has embedded classes (deviation #21). Both go to booking Path A
   (target 0.7.0).
 - **`looksLikeIri` rejects whitespace.** Free text such as `"NOTE: prepaid"`
-  no longer triggers `iri_not_canonical` under the graph walk (deviation #9).
+  no longer triggers `iri_not_canonical` under the graph walk (deviation #9). Under the graph walk, whitespace-free strings in non-IRI fields that contain a scheme-like prefix (e.g. `URGENT:Handle`, or a website `HTTPS://Example.com/x` in `ContactDetail.textualValue`) are still checked for canonical IRI form and can yield `iri_not_canonical` (deviation #9).
 
 ### Deprecations
 

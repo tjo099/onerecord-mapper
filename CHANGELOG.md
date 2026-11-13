@@ -42,11 +42,13 @@ Upgrade receivers first (see `MIGRATING.md`).
   `codes.BookingOptionStatus` is now `BOOKABLE | BOOKED | EXPIRED |
   NONBOOKABLE | NOT_BOOKABLE | ON_REQUEST | QUEUED` (the ontology values).
   The old `REQUEST_*` values are no longer in these enums.
-- `Booking.bookingStatus` accepts the four ontology values plus
+- `Booking.bookingStatus` is widened and optional: it accepts the four ontology values plus
   `REQUEST_ACCEPTED` and `REQUEST_REVOKED` for 0.5.0 compatibility.
 - `BookingOption.optionStatus`, `BookingRequest.requestStatus` and
   `BookingRequest.requestor` were required and are now optional;
   `BookingOption.forBookingRequest` is no longer required.
+- `Booking.bookingStatus` and `Booking.forBookingRequest` were required in
+  0.5.0 and are now optional.
 - The booking-flow helpers refuse ontology-shaped inputs explicitly
   (`ontology_status_present`, `legacy_status_absent`); 0.5.0-valid inputs
   behave as before.

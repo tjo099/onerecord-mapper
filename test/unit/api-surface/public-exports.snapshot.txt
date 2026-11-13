@@ -35,6 +35,7 @@ ChangeCodec
 ChangeRequestCodec
 ChangeRequestSchema
 ChangeSchema
+ChargeIdentifier
 CompanyCodec
 CompanySchema
 ComposingCodec
@@ -44,6 +45,7 @@ CustomsInformationCodec
 CustomsInformationSchema
 DEFAULT_SAFETY_LIMITS
 DOMAIN_CONSTRAINTS
+EntitlementCode
 FIELD_TYPES
 FSU_EVENT_CODES
 HandlingServiceCodec
@@ -92,6 +94,7 @@ PersonCodec
 PersonSchema
 PieceCodec
 PieceSchema
+PrepaidCollectIndicator
 RegulatedEntityCodec
 RegulatedEntitySchema
 RequestStatus
@@ -103,12 +106,14 @@ ServerInformationCodec
 ServerInformationSchema
 ShipmentCodec
 ShipmentSchema
+SpaceAllocationCode
 SubscriptionCodec
 SubscriptionEventType
 SubscriptionRequestCodec
 SubscriptionRequestSchema
 SubscriptionSchema
 TopicType
+TransportMeansServiceType
 ULDCodec
 ULDSchema
 UnitCompositionCodec

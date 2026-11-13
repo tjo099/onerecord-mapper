@@ -42,13 +42,18 @@ export type { DeserializeOpts, SafetyLimits, SerializeOpts } from './safety/limi
 export {
   BookingOptionStatus,
   BookingStatus,
+  ChargeIdentifier,
   CompositionType,
+  EntitlementCode,
   NotificationEventType,
   PatchOperation,
   Permission,
+  PrepaidCollectIndicator,
   RequestStatus,
+  SpaceAllocationCode,
   SubscriptionEventType,
   TopicType,
+  TransportMeansServiceType,
 } from './codes/index.js'
 
 // FSU event codes (Phase 7 / Task 38)

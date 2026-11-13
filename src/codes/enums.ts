@@ -36,21 +36,66 @@ export type Permission = z.infer<typeof Permission>
 export const PatchOperation = z.enum(['ADD', 'DELETE'])
 export type PatchOperation = z.infer<typeof PatchOperation>
 
-export const BookingStatus = z.enum([
-  'REQUEST_PENDING',
-  'REQUEST_ACCEPTED',
-  'REQUEST_REJECTED',
-  'REQUEST_REVOKED',
-])
+export const BookingStatus = z.enum(['CONFIRMED', 'DELETED', 'QUEUED', 'REJECTED'])
 export type BookingStatus = z.infer<typeof BookingStatus>
 
 export const BookingOptionStatus = z.enum([
-  'REQUEST_PENDING',
-  'REQUEST_ACCEPTED',
-  'REQUEST_REJECTED',
-  'REQUEST_REVOKED',
+  'BOOKABLE',
+  'BOOKED',
+  'EXPIRED',
+  'NONBOOKABLE',
+  'NOT_BOOKABLE',
+  'ON_REQUEST',
+  'QUEUED',
 ])
 export type BookingOptionStatus = z.infer<typeof BookingOptionStatus>
+
+export const ChargeIdentifier = z.enum([
+  'CN',
+  'CO',
+  'CT',
+  'IN',
+  'NI',
+  'OA',
+  'OC',
+  'SI',
+  'TX',
+  'VC',
+  'WT',
+])
+export type ChargeIdentifier = z.infer<typeof ChargeIdentifier>
+
+export const PrepaidCollectIndicator = z.enum(['P', 'C'])
+export type PrepaidCollectIndicator = z.infer<typeof PrepaidCollectIndicator>
+
+export const EntitlementCode = z.enum(['C', 'A'])
+export type EntitlementCode = z.infer<typeof EntitlementCode>
+
+export const SpaceAllocationCode = z.enum([
+  'CA',
+  'CN',
+  'HK',
+  'HL',
+  'HN',
+  'KK',
+  'LL',
+  'NA',
+  'NL',
+  'NN',
+  'SS',
+  'UN',
+  'UU',
+  'XX',
+])
+export type SpaceAllocationCode = z.infer<typeof SpaceAllocationCode>
+
+export const TransportMeansServiceType = z.enum([
+  'FREIGHTER',
+  'MIXED_CONFIGURATION_COMBI',
+  'PASSENGER',
+  'TRUCK',
+])
+export type TransportMeansServiceType = z.infer<typeof TransportMeansServiceType>
 
 export const ScreeningMethod = z.enum(['AOM', 'CMD', 'EDD', 'EDS', 'ETD', 'PHS', 'VCK', 'XRY'])
 export type ScreeningMethod = z.infer<typeof ScreeningMethod>

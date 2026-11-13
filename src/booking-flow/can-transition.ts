@@ -6,6 +6,9 @@ import {
   type Transition,
 } from './state-diagram.js'
 
+/**
+ * @deprecated Legacy pre-ontology booking flow (roles swapped vs ONE Record, deviation #21). Replacement: booking Path A.
+ */
 export function canTransition(
   fromType: BookingType,
   fromStatus: string,

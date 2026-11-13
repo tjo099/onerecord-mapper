@@ -1,0 +1,107 @@
+{
+  "nodes": [
+    {
+      "@context": "https://onerecord.iata.org/ns/cargo",
+      "@type": "Waybill",
+      "@id": "https://1r.example.com/logistics-objects/waybill-1",
+      "waybillType": "MASTER",
+      "waybillPrefix": "020",
+      "waybillNumber": "12345675",
+      "referredBookingOption": "https://1r.example.com/logistics-objects/booking-1"
+    },
+    {
+      "@context": "https://onerecord.iata.org/ns/cargo",
+      "@type": "Booking",
+      "@id": "https://1r.example.com/logistics-objects/booking-1",
+      "bookingStatus": "CONFIRMED",
+      "bookingRequest": "https://1r.example.com/logistics-objects/booking-request-1",
+      "issuedForWaybill": "https://1r.example.com/logistics-objects/waybill-1",
+      "transportLegs": [
+        "https://1r.example.com/logistics-objects/leg-1",
+        "https://1r.example.com/logistics-objects/leg-2"
+      ],
+      "stationRemarks": [{ "remarksText": "NOTE: ULD build-up" }]
+    },
+    {
+      "@context": "https://onerecord.iata.org/ns/cargo",
+      "@type": "BookingRequest",
+      "@id": "https://1r.example.com/logistics-objects/booking-request-1",
+      "booking": "https://1r.example.com/logistics-objects/booking-1",
+      "forBookingOption": "https://1r.example.com/logistics-objects/booking-option-1"
+    },
+    {
+      "@context": "https://onerecord.iata.org/ns/cargo",
+      "@type": "BookingOption",
+      "@id": "https://1r.example.com/logistics-objects/booking-option-1",
+      "forBookingRequest": "https://1r.example.com/logistics-objects/booking-request-1",
+      "price": "https://1r.example.com/logistics-objects/price-1",
+      "statusBookingOption": "BOOKED",
+      "unitsPreference": { "currency": "NOK" },
+      "transportLegs": [
+        "https://1r.example.com/logistics-objects/leg-1",
+        "https://1r.example.com/logistics-objects/leg-2"
+      ]
+    },
+    {
+      "@context": "https://onerecord.iata.org/ns/cargo",
+      "@type": "Price",
+      "@id": "https://1r.example.com/logistics-objects/price-1",
+      "forBookingOption": "https://1r.example.com/logistics-objects/booking-option-1",
+      "grandTotal": 1912.5,
+      "ratings": [
+        "https://1r.example.com/logistics-objects/ratings-1",
+        "https://1r.example.com/logistics-objects/ratings-2",
+        "https://1r.example.com/logistics-objects/ratings-3"
+      ]
+    },
+    {
+      "@context": "https://onerecord.iata.org/ns/cargo",
+      "@type": "Ratings",
+      "@id": "https://1r.example.com/logistics-objects/ratings-1",
+      "billingChargeIdentifier": "WT",
+      "chargePaymentType": "P",
+      "subTotal": 1500,
+      "forPrices": ["https://1r.example.com/logistics-objects/price-1"]
+    },
+    {
+      "@context": "https://onerecord.iata.org/ns/cargo",
+      "@type": "Ratings",
+      "@id": "https://1r.example.com/logistics-objects/ratings-2",
+      "billingChargeIdentifier": "VC",
+      "chargePaymentType": "P",
+      "subTotal": 12.5,
+      "forPrices": ["https://1r.example.com/logistics-objects/price-1"]
+    },
+    {
+      "@context": "https://onerecord.iata.org/ns/cargo",
+      "@type": "Ratings",
+      "@id": "https://1r.example.com/logistics-objects/ratings-3",
+      "billingChargeIdentifier": "OC",
+      "chargePaymentType": "C",
+      "entitlement": "C",
+      "otherChargeCode": "MY",
+      "subTotal": 400,
+      "forPrices": ["https://1r.example.com/logistics-objects/price-1"]
+    },
+    {
+      "@context": "https://onerecord.iata.org/ns/cargo",
+      "@type": "TransportLegs",
+      "@id": "https://1r.example.com/logistics-objects/leg-1",
+      "legNumber": 1,
+      "transportIdentifier": "XX0123",
+      "departureDate": "2026-12-01T08:00:00Z",
+      "departureLocation": "https://1r.example.com/locations/osl",
+      "arrivalLocation": "https://1r.example.com/locations/fra"
+    },
+    {
+      "@context": "https://onerecord.iata.org/ns/cargo",
+      "@type": "TransportLegs",
+      "@id": "https://1r.example.com/logistics-objects/leg-2",
+      "legNumber": 2,
+      "transportIdentifier": "XX0456",
+      "departureDate": "2026-12-01T14:00:00+01:00",
+      "departureLocation": "https://1r.example.com/locations/fra",
+      "arrivalLocation": "https://1r.example.com/locations/jfk"
+    }
+  ]
+}

@@ -2,6 +2,92 @@
 
 This file documents one entry per minor release.
 
+## Migrating from v0.5.x to v0.6.0
+
+0.6.0 aligns `BookingOption`, `BookingRequest` and `Booking` with the ONE
+Record 3.2.0 Quote & Book chain and adds `Price`, `Ratings` and
+`TransportLegs`. Every payload 0.5.0 accepted still parses (superset
+acceptance), so a mixed fleet keeps working, and a legacy-shaped object
+serialized by 0.6.0 is byte-identical to 0.5.0 output. **Upgrade receivers
+first**: a 0.5.0 receiver rejects the new ontology keys (every schema is
+strict), so a 0.6.0 producer must not send ontology-shaped objects to a
+0.5.0 receiver.
+
+### Breaking or behaviour-changing
+
+- **Keys made optional.** `BookingOption.forBookingRequest` remains an
+  ontology key but is no longer required. The legacy keys
+  `BookingOption.optionStatus`, `BookingRequest.requestStatus` and
+  `BookingRequest.requestor` were required and are now optional. Likewise
+  `Booking.bookingStatus` and `Booking.forBookingRequest` were required in
+  0.5.0 and are now optional. Code that reads them must handle `undefined`
+  (deviation #18).
+- **`Booking.bookingStatus` widened and optional.** It accepts the four `:BookingStatus`
+  values (`CONFIRMED`, `DELETED`, `QUEUED`, `REJECTED`) and, for 0.5.0
+  compatibility, `REQUEST_ACCEPTED` and `REQUEST_REVOKED`.
+- **`codes.BookingStatus` and `codes.BookingOptionStatus` changed values.**
+  `BookingStatus` is now `CONFIRMED | DELETED | QUEUED | REJECTED`;
+  `BookingOptionStatus` is now `BOOKABLE | BOOKED | EXPIRED | NONBOOKABLE |
+  NOT_BOOKABLE | ON_REQUEST | QUEUED`. Comparisons against the old
+  `REQUEST_*` values now fail silently at runtime, and
+  `BookingStatus.parse(booking.bookingStatus)` throws on legacy values; use
+  `RequestStatus` for the legacy values instead.
+- **`FIELD_TYPES['Waybill.referredBookingOption']`** now targets `Booking`,
+  not `BookingOption`, as the ontology defines it.
+- **Booking-flow refusals and deprecation.** The five `booking-flow` helpers,
+  `STATE_DIAGRAM` and `canTransition` are `@deprecated`. They now refuse
+  ontology-shaped inputs: `statusBookingOption` present returns
+  `reason: 'ontology_status_present'`, and an absent `optionStatus` returns
+  `reason: 'legacy_status_absent'`. `acceptBookingRequest` likewise refuses an
+  input with no `requestStatus`, returning `forbidden_state_transition` with
+  `reason: 'legacy_status_absent'` and `from: 'BookingRequest.(absent)'`. Every 0.5.0-valid input behaves as before.
+- **Role swap.** The legacy booking flow assigns the roles the other way
+  round to the ontology, and `BookingTimes`, `BookingSegment` and
+  `BookingPreferences` are LogisticsObject-shaped legacy classes where the
+  ontology has embedded classes (deviation #21). Both go to booking Path A
+  (target 0.7.0).
+- **`looksLikeIri` rejects whitespace.** Free text such as `"NOTE: prepaid"`
+  no longer triggers `iri_not_canonical` under the graph walk (deviation #9). Under the graph walk, whitespace-free strings in non-IRI fields that contain a scheme-like prefix (e.g. `URGENT:Handle`, or a website `HTTPS://Example.com/x` in `ContactDetail.textualValue`) are still checked for canonical IRI form and can yield `iri_not_canonical` (deviation #9).
+
+### Deprecations
+
+The 0.5.0 keys that are not ONE Record properties of their class are
+`@deprecated` and will be removed in booking Path A, at the latest by 0.8.0
+(deviation #18). Emit ontology keys only (`statusBookingOption`,
+`bookingRequest`, `offerValidTo`, ...). Deprecation is visible only through
+the exported `BookingOption`, `BookingRequest` and `Booking` types. It is not
+visible on values inferred from `XSchema.parse(...)`, because the
+deprecation tags live on the hand-written types.
+
+### Additions
+
+- `Price`, `Ratings` and `TransportLegs` are registered in `CLASSES`,
+  `CODECS` (and so `./codecs`), the facade and `createMapper`.
+- New code lists: `ChargeIdentifier`, `PrepaidCollectIndicator`,
+  `EntitlementCode`, `SpaceAllocationCode`, `TransportMeansServiceType`.
+- Nine embedded shapes are exported as types only (`Ranges`,
+  `UnitsPreference`, `CarrierProduct`, `StationRemarks`,
+  `EmbeddedBookingTimes`, `PieceGroup`, `EmbeddedBookingSegment`,
+  `ActivitySequence`, `ContactDetail`).
+
+### Profile rules that now matter
+
+- **Multi-valued properties need a JSON array**, even for one value:
+  `Booking.additionalInformation: "x"` is rejected, `["x"]` is accepted, and
+  `[]` is rejected as `cardinality_violation`.
+- **Reference IRIs are canonicalised, `@id` is not.** `safeIri` lowercases
+  scheme and host and adds `/` for an empty path, but a node's `@id` is kept
+  verbatim. Compare canonical forms when joining a reference to an `@id`.
+- **`xsd:dateTime` needs a timezone** (`Z` or an offset), deviation #22.
+- **Currency.** `Price.grandTotal` and `Ratings.subTotal` are plain numbers
+  (deviation #20). Set `BookingOption.unitsPreference.currency` whenever an
+  option carries a `Price`; receivers may fall back to the Waybill's
+  `CurrencyValue` units. See `docs/ONE_RECORD_2_2_PROFILE.md`.
+- **Duplicate IRIs in `Price.ratings` are accepted**; consumers must not
+  double-count.
+- `BookingShipment` is still the legacy shape; an ontology-shaped
+  BookingShipment is rejected by its codec until booking Path A.
+
 ## Migrating from v0.4.x to v0.5.0
 
 Existing cargo-model imports require no changes. v0.5.0 adds a stricter,

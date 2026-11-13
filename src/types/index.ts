@@ -91,3 +91,28 @@ export type {
   JsonLdWaybillLineItem,
   WaybillLineItem,
 } from '../classes/waybill-line-item/index.js'
+
+// v0.6 — embedded Quote & Book shapes (types only).
+export type {
+  Ranges,
+  UnitsPreference,
+  CarrierProduct,
+  StationRemarks,
+  EmbeddedBookingTimes,
+  PieceGroup,
+  EmbeddedBookingSegment,
+  ActivitySequence,
+  ContactDetail,
+} from '../classes/shared/distribution.js'
+export type { JsonLdPrice, Price } from '../classes/price/index.js'
+export type { JsonLdRatings, Ratings } from '../classes/ratings/index.js'
+export type { JsonLdTransportLegs, TransportLegs } from '../classes/transport-legs/index.js'
+export type {
+  BookingOptionStatus,
+  BookingStatus,
+  ChargeIdentifier,
+  EntitlementCode,
+  PrepaidCollectIndicator,
+  SpaceAllocationCode,
+  TransportMeansServiceType,
+} from '../codes/enums.js'

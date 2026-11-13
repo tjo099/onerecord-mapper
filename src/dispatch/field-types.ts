@@ -141,7 +141,37 @@ export const FIELD_TYPES: Readonly<Record<string, string>> = Object.freeze({
   'Waybill.houseWaybills': 'Waybill',
   'Waybill.masterWaybill': 'Waybill',
   // Waybill.billingDetails omitted — :BillingDetails not modelled in v0.3.0 (deviation #16)
-  'Waybill.referredBookingOption': 'BookingOption',
+  // :referredBookingOption has rdfs:range :Booking (L2166), not :BookingOption.
+  'Waybill.referredBookingOption': 'Booking',
+
+  // Quote & Book chain (v0.6.0)
+  'BookingOption.price': 'Price',
+  'BookingOption.forBookingOptionRequest': 'BookingOptionRequest',
+  'BookingOption.transportLegs': 'TransportLegs',
+  'BookingOption.carrier': '*', // :Carrier is a subclass of :Company, so an exact @type match would be wrong
+  'BookingRequest.forBookingOption': 'BookingOption',
+  'BookingRequest.booking': 'Booking',
+  'Booking.bookingRequest': 'BookingRequest',
+  'Booking.bookingShipmentDetails': 'BookingShipment',
+  'Booking.departureLocation': 'Location',
+  'Booking.arrivalLocation': 'Location',
+  'Booking.issuedForWaybill': 'Waybill',
+  'Booking.updateBookingOptionRequests': 'BookingOptionRequest',
+  'Booking.transportLegs': 'TransportLegs',
+  'Booking.carrier': '*',
+  'Booking.contactPersons': 'Person', // Company.contactPersons precedent (:Actor abstract; :Person concrete)
+  'Price.forBookingOption': 'BookingOption',
+  'Price.ratings': 'Ratings',
+  'Ratings.forPrices': 'Price',
+  'TransportLegs.arrivalLocation': 'Location',
+  'TransportLegs.departureLocation': 'Location',
+  'TransportLegs.co2Emissions': 'CO2Emissions',
+  // Deliberately not mapped:
+  //  - TransportLegs.operatingTransportMeans: :TransportMeans is not modelled
+  //    (the billingDetails precedent).
+  //  - Fields inside embedded shapes (BookingSegment.transportLegs,
+  //    ActivitySequence.activity, StationRemarks.station): they only fire when
+  //    the shape carries an @type (review IM11).
 })
 
 /**

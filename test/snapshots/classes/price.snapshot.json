@@ -1,0 +1,11 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "Price",
+  "@id": "https://snapshot.example/wf/price/fixed-id",
+  "chargeCode": "PP",
+  "forBookingOption": "https://test.flaks.example/test-tenant/bookingoption/00000000-0000-0000-0000-000000000010",
+  "grandTotal": 1250.5,
+  "ratings": [
+    "https://test.flaks.example/test-tenant/ratings/00000000-0000-0000-0000-000000000011"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "@context": "https://onerecord.iata.org/ns/cargo",
+  "@type": "Ratings",
+  "@id": "https://snapshot.example/wf/ratings/fixed-id",
+  "billingChargeIdentifier": "WT",
+  "chargePaymentType": "P",
+  "forPrices": [
+    "https://test.flaks.example/test-tenant/price/00000000-0000-0000-0000-000000000012"
+  ],
+  "subTotal": 1000
+}

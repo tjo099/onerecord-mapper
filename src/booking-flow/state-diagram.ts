@@ -20,7 +20,11 @@ export interface StateDiagram {
   }
 }
 
-/** v2 (A1 risk #2): deepFreeze covers leaf Transition objects so STATE_DIAGRAM.X.Y.Z.accept.nextType = '...' fails at runtime. */
+/**
+ * @deprecated Legacy pre-ontology booking flow (roles swapped vs ONE Record, deviation #21). Replacement: booking Path A.
+ *
+ * v2 (A1 risk #2): deepFreeze covers leaf Transition objects so STATE_DIAGRAM.X.Y.Z.accept.nextType = '...' fails at runtime.
+ */
 export const STATE_DIAGRAM: StateDiagram = deepFreeze({
   BookingRequest: {
     REQUEST_PENDING: {

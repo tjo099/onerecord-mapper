@@ -1,0 +1,5 @@
+export { TransportLegsCodec } from './codec.js'
+export { deserializeTransportLegs } from './deserialize.js'
+export { TransportLegsSchema } from './schema.js'
+export type { TransportLegs, JsonLdTransportLegs } from './schema.js'
+export { serializeTransportLegs, serializeTransportLegsStrict } from './serialize.js'

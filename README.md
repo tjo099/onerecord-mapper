@@ -77,6 +77,9 @@ conformance claim independently:
 - The canonical cargo data model class set (Ring 1–5, booking-flow, plus
   10 new FWB-equivalence classes in v0.3.0) with full round-trip codecs,
   Zod schemas, snapshot tests, and pre-Zod safety primitives.
+- **0.6.0 Quote & Book classes:** new `Price`, `Ratings` and `TransportLegs`,
+  and ontology-complete `BookingOption`, `BookingRequest` and `Booking`
+  (see CHANGELOG and MIGRATING).
 - Opt-in **graph-walk dispatcher** (`createMapper({ graphWalk: true })` or
   `onerecord.dispatch.deserialize.<Class>`) emitting all four cross-node
   integrity ParseError kinds.
@@ -212,6 +215,10 @@ No bound state; suitable for one-off operations and tree-shake-friendly imports.
 - `redactError(e: ParseError): ParseError` — strips PII from error payloads before logging
 
 ### Booking state machine
+
+> Deprecated in 0.6.0. These helpers implement a legacy pre-ontology flow
+> whose roles are swapped versus ONE Record (deviation #21). They refuse
+> ontology-shaped inputs and will be replaced in "booking Path A".
 
 ```typescript
 import { STATE_DIAGRAM, canTransition } from '@flaks/onerecord'

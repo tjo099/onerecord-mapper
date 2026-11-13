@@ -42,13 +42,18 @@ export type { DeserializeOpts, SafetyLimits, SerializeOpts } from './safety/limi
 export {
   BookingOptionStatus,
   BookingStatus,
+  ChargeIdentifier,
   CompositionType,
+  EntitlementCode,
   NotificationEventType,
   PatchOperation,
   Permission,
+  PrepaidCollectIndicator,
   RequestStatus,
+  SpaceAllocationCode,
   SubscriptionEventType,
   TopicType,
+  TransportMeansServiceType,
 } from './codes/index.js'
 
 // FSU event codes (Phase 7 / Task 38)
@@ -575,3 +580,46 @@ export type { DereferenceIriOpts, DereferenceIriResult } from './iri/dereference
 // The OneRecord* prefix lets these coexist with the legacy cargo-model
 // codecs above during the compatibility window.
 export * from './api/index.js'
+
+// v0.6 — embedded Quote & Book shapes (types only).
+export type {
+  Ranges,
+  UnitsPreference,
+  CarrierProduct,
+  StationRemarks,
+  EmbeddedBookingTimes,
+  PieceGroup,
+  EmbeddedBookingSegment,
+  ActivitySequence,
+  ContactDetail,
+} from './classes/shared/distribution.js'
+
+// v0.6 — Price
+export {
+  PriceCodec,
+  PriceSchema,
+  deserializePrice,
+  serializePrice,
+  serializePriceStrict,
+} from './classes/price/index.js'
+export type { JsonLdPrice, Price } from './classes/price/index.js'
+
+// v0.6 — Ratings
+export {
+  RatingsCodec,
+  RatingsSchema,
+  deserializeRatings,
+  serializeRatings,
+  serializeRatingsStrict,
+} from './classes/ratings/index.js'
+export type { JsonLdRatings, Ratings } from './classes/ratings/index.js'
+
+// v0.6 — TransportLegs
+export {
+  TransportLegsCodec,
+  TransportLegsSchema,
+  deserializeTransportLegs,
+  serializeTransportLegs,
+  serializeTransportLegsStrict,
+} from './classes/transport-legs/index.js'
+export type { JsonLdTransportLegs, TransportLegs } from './classes/transport-legs/index.js'

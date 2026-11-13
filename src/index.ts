@@ -580,3 +580,16 @@ export type { DereferenceIriOpts, DereferenceIriResult } from './iri/dereference
 // The OneRecord* prefix lets these coexist with the legacy cargo-model
 // codecs above during the compatibility window.
 export * from './api/index.js'
+
+// v0.6 — embedded Quote & Book shapes (types only).
+export type {
+  Ranges,
+  UnitsPreference,
+  CarrierProduct,
+  StationRemarks,
+  EmbeddedBookingTimes,
+  PieceGroup,
+  EmbeddedBookingSegment,
+  ActivitySequence,
+  ContactDetail,
+} from './classes/shared/distribution.js'

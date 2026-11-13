@@ -6,9 +6,14 @@ import { describe, expect, it } from 'vitest'
 
 // If any of these import lines fail the TS compiler, the type barrel is broken.
 import type {
+  ActivitySequence,
+  CarrierProduct,
   ClassName,
   Codec,
+  ContactDetail,
   DeserializeOpts,
+  EmbeddedBookingSegment,
+  EmbeddedBookingTimes,
   IriParts,
   IriStrategy,
   JsonLd,
@@ -17,11 +22,15 @@ import type {
   LogisticsObject,
   ParseError,
   ParseResult,
+  PieceGroup,
   PublicParseError,
+  Ranges,
   SafeIri,
   SafetyLimits,
   SerializeOpts,
   Shipment,
+  StationRemarks,
+  UnitsPreference,
   Waybill,
 } from '../../../src/types/index.js'
 

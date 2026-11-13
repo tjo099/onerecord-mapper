@@ -95,6 +95,10 @@ PersonSchema
 PieceCodec
 PieceSchema
 PrepaidCollectIndicator
+PriceCodec
+PriceSchema
+RatingsCodec
+RatingsSchema
 RegulatedEntityCodec
 RegulatedEntitySchema
 RequestStatus
@@ -171,6 +175,8 @@ deserializeOtherCharge
 deserializeParty
 deserializePerson
 deserializePiece
+deserializePrice
+deserializeRatings
 deserializeRegulatedEntity
 deserializeSecurityDeclaration
 deserializeServerInformation
@@ -255,6 +261,10 @@ serializePerson
 serializePersonStrict
 serializePiece
 serializePieceStrict
+serializePrice
+serializePriceStrict
+serializeRatings
+serializeRatingsStrict
 serializeRegulatedEntity
 serializeRegulatedEntityStrict
 serializeSecurityDeclaration

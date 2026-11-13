@@ -62,3 +62,5 @@ export const CODECS = Object.freeze(
     ]),
   ),
 ) as Record<keyof typeof CLASSES, unknown>
+export { PriceCodec } from './classes/price/index.js'
+export { RatingsCodec } from './classes/ratings/index.js'

@@ -38,6 +38,8 @@ import * as OC from './classes/other-charge/index.js'
 import * as Pa from './classes/party/index.js'
 import * as Pe from './classes/person/index.js'
 import * as Pc from './classes/piece/index.js'
+import * as Pr from './classes/price/index.js'
+import * as Ra from './classes/ratings/index.js'
 import * as RE from './classes/regulated-entity/index.js'
 import * as SD from './classes/security-declaration/index.js'
 import * as SI from './classes/server-information/index.js'
@@ -108,6 +110,8 @@ export const CLASSES = {
   Composing: Cp,
   RegulatedEntity: RE,
   SecurityDeclaration: SD,
+  Price: Pr,
+  Ratings: Ra,
 } as const
 
 export type ClassName = keyof typeof CLASSES

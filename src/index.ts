@@ -593,3 +593,23 @@ export type {
   ActivitySequence,
   ContactDetail,
 } from './classes/shared/distribution.js'
+
+// v0.6 — Price
+export {
+  PriceCodec,
+  PriceSchema,
+  deserializePrice,
+  serializePrice,
+  serializePriceStrict,
+} from './classes/price/index.js'
+export type { JsonLdPrice, Price } from './classes/price/index.js'
+
+// v0.6 — Ratings
+export {
+  RatingsCodec,
+  RatingsSchema,
+  deserializeRatings,
+  serializeRatings,
+  serializeRatingsStrict,
+} from './classes/ratings/index.js'
+export type { JsonLdRatings, Ratings } from './classes/ratings/index.js'

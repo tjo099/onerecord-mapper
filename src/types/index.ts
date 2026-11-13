@@ -104,3 +104,5 @@ export type {
   ActivitySequence,
   ContactDetail,
 } from '../classes/shared/distribution.js'
+export type { JsonLdPrice, Price } from '../classes/price/index.js'
+export type { JsonLdRatings, Ratings } from '../classes/ratings/index.js'

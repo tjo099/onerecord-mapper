@@ -1,0 +1,5 @@
+export { RatingsCodec } from './codec.js'
+export { deserializeRatings } from './deserialize.js'
+export { RatingsSchema } from './schema.js'
+export type { Ratings, JsonLdRatings } from './schema.js'
+export { serializeRatings, serializeRatingsStrict } from './serialize.js'

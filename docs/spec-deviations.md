@@ -222,6 +222,19 @@ normalization is intentionally NOT checked (modern URL parsers
 already normalize it; the false-positive surface was too high
 for v0.2). Considered for v0.3 if integrators report mismatches.
 
+**0.6.0 note (`looksLikeIri` whitespace fix)**: the graph walk decides
+whether a string value is an IRI candidate with `looksLikeIri`. Before 0.6.0
+free text such as `"NOTE: prepaid"` matched the `scheme:` shape and was
+reported as `iri_not_canonical`. `looksLikeIri` now rejects any string that
+contains whitespace. Remaining limitations:
+
+- A whitespace-free string in a non-IRI field is still canonical-checked, so
+  a free-text value such as `HTTP:foo` (no spaces) can still trigger
+  `iri_not_canonical`.
+- A malformed IRI that contains whitespace is no longer canonical-checked by
+  the graph walk. The schema's `safeIri` still rejects it, so the object does
+  not parse.
+
 ## 10. `@context` array order resolution
 
 **Status (v0.2.0)**: CLOSED for the opt-in dispatch path. The
@@ -497,6 +510,58 @@ ontology and asserts that no Quote & Book schema has any of them.
 
 **Resolution path**: modelling them is a package-wide change for a later
 release.
+
+## 20. Price and Ratings carry no currency (ontology gap)
+
+**Spec**: `:Price.grandTotal` (L3536) and `:Ratings.subTotal` (L4519) are
+`xsd:double`. The 3.2.0 ontology defines no currency property on `:Price` or
+`:Ratings`, and no `CurrencyValue` is involved.
+
+**Package behaviour**: `Price.grandTotal` and `Ratings.subTotal` are plain
+numbers, exactly as the ontology says. The package adds no currency key,
+because the schemas are strict and a key the ontology does not define would be
+a deviation in the other direction.
+
+**Profile convention** (see `ONE_RECORD_2_2_PROFILE.md`, "Quote & Book
+amounts"): `BookingOption.unitsPreference.currency` is a preference, not a
+statement about the amounts. A producer SHOULD set it whenever the option
+carries a `Price`. A receiver MAY fall back to the currency units of the
+related Waybill's `CurrencyValue` fields. The package does not enforce either
+rule.
+
+**Resolution path**: an ontology amendment, or booking Path A guidance once
+IATA settles the model.
+
+## 21. Legacy booking-flow roles are swapped versus the ontology
+
+**Spec**: in ONE Record 3.2.0 the carrier proposes a `BookingOption`, the
+forwarder answers with a `BookingRequest`, and the carrier confirms with a
+`Booking`. `:BookingTimes`, `:BookingSegment` and `:BookingPreferences`-style
+data are **embedded classes** (no `@id`) on the booking classes.
+
+**Package behaviour**: the legacy `booking-flow` helpers and the exported
+legacy LogisticsObject-shaped classes `BookingTimes`, `BookingSegment` and
+`BookingPreferences` assign the roles the other way round and treat those
+three as standalone LogisticsObjects. 0.6.0 adds the ontology-shaped embedded
+types (`EmbeddedBookingTimes`, `EmbeddedBookingSegment`) beside them. The
+legacy flow is `@deprecated`, and refuses ontology-shaped inputs explicitly
+(`ontology_status_present`, `legacy_status_absent`; see #11).
+
+**Resolution path**: booking Path A (target 0.7.0) replaces the legacy flow
+and classes and renames the embedded types. This is the same release that
+removes the keys in #18.
+
+## 22. `xsd:dateTime` must carry a timezone (profile policy)
+
+**Spec**: `xsd:dateTime` permits a missing timezone.
+
+**Package behaviour**: every `xsd:dateTime` field in the Quote & Book chain is
+`z.string().datetime({ offset: true })`. It accepts `...Z` and `...+02:00` and
+rejects a value with no timezone as `zod_validation`. This is a profile policy
+for unambiguous instants, not an ontology requirement.
+
+**Resolution path**: none planned. A peer that sends zone-less timestamps must
+add a zone.
 
 ---
 

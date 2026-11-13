@@ -14,7 +14,28 @@ canonical spec see [`spec-deviations.md`](spec-deviations.md), and for
 the field-by-field 3.2.0 mapping see
 [`conformance-matrix.md`](conformance-matrix.md).
 
-## Where we are now — v0.3.0 (released 2026-05-17)
+## Where we are now — v0.6.0 (delivered; unreleased until tagged)
+
+v0.6.0 is the **Quote & Book charge chain** release, implemented on branch
+`feat/v0.6.0-quote-book-chain` and not yet tagged or published. It adds
+`Price`, `Ratings` and `TransportLegs`, nine embedded shapes, and realigns
+`BookingOption`, `BookingRequest` and `Booking` with the 3.2.0 ontology while
+keeping the 0.5.0 keys (deprecated) so mixed fleets keep working. The
+ontology pin stays 3.2.0. See [`../CHANGELOG.md`](../CHANGELOG.md) and the
+0.5.x to 0.6.0 section of [`../MIGRATING.md`](../MIGRATING.md).
+
+**Next:**
+
+- **0.6.1** — `flattenEmbeddedGraph`: split `?embedded=true` responses into
+  per-node objects before per-class validation.
+- **Booking Path A (target 0.7.0)** — replace the legacy booking flow and the
+  legacy `BookingTimes` / `BookingSegment` / `BookingPreferences` classes with
+  the ontology model (deviation #21). The legacy booking-chain keys must go
+  by `removeBy` 0.8.0 (deviation #18).
+- **3.3.0 pin migration** — move the ontology pin from 3.2.0 to 3.3.0 once it
+  is endorsed; the 3.3.0 files are already vendored for the conformance guard.
+
+## Previous milestone — v0.3.0 (released 2026-05-17)
 
 Tagged `v0.3.0` and published to npm as `@flaks/onerecord@0.3.0`.
 

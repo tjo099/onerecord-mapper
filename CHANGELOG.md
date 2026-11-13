@@ -4,6 +4,68 @@ All notable changes are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/), versioning follows
 [SemVer](https://semver.org/) per the policy in `MIGRATING.md`.
 
+## [0.6.0] - 2026-11-13
+
+ONE Record 3.2.0 Quote & Book charge chain: `Price`, `Ratings` and
+`TransportLegs`, and a full ontology realignment of `BookingOption`,
+`BookingRequest` and `Booking`. Every payload 0.5.0 accepted still parses;
+the 0.5.0 booking keys are kept and deprecated. The ontology pin stays 3.2.0.
+Upgrade receivers first (see `MIGRATING.md`).
+
+### Added
+
+- `Price`, `Ratings` and `TransportLegs` classes with codecs, schemas and
+  `serialize*` / `serialize*Strict` / `deserialize*` helpers; registered in
+  `CLASSES`, `CODECS`, the facade and `createMapper`.
+- Code lists `ChargeIdentifier`, `PrepaidCollectIndicator`, `EntitlementCode`,
+  `SpaceAllocationCode` and `TransportMeansServiceType`.
+- Nine embedded shapes, exported as types only: `Ranges`, `UnitsPreference`,
+  `CarrierProduct`, `StationRemarks`, `EmbeddedBookingTimes`, `PieceGroup`,
+  `EmbeddedBookingSegment`, `ActivitySequence`, `ContactDetail`.
+- The complete 3.2.0 property sets on `BookingOption`, `BookingRequest` and
+  `Booking` (including the inherited `:LogisticsService` properties).
+- 21 `FIELD_TYPES` entries for the new links.
+- Vendored IATA ONE Record 3.2 / 3.3.0 ontology files (MIT), a typed
+  restriction extractor and a conformance guard that checks the chain
+  schemas against them.
+- A `./codecs` runtime-surface snapshot, superset and mixed-fleet property
+  tests against a frozen 0.5.0 oracle, and a Quote & Book chain fixture.
+- Deviations #18 to #22 in `docs/spec-deviations.md`, a Quote & Book wire
+  section in `docs/ONE_RECORD_2_2_PROFILE.md`, and conformance-matrix rows.
+
+### Changed
+
+- `codes.BookingStatus` is now `CONFIRMED | DELETED | QUEUED | REJECTED` and
+  `codes.BookingOptionStatus` is now `BOOKABLE | BOOKED | EXPIRED |
+  NONBOOKABLE | NOT_BOOKABLE | ON_REQUEST | QUEUED` (the ontology values).
+  The old `REQUEST_*` values are no longer in these enums.
+- `Booking.bookingStatus` accepts the four ontology values plus
+  `REQUEST_ACCEPTED` and `REQUEST_REVOKED` for 0.5.0 compatibility.
+- `BookingOption.optionStatus`, `BookingRequest.requestStatus` and
+  `BookingRequest.requestor` were required and are now optional;
+  `BookingOption.forBookingRequest` is no longer required.
+- The booking-flow helpers refuse ontology-shaped inputs explicitly
+  (`ontology_status_present`, `legacy_status_absent`); 0.5.0-valid inputs
+  behave as before.
+- `__VERSION__` now reports `0.6.0`.
+
+### Deprecated
+
+- Legacy booking-chain keys: `BookingOption.optionStatus`, `expiresAt`,
+  `preferences`; `BookingRequest.requestStatus`, `requestor`, `preferences`;
+  `Booking.forBookingRequest`, `forBookingOption`. Removal is planned for
+  booking Path A, at the latest by 0.8.0 (deviation #18).
+- The booking-flow helpers (the transition functions), `STATE_DIAGRAM` and
+  `canTransition` (deviation #21).
+
+### Fixed
+
+- `FIELD_TYPES['Waybill.referredBookingOption']` pointed at `BookingOption`;
+  the ontology target is `Booking`.
+- `looksLikeIri` now rejects strings that contain whitespace, so free text
+  such as `"NOTE: prepaid"` no longer triggers `iri_not_canonical` under the
+  graph walk (deviation #9).
+
 ## [0.5.0] - 2026-07-26
 
 ONE Record API 2.2.0 interoperability boundary for applications that must

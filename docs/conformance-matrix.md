@@ -1,4 +1,4 @@
-# Conformance Matrix — v0.3.0
+# Conformance Matrix — v0.3.0 and v0.6.0 additions
 
 Maps each new class and key corrected field to its binding authority in the
 IATA ONE Record Data Model Ontology 3.2.0 (the endorsed release self-labels
@@ -128,6 +128,45 @@ FWB always emits exactly one value for these fields in practice.
 |---|---|---|
 | `CustomsInformation.issuedForPiece` | ~1415 `:issuedForPiece` | `3.2.0` |
 | `CustomsInformation.issuedForShipment` | ~1426 `:issuedForShipment` | `3.2.0` (issuedForShipment exists standalone in 3.2.0; the master-only restriction is on SecurityDeclaration only) |
+
+---
+
+## Quote & Book chain (v0.6.0)
+
+Line numbers (`Lnnnn`) are exact lines in the official `2025-07-standard`
+`IATA-1R-DM-Ontology.ttl` at IATA commit `49e8ac1`, unlike the advisory `~`
+anchors above. The guard `test/unit/ontology/quote-book-conformance.test.ts`
+checks every schema below against the vendored ontology.
+
+| Class | TTL line | Status | Test file |
+|---|---|---|---|
+| `Price` | L8623 `:Price` | `3.2.0` | `test/unit/classes/price.test.ts` |
+| `Ratings` | L8966 `:Ratings` | `3.2.0` | `test/unit/classes/ratings.test.ts` |
+| `TransportLegs` | L9424 `:TransportLegs` | `3.2.0` | `test/unit/classes/transport-legs.test.ts` |
+| `BookingOption` | L5298 `:BookingOption` | `3.2.0` for ontology keys; `optionStatus`, `expiresAt`, `preferences` are deprecated legacy keys (deviation #18) | `test/unit/classes/booking-option/booking-option-ontology.test.ts` |
+| `BookingRequest` | L5555 `:BookingRequest` | `3.2.0` for ontology keys; `requestStatus`, `requestor`, `preferences` are deprecated legacy keys (deviation #18) | `test/unit/classes/booking-request/booking-request-ontology.test.ts` |
+| `Booking` | L5170 `:Booking` (subclass of `:LogisticsService` L7717) | `3.2.0` for ontology keys; `forBookingRequest`, `forBookingOption` are deprecated legacy keys; `bookingStatus` also accepts `REQUEST_ACCEPTED` and `REQUEST_REVOKED` (deviation #18) | `test/unit/classes/booking/booking-ontology.test.ts` |
+
+### Embedded shapes (no `@id`; types exported, schemas internal)
+
+Schemas live in `src/classes/shared/distribution.ts`.
+
+| Shape | TTL line | Status | Test file |
+|---|---|---|---|
+| `Ranges` | L8919 `:Ranges` | `3.2.0` | `test/unit/ontology/quote-book-conformance.test.ts` |
+| `UnitsPreference` | L9924 `:UnitsPreference` | `3.2.0` | `test/unit/ontology/quote-book-conformance.test.ts` |
+| `CarrierProduct` | L5855 `:CarrierProduct` | `3.2.0` | `test/unit/ontology/quote-book-conformance.test.ts` |
+| `StationRemarks` | L9317 `:StationRemarks` | `3.2.0`; `:station` is described as "mandatory" in the ontology comment but has no minimum cardinality restriction, so it is modelled optional | `test/unit/ontology/quote-book-conformance.test.ts` |
+| `EmbeddedBookingTimes` | L5744 `:BookingTimes` | `3.2.0` (named to avoid the legacy `BookingTimes` class, deviation #21) | `test/unit/ontology/quote-book-conformance.test.ts` |
+| `PieceGroup` | L8460 `:PieceGroup` | `3.2.0` | `test/unit/ontology/quote-book-conformance.test.ts` |
+| `EmbeddedBookingSegment` | L5595 `:BookingSegment` | `3.2.0` (named to avoid the legacy `BookingSegment` class, deviation #21) | `test/unit/ontology/quote-book-conformance.test.ts` |
+| `ActivitySequence` | L4849 `:ActivitySequence` | `3.2.0` | `test/unit/ontology/quote-book-conformance.test.ts` |
+| `ContactDetail` | L6185 `:ContactDetail` | `3.2.0` | `test/unit/ontology/quote-book-conformance.test.ts` |
+
+Price and Ratings carry no currency because the ontology defines none
+(deviation #20). `:LogisticsObject`-level properties (`checks`, `events`,
+`externalReferences`, `skeletonIndicator`) are not modelled on any class
+(deviation #19).
 
 ---
 

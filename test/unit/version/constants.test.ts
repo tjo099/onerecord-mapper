@@ -1,4 +1,6 @@
 // test/unit/version/constants.test.ts
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
   API_CONTEXT_IRI,
@@ -17,6 +19,13 @@ describe('version constants', () => {
 
   it('exposes mapper __VERSION__ as semver', () => {
     expect(__VERSION__).toMatch(/^\d+\.\d+\.\d+(-[a-z]+)?$/)
+  })
+
+  it('pins __VERSION__ to the package.json version', () => {
+    const pkg = JSON.parse(readFileSync(join(process.cwd(), 'package.json'), 'utf8')) as {
+      version: string
+    }
+    expect(__VERSION__).toBe(pkg.version)
   })
 
   it('uses the official IATA OneRecord context IRIs', () => {

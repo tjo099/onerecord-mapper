@@ -442,6 +442,62 @@ for Phase 1.5+ / Phase 2 consumers. Documented here so a reader inspecting
 the schema does not assume these fields are populated by any existing cargo-erp
 code path in Phase 1.
 
+## 18. Legacy booking-chain keys retained and deprecated (`removeBy: 0.8.0`)
+
+**Spec**: ONE Record 3.2.0 does not define these keys on these classes.
+
+**0.6.0 behaviour**: `BookingOption`, `BookingRequest` and `Booking` now carry
+their complete 3.2.0 property sets. The 0.5.0 keys that are not ONE Record
+properties of the class are kept, so that every payload 0.5.0 accepted still
+parses (superset acceptance, v0.6.0 spec §5.5) and mixed fleets keep working.
+Each key is now optional, and each is `@deprecated` in the schema and in the
+exported type.
+
+| Legacy key | Ontology replacement |
+|---|---|
+| `BookingOption.optionStatus` | `statusBookingOption` (different values) |
+| `BookingOption.expiresAt` | `offerValidTo` |
+| `BookingOption.preferences` | none on `:BookingOption` |
+| `BookingRequest.requestStatus` | none on `:BookingRequest` |
+| `BookingRequest.requestor` | none on `:BookingRequest` |
+| `BookingRequest.preferences` | none on `:BookingRequest` |
+| `Booking.forBookingRequest` | `bookingRequest` |
+| `Booking.forBookingOption` | none: the chain is Booking → BookingRequest → BookingOption |
+
+`BookingOption.forBookingRequest` is an ontology property (L1158), not a legacy
+key. `Booking.bookingStatus` is an ontology property; besides the four
+`:BookingStatus` values it still accepts `REQUEST_ACCEPTED` and
+`REQUEST_REVOKED` for 0.5.0 compatibility.
+
+**Removal**: booking Path A (target 0.7.0), at the latest by
+`removeBy: 0.8.0`. The conformance guard
+(`test/unit/ontology/quote-book-conformance.test.ts`) declares every key above
+with this deviation number and `removeBy`, and fails once `__VERSION__` reaches
+`removeBy`, so the removal cannot slip silently.
+
+**What to do today**: emit ontology keys only. Read the legacy keys only from
+0.5.0 peers.
+
+## 19. `:LogisticsObject`-level properties not modelled (package-wide)
+
+**Spec**: `:LogisticsObject` (L7690) restricts four properties that every
+LogisticsObject class inherits: `checks` (→ `:Check`), `events`
+(→ `:LogisticsEvent`), `externalReferences` (→ `:ExternalReference`) and
+`skeletonIndicator` (`xsd:boolean`).
+
+**Package behaviour**: no class schema in this package carries any of them.
+Because every schema is `.strict()`, an object that carries one is rejected as
+`zod_validation` with `unrecognized_keys` (v0.6.0 spec §5.5, G4d). This applies
+to every class, not only the Quote & Book chain. The v0.6.0 completeness rule
+covers each class's own restrictions and those of intermediate superclasses
+strictly below `:LogisticsObject`, and stops there.
+
+**Guard**: the conformance guard checks these four names against the vendored
+ontology and asserts that no Quote & Book schema has any of them.
+
+**Resolution path**: modelling them is a package-wide change for a later
+release.
+
 ---
 
 ## How deviations are tracked

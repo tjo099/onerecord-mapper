@@ -13,9 +13,13 @@
  * NOT run this check; it's only fired through the opt-in dispatch path.
  */
 
-/** True if `s` looks like an IRI (has a `scheme:` prefix). */
+/**
+ * True if `s` looks like an IRI: a `scheme:` prefix and no whitespace
+ * (RFC 3987 IRIs cannot contain whitespace, so free text such as
+ * `"NOTE: prepaid"` is not an IRI).
+ */
 export function looksLikeIri(s: string): boolean {
-  return /^[a-zA-Z][a-zA-Z0-9+.\-]*:/.test(s)
+  return /^[a-zA-Z][a-zA-Z0-9+.\-]*:\S*$/.test(s)
 }
 
 export type IriCanonicalReason = 'scheme_not_lowercase' | 'host_not_lowercase' | 'default_port'

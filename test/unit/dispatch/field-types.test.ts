@@ -55,6 +55,7 @@ describe('FIELD_TYPES — field-to-expected-class map', () => {
       'BookingOptionRequest',
       'BookingPreferences',
       'BookingRequest',
+      'BookingShipment',
       'Change',
       'CO2Emissions',
       'Company',
@@ -67,10 +68,13 @@ describe('FIELD_TYPES — field-to-expected-class map', () => {
       'Party',
       'Person',
       'Piece',
+      'Price',
+      'Ratings',
       'RegulatedEntity',
       'SecurityDeclaration',
       'Shipment',
       'Subscription',
+      'TransportLegs',
       'TransportMovement',
       'ULD',
       'Verification',
@@ -105,5 +109,41 @@ describe('FIELD_TYPES — field-to-expected-class map', () => {
 
   it('FIELD_TYPES is frozen', () => {
     expect(Object.isFrozen(FIELD_TYPES)).toBe(true)
+  })
+
+  describe('v0.6.0 Quote & Book links', () => {
+    it.each([
+      ['BookingOption', 'price', 'Price'],
+      ['BookingOption', 'forBookingOptionRequest', 'BookingOptionRequest'],
+      ['BookingOption', 'transportLegs', 'TransportLegs'],
+      ['BookingOption', 'carrier', '*'],
+      ['BookingRequest', 'forBookingOption', 'BookingOption'],
+      ['BookingRequest', 'booking', 'Booking'],
+      ['Booking', 'bookingRequest', 'BookingRequest'],
+      ['Booking', 'bookingShipmentDetails', 'BookingShipment'],
+      ['Booking', 'departureLocation', 'Location'],
+      ['Booking', 'arrivalLocation', 'Location'],
+      ['Booking', 'issuedForWaybill', 'Waybill'],
+      ['Booking', 'updateBookingOptionRequests', 'BookingOptionRequest'],
+      ['Booking', 'transportLegs', 'TransportLegs'],
+      ['Booking', 'carrier', '*'],
+      ['Booking', 'contactPersons', 'Person'],
+      ['Price', 'forBookingOption', 'BookingOption'],
+      ['Price', 'ratings', 'Ratings'],
+      ['Ratings', 'forPrices', 'Price'],
+      ['TransportLegs', 'arrivalLocation', 'Location'],
+      ['TransportLegs', 'departureLocation', 'Location'],
+      ['TransportLegs', 'co2Emissions', 'CO2Emissions'],
+    ])('%s.%s expects %s', (cls, field, expected) => {
+      expect(expectedTypeFor(cls, field)).toBe(expected)
+    })
+
+    it('Waybill.referredBookingOption targets Booking (L2166 range)', () => {
+      expect(expectedTypeFor('Waybill', 'referredBookingOption')).toBe('Booking')
+    })
+
+    it('TransportLegs.operatingTransportMeans is not mapped', () => {
+      expect(expectedTypeFor('TransportLegs', 'operatingTransportMeans')).toBeUndefined()
+    })
   })
 })

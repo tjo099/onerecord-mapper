@@ -36,6 +36,31 @@
 - `@flaks/onerecord@0.5.0` is published. Immutable-version detection makes a
   manually retried workflow safe after a partial release.
 
+## Release 0.6.0 (2026-11-13)
+
+- Version `0.6.0` adds the ONE Record 3.2.0 Quote & Book charge chain:
+  `Price`, `Ratings`, `TransportLegs`, nine embedded shapes, and
+  `BookingOption` / `BookingRequest` / `Booking` realigned to the ontology.
+  The 0.5.0 keys stay as optional and `@deprecated` (removal by 0.8.0,
+  deviation #18). Every 0.5.0-valid payload still parses, which property
+  tests check against the frozen oracle in `test/oracle/v0.5.0/`.
+- The ontology pin stays 3.2.0. IATA's 3.2 and 3.3.0 ontology files are
+  vendored in `test/fixtures/ontology/iata-onerecord/`, and
+  `test/unit/ontology/quote-book-conformance.test.ts` checks the chain
+  schemas against them. Update both when the pin moves.
+- The three applications still pin `0.5.0`. Each moves to `0.6.0` only after
+  it passes the adoption gate in `docs/ONE_RECORD_2_2_PROFILE.md`, and
+  receivers upgrade first.
+- Verification: 1502 passing tests, one skipped, 26 property tests, and green
+  typecheck, lint, build, `api:check` and package inspection. Published by
+  `release.yml` from the signed tag `v0.6.0`.
+- Committed follow-ups:
+  - 0.6.1 `flattenEmbeddedGraph`;
+  - booking Path A (target 0.7.0): realign `BookingShipment`,
+    `BookingSegment`, `BookingTimes`, `BookingPreferences` and the booking
+    flow;
+  - the 3.3.0 pin migration.
+
 ## Release discipline
 
 - Keep `package.json`, `CHANGELOG.md`, the signed `vX.Y.Z` tag, and generated

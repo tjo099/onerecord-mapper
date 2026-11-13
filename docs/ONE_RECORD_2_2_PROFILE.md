@@ -99,9 +99,14 @@ the (canonicalised) IRIs first, or it double-counts.
 
 ## Release gate
 
-Version `0.5.0` is release-ready only when:
+Version `0.5.0` was release-ready only when:
 
 - typecheck, lint, unit, property and package-surface tests pass;
 - official IATA example-derived API wire fixtures pass;
 - Cargo ERP, Skidd and Booking Portal compile against this version;
 - end-to-end tests prove both Flaks-optimized and standards-only exchange.
+
+From `0.6.0` the first two items gate every package release. The last two
+are the adoption gate: each application moves to a new version only once it
+compiles against that version and its end-to-end tests pass. Receivers
+upgrade before producers (see `MIGRATING.md`).

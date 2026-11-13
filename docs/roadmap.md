@@ -14,10 +14,10 @@ canonical spec see [`spec-deviations.md`](spec-deviations.md), and for
 the field-by-field 3.2.0 mapping see
 [`conformance-matrix.md`](conformance-matrix.md).
 
-## Where we are now — v0.6.0 (delivered; unreleased until tagged)
+## Where we are now — v0.6.0 (released 2026-11-13)
 
-v0.6.0 is the **Quote & Book charge chain** release, implemented on branch
-`feat/v0.6.0-quote-book-chain` and not yet tagged or published. It adds
+v0.6.0 is the **Quote & Book charge chain** release, published to npm as
+`@flaks/onerecord@0.6.0` from the signed tag `v0.6.0`. It adds
 `Price`, `Ratings` and `TransportLegs`, nine embedded shapes, and realigns
 `BookingOption`, `BookingRequest` and `Booking` with the 3.2.0 ontology while
 keeping the 0.5.0 keys (deprecated) so mixed fleets keep working. The

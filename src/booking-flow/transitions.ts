@@ -37,6 +37,17 @@ function makeId(type: string): string {
 }
 
 export function acceptBookingRequest(req: BookingRequest): ParseResult<BookingOption> {
+  if (req.requestStatus === undefined)
+    return {
+      ok: false,
+      error: {
+        kind: 'forbidden_state_transition',
+        from: 'BookingRequest.(absent)',
+        to: 'accept',
+        reason: 'legacy_status_absent',
+        path: '$',
+      },
+    }
   const t = canTransition('BookingRequest', req.requestStatus, 'accept')
   if (!t)
     return {

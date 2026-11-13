@@ -269,6 +269,14 @@ to return `forbidden_state_transition`. Pre-existing v0.1.x bug:
 schema enum, so even fixing the bug requires the schema rework
 described below.
 
+**0.6.0 containment**: the four helpers still hardcode `'REQUEST_PENDING'`
+(0.5.0-valid inputs behave identically), but now refuse ontology-shaped
+inputs first: `statusBookingOption` present returns
+`reason: 'ontology_status_present'`, and an absent `optionStatus` returns
+`reason: 'legacy_status_absent'`. All five helpers, `STATE_DIAGRAM` and
+`canTransition` are `@deprecated` in favour of booking Path A (see
+deviation #21).
+
 **Resolution path**: v0.3.0. Two coherent fixes:
 
 - (a) Rework `STATE_DIAGRAM.BookingOption` source-state keys to

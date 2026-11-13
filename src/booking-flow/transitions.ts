@@ -5,28 +5,23 @@ import type { BookingOption } from '../classes/booking-option/schema.js'
 import type { BookingRequest } from '../classes/booking-request/schema.js'
 import type { Booking } from '../classes/booking/schema.js'
 import type { SafeIri } from '../iri/strategy.js'
-import type { ParseResult } from '../result.js'
+import type { ParseError, ParseResult } from '../result.js'
 import { CARGO_CONTEXT_IRI } from '../version.js'
 import { canTransition } from './can-transition.js'
+import type { BookingAction } from './state-diagram.js'
 
 /**
- * v0.2 booking-flow status:
- * - `acceptBookingOptionViaRequest` (below) returns the spec-§5.4
- *   intermediate `BookingOptionRequest` — the spec-correct path.
- * - `acceptBookingOption` (legacy, @deprecated) continues to return
- *   `Booking` directly per spec §5.2 signature; removal v0.3 unless
- *   IATA §5.4 reconciliation restores the §5.2 shortcut.
+ * Legacy pre-ontology booking flow (roles swapped vs ONE Record, deviation
+ * #21). These helpers neither read nor write ontology keys: they work only
+ * on the legacy `optionStatus` / `requestStatus` state model and refuse
+ * ontology-shaped inputs (`statusBookingOption` present, or the legacy
+ * status absent) with a `forbidden_state_transition` error carrying a
+ * `reason`. Every 0.5.0-valid input behaves exactly as before.
  *
- * Source-state hardcode: all four BookingOption transition functions
- * (acceptBookingOption, rejectBookingOption, revokeBookingOption,
- * acceptBookingOptionViaRequest) pass the constant `'REQUEST_PENDING'`
- * as the source state to `canTransition` rather than reading
- * `opt.optionStatus`. This is intentional — see deviation #11 in
- * `docs/spec-deviations.md`. The schema's optionStatus enum
- * (OPTION_PROPOSED/_ACCEPTED/_REJECTED) does not align with
- * STATE_DIAGRAM.BookingOption's source-state keys (REQUEST_PENDING).
- * Reading `opt.optionStatus` would make every transition fail.
- * Reconciliation deferred to v0.3.
+ * Source-state hardcode: the four BookingOption helpers still pass the
+ * constant `'REQUEST_PENDING'` to `canTransition` rather than mapping
+ * `opt.optionStatus` onto STATE_DIAGRAM keys (deviation #11). They only
+ * check that `optionStatus` is present.
  */
 
 const TENANT = 'transitions'
@@ -36,6 +31,38 @@ function makeId(type: string): string {
   return `https://${HOST}/${TENANT}/${type.toLowerCase()}/${randomUUID()}`
 }
 
+function refuseOptionInput(
+  opt: BookingOption,
+  to: BookingAction,
+): { ok: false; error: ParseError } | null {
+  if (opt.statusBookingOption !== undefined)
+    return {
+      ok: false,
+      error: {
+        kind: 'forbidden_state_transition',
+        from: `BookingOption.${opt.statusBookingOption}`,
+        to,
+        reason: 'ontology_status_present',
+        path: '$',
+      },
+    }
+  if (opt.optionStatus === undefined)
+    return {
+      ok: false,
+      error: {
+        kind: 'forbidden_state_transition',
+        from: 'BookingOption.(absent)',
+        to,
+        reason: 'legacy_status_absent',
+        path: '$',
+      },
+    }
+  return null
+}
+
+/**
+ * @deprecated Legacy pre-ontology booking flow (roles swapped vs ONE Record, deviation #21). Replacement: booking Path A.
+ */
 export function acceptBookingRequest(req: BookingRequest): ParseResult<BookingOption> {
   if (req.requestStatus === undefined)
     return {
@@ -70,7 +97,9 @@ export function acceptBookingRequest(req: BookingRequest): ParseResult<BookingOp
 }
 
 /**
- * @deprecated v0.2 deprecation; removal in v0.3.
+ * @deprecated Legacy pre-ontology booking flow (roles swapped vs ONE Record, deviation #21). Replacement: booking Path A.
+ *
+ * (Earlier v0.2 deprecation: skips the intermediate state.)
  *
  * Skips the `BookingOptionRequest` intermediate state per spec §5.4
  * STATE_DIAGRAM. Use `acceptBookingOptionViaRequest(opt)` instead and
@@ -79,6 +108,8 @@ export function acceptBookingRequest(req: BookingRequest): ParseResult<BookingOp
  * shortcut, this annotation will be relaxed.
  */
 export function acceptBookingOption(opt: BookingOption): ParseResult<Booking> {
+  const refused = refuseOptionInput(opt, 'accept')
+  if (refused) return refused
   const t = canTransition('BookingOption', 'REQUEST_PENDING', 'accept')
   if (!t)
     return {
@@ -95,16 +126,21 @@ export function acceptBookingOption(opt: BookingOption): ParseResult<Booking> {
     '@type': 'Booking',
     '@id': makeId('Booking'),
     bookingStatus: 'REQUEST_ACCEPTED',
-    forBookingRequest: opt.forBookingRequest,
+    ...(opt.forBookingRequest !== undefined && { forBookingRequest: opt.forBookingRequest }),
     forBookingOption: opt['@id'] as unknown as SafeIri,
   }
   return { ok: true, value: booking }
 }
 
+/**
+ * @deprecated Legacy pre-ontology booking flow (roles swapped vs ONE Record, deviation #21). Replacement: booking Path A.
+ */
 export function rejectBookingOption(
   opt: BookingOption,
   _reason?: string,
 ): ParseResult<BookingOption> {
+  const refused = refuseOptionInput(opt, 'reject')
+  if (refused) return refused
   const t = canTransition('BookingOption', 'REQUEST_PENDING', 'reject')
   if (!t)
     return {
@@ -125,10 +161,15 @@ export function rejectBookingOption(
   }
 }
 
+/**
+ * @deprecated Legacy pre-ontology booking flow (roles swapped vs ONE Record, deviation #21). Replacement: booking Path A.
+ */
 export function revokeBookingOption(
   opt: BookingOption,
   _reason?: string,
 ): ParseResult<BookingOption> {
+  const refused = refuseOptionInput(opt, 'revoke')
+  if (refused) return refused
   const t = canTransition('BookingOption', 'REQUEST_PENDING', 'revoke')
   if (!t)
     return {
@@ -152,10 +193,14 @@ export function revokeBookingOption(
  * only models the forwarder->carrier request transition.
  *
  * Source-state hardcode: see top-of-file comment + deviation #11.
+ *
+ * @deprecated Legacy pre-ontology booking flow (roles swapped vs ONE Record, deviation #21). Replacement: booking Path A.
  */
 export function acceptBookingOptionViaRequest(
   opt: BookingOption,
 ): ParseResult<BookingOptionRequest> {
+  const refused = refuseOptionInput(opt, 'accept')
+  if (refused) return refused
   const t = canTransition('BookingOption', 'REQUEST_PENDING', 'accept')
   if (!t)
     return {

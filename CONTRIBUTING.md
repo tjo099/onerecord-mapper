@@ -87,21 +87,23 @@ bringing up the local NE:ONE stack.
 
 **Stack setup**: two paths.
 
-**Path A — bundled compose (faster, recommended for v0.2)**:
+**Path A — bundled compose (recommended)**:
 this repo ships a single-file compose at
-`test/contract/docker-compose.neone.yml`. The Keycloak realm config
-is not bundled (OLF License v1.3 §4 distribution review pending);
-fetch it on-demand:
+`test/contract/docker-compose.neone.yml`. It pins NE:ONE 2.0.0 by digest
+(built from upstream `main` @ `4482908f`) and runs it in in-memory mode
+with Keycloak and Redis. The Keycloak realm config is OLF-licensed, so it
+is fetched, not committed (the file is gitignored):
 
 ```bash
-mkdir -p test/contract/keycloak
-curl -fsSL -o test/contract/keycloak/neone-realms.json \
-  https://git.openlogisticsfoundation.org/wg-digitalaircargo/ne-one/-/raw/develop/src/main/docker-compose/keycloak/neone-realms.json
+curl -fsSL --create-dirs -o test/contract/keycloak/neone-realms.json \
+  "https://git.openlogisticsfoundation.org/api/v4/projects/wg-digitalaircargo%2Fne-one/repository/files/src%2Fmain%2Fdocker-compose%2Fkeycloak%2Fneone-realms.json/raw?ref=4482908f13ea2d628e454748dc43fc0d017cdaf2"
 docker compose -f test/contract/docker-compose.neone.yml up -d --wait
+NEONE_REQUIRED=1 bun run test:contract
+docker compose -f test/contract/docker-compose.neone.yml down -v
 ```
 
-Uses NE:ONE in-memory mode (no GraphDB), so it's lighter than the
-full OLF stack. Note: in-memory mode is permissive on RDF strictness
+There is no S3 store: MinIO stopped publishing container images, and no
+contract test uploads blobs. In-memory mode is permissive on RDF strictness
 (see `_neone-client.ts` adapter notes); for stricter validation
 (GraphDB-backed v3.2 ontology), use Path B.
 
@@ -136,18 +138,20 @@ between our 3.2 envelope (`@context` string, `@type` literal, client-minted
 `@id`) and NE:ONE's accepted shape (`@context` object form, `@type` array
 including `LogisticsObject`, server-assigned `@id`). It also defensively
 wraps OWL ObjectProperty values, code-list values, and xsd literals per
-the gotchas catalog at the top of the file. Tests skip cleanly via
-`it.skipIf(!stackUp)` when the stack is unreachable.
+the gotchas catalog at the top of the file. On the way back it picks the
+posted `@type` out of the inferred supertypes NE:ONE 2.0 adds (for example
+`['ULD', 'PhysicalLogisticsObject', 'LoadingUnit']`) and inlines embedded
+value nodes that NE:ONE returns as separate `@graph` nodes. Tests skip
+cleanly via `it.skipIf(!stackUp)` when the stack is unreachable, unless
+`NEONE_REQUIRED=1` is set, which turns an unreachable stack into a failure.
 
-**CI integration**: contract tests are not auto-run in CI in v0.2.0.
-A skeleton bundled compose exists at `test/contract/docker-compose.neone.yml`
-(see Path A above) but headless GitHub Actions integration would
-need: (a) the realm JSON shipped or fetched at runtime,
-(b) per-run `docker compose down -v` to avoid GraphDB saturation
-(observed in 2026-04-28 testing — the in-memory backend can hang
-POST after ~30-50 cumulative resources). Both are v0.3 work.
-Run contract tests manually before tagging a release; the bundled
-compose is the closest portable starting point.
+**CI integration**: the Nightly workflow (`.github/workflows/nightly.yml`)
+fetches the realm at the pinned upstream commit, starts the bundled
+compose, and runs the contract suite with `NEONE_REQUIRED=1` plus the
+property tests at 1000 runs. A failing scheduled run opens one
+`nightly-status` issue and adds a comment for each later failure. To move
+NE:ONE, update the image digest in the compose file and `NEONE_REF` in the
+workflow together.
 
 ## Versioning
 

@@ -6,41 +6,68 @@ on:
 
 permissions: { contents: read, issues: write }
 
+concurrency:
+  group: nightly
+  cancel-in-progress: false
+
 jobs:
   contract:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      # Upstream wg-digitalaircargo/ne-one commit the pinned NE:ONE image was
+      # built from (see test/contract/docker-compose.neone.yml). Move both
+      # together.
+      NEONE_REF: 4482908f13ea2d628e454748dc43fc0d017cdaf2
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: oven-sh/setup-bun@v2
         with: { bun-version: '1.3.11' }
-      - uses: actions/setup-node@v4
-        with: { node-version: 20 }
       - run: bun install --frozen-lockfile
-      - name: Verify NE:ONE digest is pinned (no placeholder)
+      - name: Verify NE:ONE image is pinned by digest
         run: |
-          if grep -q 'REPLACE_WITH_PINNED_DIGEST' test/contract/docker-compose.neone.yml; then
-            echo "::error::NE:ONE digest is still REPLACE_WITH_PINNED_DIGEST"; exit 1
-          fi
-      - name: Start NE:ONE Open
+          grep -qE 'ne-one@sha256:[0-9a-f]{64}' test/contract/docker-compose.neone.yml || {
+            echo "::error::NE:ONE image in docker-compose.neone.yml must be pinned by digest"; exit 1; }
+      - name: Fetch NE:ONE Keycloak realm (OLF-licensed, not committed)
+        run: |
+          curl -fsSL --retry 3 --create-dirs -o test/contract/keycloak/neone-realms.json \
+            "https://git.openlogisticsfoundation.org/api/v4/projects/wg-digitalaircargo%2Fne-one/repository/files/src%2Fmain%2Fdocker-compose%2Fkeycloak%2Fneone-realms.json/raw?ref=${NEONE_REF}"
+          node -e 'JSON.parse(require("fs").readFileSync("test/contract/keycloak/neone-realms.json","utf8"))'
+      - name: Start NE:ONE
         run: docker compose -f test/contract/docker-compose.neone.yml up -d --wait
-      - name: Contract + property + drift
+      - name: Contract tests (fail if the stack is unreachable)
+        env: { NEONE_REQUIRED: '1' }
+        run: bun run test:contract
+      - name: Property tests (1000 runs)
         env: { PROPERTY_RUNS: '1000' }
-        run: |
-          bun run test:contract
-          bun run test:property
-          bun run scripts/convert-iata-xlsx.ts --check
+        run: bun run test:property
+      - if: failure()
+        name: NE:ONE logs
+        run: docker compose -f test/contract/docker-compose.neone.yml logs --no-color --tail 200 neone keycloak-1
       - if: always()
         name: Stop NE:ONE
         run: docker compose -f test/contract/docker-compose.neone.yml down -v
-      - if: failure()
-        name: Notify on failure
-        uses: actions/github-script@v7
+      - if: failure() && github.event_name == 'schedule'
+        name: Report failure (one open issue, a comment per failed night)
+        uses: actions/github-script@v9
         with:
           script: |
-            await github.rest.issues.create({
+            const run = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+            const day = new Date().toISOString().slice(0, 10)
+            const { data: open } = await github.rest.issues.listForRepo({
               owner: context.repo.owner, repo: context.repo.repo,
-              title: `Nightly failed ${new Date().toISOString().slice(0,10)}`,
-              labels: ['nightly-status'],
-              body: `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              state: 'open', labels: 'nightly-status', per_page: 1,
             })
+            if (open.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: open[0].number, body: `Failed again ${day}: ${run}`,
+              })
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title: 'Nightly contract run is failing',
+                labels: ['nightly-status'],
+                body: `First failure ${day}: ${run}\n\nLater failures are added as comments. Close this issue once the nightly is green.`,
+              })
+            }

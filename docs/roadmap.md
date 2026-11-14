@@ -24,9 +24,13 @@ keeping the 0.5.0 keys (deprecated) so mixed fleets keep working. The
 ontology pin stays 3.2.0. See [`../CHANGELOG.md`](../CHANGELOG.md) and the
 0.5.x to 0.6.0 section of [`../MIGRATING.md`](../MIGRATING.md).
 
+v0.6.1 (released 2026-11-14) is a security patch: it raises the `zod` floor
+to `^4.6.6` for GHSA-mrhx-c7xc-m3w5 and refreshes the development tooling. It
+has no API or wire changes.
+
 **Next:**
 
-- **0.6.1** — `flattenEmbeddedGraph`: split `?embedded=true` responses into
+- **0.6.2** — `flattenEmbeddedGraph`: split `?embedded=true` responses into
   per-node objects before per-class validation.
 - **Booking Path A (target 0.7.0)** — replace the legacy booking flow and the
   legacy `BookingTimes` / `BookingSegment` / `BookingPreferences` classes with

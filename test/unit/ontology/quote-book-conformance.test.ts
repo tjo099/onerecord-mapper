@@ -398,8 +398,18 @@ function elem(schema: Schema): Schema {
   return schema instanceof z.ZodArray ? schema.element : schema
 }
 
+/**
+ * Regex sources of a string schema's checks, read from each check's own
+ * definition. zod 4.6 stopped filling the derived `_zod.bag.patterns` cache at
+ * construction, so the cache cannot be relied on. The `guard helpers` canary
+ * fails loudly if zod moves this again.
+ */
 function patternsOf(schema: z.ZodString): string[] {
-  return [...(schema._zod.bag.patterns ?? [])].map((pattern) => pattern.source).sort()
+  return (schema._zod.def.checks ?? [])
+    .map((check) => (check._zod.def as { pattern?: unknown }).pattern)
+    .filter((pattern): pattern is RegExp => pattern instanceof RegExp)
+    .map((pattern) => pattern.source)
+    .sort()
 }
 
 interface Descriptor {
@@ -610,6 +620,12 @@ describe('guard helpers', () => {
     expect(compareSemver('0.10.0', '0.8.0')).toBeGreaterThan(0)
     expect(compareSemver('0.8.0-rc', '0.8.0')).toBeLessThan(0)
     expect(compareSemver('1.0.0', '0.8.0')).toBeGreaterThan(0)
+  })
+
+  it('patternsOf reads regex sources from zod string checks (canary for zod internals)', () => {
+    expect(patternsOf(z.string().regex(/^b/).regex(/^a$/))).toEqual(['^a$', '^b'])
+    expect(patternsOf(z.string().regex(XSD_DURATION))).toEqual([XSD_DURATION.source])
+    expect(patternsOf(z.string().min(1).max(3))).toEqual([])
   })
 })
 

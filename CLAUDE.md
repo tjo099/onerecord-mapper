@@ -54,8 +54,13 @@
 - Verification: 1502 passing tests, one skipped, 26 property tests, and green
   typecheck, lint, build, `api:check` and package inspection. Published by
   `release.yml` from the signed tag `v0.6.0`.
+- 0.6.1 (2026-11-14) is a security patch: `zod ^4.6.6`
+  (GHSA-mrhx-c7xc-m3w5), dev tooling refreshed, `@arethetypeswrong/cli`
+  0.18.5. CI's `bun audit` gate fails on any advisory, including
+  dev-only ones. When `main` has been quiet for a while, expect it to need a
+  dependency refresh before the next release.
 - Committed follow-ups:
-  - 0.6.1 `flattenEmbeddedGraph`;
+  - 0.6.2 `flattenEmbeddedGraph`;
   - booking Path A (target 0.7.0): realign `BookingShipment`,
     `BookingSegment`, `BookingTimes`, `BookingPreferences` and the booking
     flow;

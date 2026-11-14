@@ -4,6 +4,37 @@ All notable changes are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/), versioning follows
 [SemVer](https://semver.org/) per the policy in `MIGRATING.md`.
 
+## [0.6.1] - 2026-11-14
+
+Security patch. It raises the `zod` floor to a release that fixes a
+high-severity denial-of-service advisory. No API or wire changes; no
+migration required.
+
+### Security
+
+- The `zod` dependency range is now `^4.6.6` (was `^4.0.0`). zod up to 4.6.5
+  can exhaust memory while validating a large array against an array schema
+  ([GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5)).
+  The `deserialize*` functions already bounded the exposure through their
+  pre-validation limits (5,000 array elements and 10,000 nodes by default).
+  Code that calls an exported schema's `.parse()` directly did not have that
+  protection.
+- Consumers that stay on an earlier `@flaks/onerecord` can get the same fix by
+  updating `zod` to 4.6.6 or later in their own lockfile.
+
+### Changed
+
+- Development tooling, which is not part of the published package, is
+  refreshed to clear advisories:
+  - vitest and `@vitest/coverage-v8` 4.1.12;
+  - `@arethetypeswrong/cli` 0.18.5 (0.16.x cannot read tarballs with
+    fflate 0.8.3);
+  - overrides for vite (`^6.4.4`), nanoid, fflate and source-map-js.
+- The ontology conformance guard reads regex patterns from each zod check's
+  definition, because zod 4.6 no longer fills the internal cache it read.
+  Schema behaviour is unchanged.
+- `__VERSION__` now reports `0.6.1`.
+
 ## [0.6.0] - 2026-11-13
 
 ONE Record 3.2.0 Quote & Book charge chain: `Price`, `Ratings` and

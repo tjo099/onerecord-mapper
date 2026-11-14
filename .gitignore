@@ -9,3 +9,6 @@ coverage/
 test/fixtures/samples-real/
 .env
 .env.local
+
+# OLF-licensed NE:ONE realm export, fetched for the contract stack
+test/contract/keycloak/*.json

@@ -1,69 +1,103 @@
 import { describe, expect, it } from 'vitest'
+import { OneRecordNotificationSchema, OneRecordSubscriptionSchema } from '../../src/api/index.js'
 import { CARGO_CONTEXT_IRI } from '../../src/version.js'
-import {
-  getLogisticsObject,
-  getNeoneToken,
-  neoneReachable,
-  postLogisticsObject,
-} from './_neone-client.js'
+import { getNeoneToken, neoneReachable, postLogisticsObject } from './_neone-client.js'
 
 const stackUp = await neoneReachable()
 const NEONE_URL = process.env.NEONE_URL ?? 'http://localhost:8080'
+const API = 'https://onerecord.iata.org/ns/api#'
+const CONTEXT = {
+  api: API,
+  cargo: 'https://onerecord.iata.org/ns/cargo#',
+  xsd: 'http://www.w3.org/2001/XMLSchema#',
+}
 
-describe('contract: Notification subscribe-and-receive (T5.7)', () => {
+type Node = Record<string, unknown>
+
+async function headers(): Promise<Record<string, string>> {
+  return {
+    Authorization: `Bearer ${await getNeoneToken()}`,
+    'Content-Type': 'application/ld+json',
+    Accept: 'application/ld+json',
+  }
+}
+
+function graphOf(body: Node): Node[] {
+  return Array.isArray(body['@graph']) ? (body['@graph'] as Node[]) : [body]
+}
+
+function hasType(node: Node, type: string): boolean {
+  const t = node['@type']
+  return Array.isArray(t) ? t.includes(type) : t === type
+}
+
+// ONE Record API 2.2: a subscriber POSTs an api:Subscription to the
+// publisher's /subscriptions endpoint, which answers 201 with the IRI of the
+// api:SubscriptionRequest it created. Publishers deliver api:Notification
+// objects by POSTing them to the subscriber's /notifications endpoint.
+describe('contract: API 2.2 subscriptions and notifications (T5.7)', () => {
   it.skipIf(!stackUp)(
-    'POSTs a Subscription targeting an LO topic; server accepts the subscription',
+    'POST /subscriptions with a schema-valid Subscription creates a pending SubscriptionRequest',
     async () => {
-      // Step 1: create an LO that will be the subscription topic.
-      const topicLo = {
+      const { iri: topic } = await postLogisticsObject({
         '@context': CARGO_CONTEXT_IRI,
         '@type': 'Shipment',
         '@id': `https://test.flaks.example/test/shipment/notif-topic-${Date.now()}`,
-        pieceCount: 1,
         goodsDescription: 'Notification topic',
-      }
-      const { iri: topicIri } = await postLogisticsObject(topicLo)
+      })
+      const subscription = OneRecordSubscriptionSchema.parse({
+        '@type': 'api:Subscription',
+        'api:hasSubscriber': { '@id': 'https://test.flaks.example/test/company/notif-subscriber' },
+        'api:hasTopicType': { '@id': 'api:LOGISTICS_OBJECT_IDENTIFIER' },
+        'api:hasTopic': { '@type': 'xsd:anyURI', '@value': topic },
+        'api:includeSubscriptionEventType': [{ '@id': 'api:LOGISTICS_OBJECT_UPDATED' }],
+      })
 
-      // Step 2: POST a Subscription whose topic is the just-created LO IRI.
-      // Subscriptions live under the cargo Subscription class.
-      const sub = {
-        '@context': CARGO_CONTEXT_IRI,
-        '@type': 'Subscription',
-        '@id': `https://test.flaks.example/test/subscription/notif-${Date.now()}`,
-        topic: topicIri,
-        subscriber: 'https://test.flaks.example/test/party/notif-subscriber',
-        notificationEndpoint: 'https://test.flaks.example/notif-callback',
-      }
-      // Subscriptions go through the same /logistics-objects endpoint
-      // (NE:ONE 1.x treats them as logistics objects). The dedicated
-      // /subscriptions and /notifications endpoints are for delivery
-      // mechanics; subscription resource creation is via /logistics-objects.
-      const { iri: subIri, status } = await postLogisticsObject(sub)
-      expect(status).toBe(201)
+      const res = await fetch(`${NEONE_URL}/subscriptions`, {
+        method: 'POST',
+        headers: await headers(),
+        body: JSON.stringify({ '@context': CONTEXT, ...subscription }),
+      })
+      expect(res.status).toBe(201)
+      const requestIri = res.headers.get('location')
+      expect(requestIri).toMatch(/^https?:\/\//)
 
-      const got = await getLogisticsObject(subIri)
-      expect(got['@type']).toBe('Subscription')
-      expect(got.topic).toBe(topicIri)
-      expect(got.subscriber).toBe('https://test.flaks.example/test/party/notif-subscriber')
+      const got = await fetch(requestIri as string, { headers: await headers() })
+      expect(got.status).toBe(200)
+      const graph = graphOf((await got.json()) as Node)
+      const request = graph.find((n) => hasType(n, `${API}SubscriptionRequest`))
+      expect(request).toBeDefined()
+      expect((request as Node)[`${API}hasRequestStatus`]).toEqual({
+        '@id': `${API}REQUEST_PENDING`,
+      })
+
+      const subRef = (request as Node)[`${API}hasSubscription`] as { '@id': string }
+      const stored = graph.find((n) => n['@id'] === subRef['@id'])
+      expect(stored).toBeDefined()
+      expect(((stored as Node)[`${API}hasTopic`] as { '@value': string })['@value']).toBe(topic)
     },
   )
 
   it.skipIf(!stackUp)(
-    'GETs the /notifications endpoint and confirms it returns a list (no auth-only smoke)',
+    'POST /notifications accepts a schema-valid Notification (subscriber inbox)',
     async () => {
-      // The notifications endpoint is for receiving delivered notifications.
-      // For v0.2 contract testing we verify the endpoint is reachable +
-      // accepts our token; full subscribe→mutate→receive round-trip is v0.3
-      // (it requires either a webhook receiver in-process OR polling
-      // semantics that NE:ONE 1.x's notification controller exposes).
-      const token = await getNeoneToken()
-      const res = await fetch(`${NEONE_URL}/notifications`, {
-        headers: { Authorization: `Bearer ${token}`, Accept: 'application/ld+json' },
+      const notification = OneRecordNotificationSchema.parse({
+        '@context': CONTEXT,
+        '@type': 'api:Notification',
+        'api:hasEventType': { '@id': 'api:LOGISTICS_OBJECT_UPDATED' },
+        'api:hasLogisticsObject': { '@id': 'https://test.flaks.example/test/shipment/remote-1' },
+        'api:hasLogisticsObjectType': {
+          '@type': 'xsd:anyURI',
+          '@value': 'https://onerecord.iata.org/ns/cargo#Shipment',
+        },
       })
-      // Acceptable: 200 OK with a list, 204 No Content (empty), or 404
-      // if the route differs slightly. We don't strictly validate the
-      // shape; the auth path being reachable is the v0.2 contract.
-      expect([200, 204, 404]).toContain(res.status)
+
+      const res = await fetch(`${NEONE_URL}/notifications`, {
+        method: 'POST',
+        headers: await headers(),
+        body: JSON.stringify(notification),
+      })
+      expect(res.status).toBe(204)
     },
   )
 })

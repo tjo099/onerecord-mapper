@@ -266,16 +266,61 @@ function unwrapUnitObject(obj: Record<string, unknown>): Record<string, unknown>
   return out
 }
 
+/** True when a `@graph` node is a logistics object rather than an embedded value. */
+function isLogisticsObjectNode(node: Record<string, unknown>): boolean {
+  const t = node['@type']
+  return Array.isArray(t) ? t.includes('LogisticsObject') : t === 'LogisticsObject'
+}
+
+/**
+ * NE:ONE 2.0 stores embedded value objects (CurrencyValue, Value, ...) as
+ * separate `@graph` nodes with server-internal `neone:` ids and references
+ * them as `{ '@id': ... }`. Inline such a reference back into a plain value
+ * object; leave references to logistics objects (and unknown ids) alone.
+ */
+function inlineEmbedded(
+  value: unknown,
+  nestedById: Map<string, Record<string, unknown>> | undefined,
+  seen: ReadonlySet<string> = new Set(),
+): unknown {
+  if (Array.isArray(value)) return value.map((v) => inlineEmbedded(v, nestedById, seen))
+  if (!nestedById || !value || typeof value !== 'object') return value
+  const keys = Object.keys(value)
+  const ref = (value as { '@id'?: unknown })['@id']
+  if (keys.length !== 1 || typeof ref !== 'string' || seen.has(ref)) return value
+  const node = nestedById.get(ref)
+  if (!node || isLogisticsObjectNode(node)) return value
+  const next = new Set(seen).add(ref)
+  const out: Record<string, unknown> = {}
+  for (const [k, v] of Object.entries(node)) {
+    if (k === '@id') continue
+    out[k] = unwrapXsdLiteral(unwrapObjectProperty(inlineEmbedded(v, nestedById, next)))
+  }
+  return out
+}
+
+/**
+ * `@type` each logistics object was POSTed with, keyed by server IRI. NE:ONE
+ * 2.0 answers with inferred supertypes too (`['ULD', 'PhysicalLogisticsObject',
+ * 'LoadingUnit']`), so the round-trip check picks the posted type back out.
+ */
+const postedTypes = new Map<string, string>()
+
 /**
  * Convert NE:ONE JSON-LD back into the envelope shape our 3.2 lib's
  * deserializers expect. Reverses `toNeoneFormat`. Also handles
  * `@graph`-wrapped responses by extracting the root resource matching
- * the requested IRI; nested resources (e.g. weight values) referenced
- * by `{ '@id': '...' }` from the root are inlined back into the root.
+ * the requested IRI; embedded value nodes referenced by `{ '@id': '...' }`
+ * from the root are inlined back into the root.
+ *
+ * `expectedType` is the `@type` the object was POSTed with. When the
+ * server's `@type` array contains it, it is returned alone; otherwise the
+ * array (minus `LogisticsObject`) is returned so a mismatch fails visibly.
  */
 export function fromNeoneFormat(
   neoneFormat: Record<string, unknown>,
   rootIri?: string,
+  expectedType?: string,
 ): Record<string, unknown> {
   // Step 1: if the response is @graph-wrapped, extract the root resource.
   let body = neoneFormat
@@ -311,6 +356,10 @@ export function fromNeoneFormat(
       continue
     }
     if (k === '@type' && Array.isArray(v)) {
+      if (expectedType && v.includes(expectedType)) {
+        out[k] = expectedType
+        continue
+      }
       const cargoTypes = v.filter((t) => t !== 'LogisticsObject')
       out[k] = cargoTypes.length === 1 ? cargoTypes[0] : cargoTypes
       continue
@@ -327,9 +376,10 @@ export function fromNeoneFormat(
       }
       continue
     }
-    // Default: try ObjectProperty unwrap (turns {@id} → bare string),
-    // then xsd-literal unwrap (turns {@type, @value} → JS primitive).
-    out[k] = unwrapXsdLiteral(unwrapObjectProperty(v))
+    // Default: inline embedded value nodes, then try ObjectProperty unwrap
+    // (turns {@id} → bare string), then xsd-literal unwrap (turns
+    // {@type, @value} → JS primitive).
+    out[k] = unwrapXsdLiteral(unwrapObjectProperty(inlineEmbedded(v, nestedById)))
   }
   // Strip @id from nested unit-bearing entries that came from @graph
   // (they had a neone:* @id that's not meaningful in the parent's view).
@@ -380,6 +430,7 @@ export async function postLogisticsObject(ourFormat: Record<string, unknown>): P
   if (!iri) {
     throw new Error('NE:ONE POST succeeded but no Location header returned')
   }
+  if (typeof ourFormat['@type'] === 'string') postedTypes.set(iri, ourFormat['@type'])
   return { iri, status: res.status }
 }
 
@@ -401,20 +452,31 @@ export async function getLogisticsObject(iri: string): Promise<Record<string, un
     throw new Error(`NE:ONE GET ${iri} failed: ${res.status} ${res.statusText}\n${text}`)
   }
   const neoneShape = (await res.json()) as Record<string, unknown>
-  return fromNeoneFormat(neoneShape, iri)
+  return fromNeoneFormat(neoneShape, iri, postedTypes.get(iri))
 }
 
 /**
- * Probe whether the local NE:ONE stack is reachable. Used in vitest
- * `beforeAll` to skip contract tests cleanly when the stack is down.
+ * Probe whether the local NE:ONE stack is reachable, so contract tests skip
+ * cleanly on a developer machine without the stack. With `NEONE_REQUIRED=1`
+ * (set by the Nightly workflow) an unreachable stack throws instead, so the
+ * suite cannot pass by skipping everything.
  */
 export async function neoneReachable(): Promise<boolean> {
-  try {
-    const res = await fetch(`${NEONE_URL}/q/health`, {
-      signal: AbortSignal.timeout(2000),
-    })
-    return res.ok
-  } catch {
-    return false
+  const required = process.env.NEONE_REQUIRED === '1'
+  // A freshly started JVM can answer the first request slowly, so the
+  // required mode retries for ~40 s; the optional mode probes once.
+  const attempts = required ? 8 : 1
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      const res = await fetch(`${NEONE_URL}/q/health`, { signal: AbortSignal.timeout(5000) })
+      if (res.ok) return true
+    } catch {
+      // not reachable yet
+    }
+    if (attempt < attempts) await new Promise((resolve) => setTimeout(resolve, 1000))
   }
+  if (required) {
+    throw new Error(`NEONE_REQUIRED=1 but NE:ONE is not healthy at ${NEONE_URL}/q/health`)
+  }
+  return false
 }
